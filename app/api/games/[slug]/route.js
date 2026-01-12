@@ -209,17 +209,15 @@ const OTTS = {
   },
 };
 
-/* ================= ROLE → PRICING ================= */
+/* ================= ROLE → PRICING (FIXED) ================= */
 const resolvePricingRole = (role) => {
-  if (role === "member") return "admin";
-  if (role === "admin") return "admin";
-  if (role === "user") return "user";
+  if (["user", "member", "admin"].includes(role)) return role;
   return null; // owner → base price
 };
 
 /* ================= API ================= */
 export async function GET(req, { params }) {
-  const { slug } = await params;
+  const { slug } = params;
 
   try {
     /* ===== STATIC PRODUCTS ===== */

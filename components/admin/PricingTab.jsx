@@ -11,7 +11,7 @@ export default function PricingTab({
   onSave,
 }) {
   const canSave =
-    (slabs.length > 0 || overrides.length > 0) && !savingPricing;
+    !savingPricing && (slabs.length > 0 || overrides.length > 0);
 
   /* ================= SLABS ================= */
   const updateSlab = (i, key, value) => {
@@ -26,7 +26,7 @@ export default function PricingTab({
 
   const deleteSlab = (i) => {
     const next = slabs.filter((_, index) => index !== i);
-    setSlabs(next.length ? next : [{ min: 0, max: 0, percent: 0 }]);
+    setSlabs(next.length ? next : []);
   };
 
   /* ================= FIXED PRICES ================= */
@@ -54,55 +54,50 @@ export default function PricingTab({
       <div>
         <h2 className="text-xl font-bold">Pricing Rules</h2>
         <p className="text-sm text-[var(--muted)]">
-          Decide how much extra you earn on each order.
+          Configure separate pricing for each user role.
         </p>
       </div>
 
       {/* ================= USER TYPE ================= */}
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm font-semibold">Apply pricing for</span>
+        <span className="text-sm font-semibold">
+          Apply pricing for
+        </span>
+
         <select
           value={pricingType}
           onChange={(e) => setPricingType(e.target.value)}
           className="px-4 py-2 rounded-lg border bg-[var(--background)]"
         >
-          <option value="admin">Admin Users</option>
           <option value="user">Normal Users</option>
+          <option value="member">Members</option>
+          <option value="admin">Admins</option>
         </select>
       </div>
 
       {/* ================= SLAB PRICING ================= */}
       <section className="space-y-4">
-        <h3 className="text-lg font-semibold">
-          Price Range Markup
-        </h3>
+        <h3 className="text-lg font-semibold">Price Range Markup</h3>
         <p className="text-sm text-[var(--muted)]">
-          Add extra percentage based on item price range.
+          Add percentage markup based on base price range.
         </p>
 
-        {/* ===== Mobile ===== */}
+        {/* Mobile */}
         <div className="md:hidden space-y-3">
           {slabs.map((s, i) => (
-            <div
-              key={i}
-              className="border rounded-xl p-4 space-y-3"
-            >
+            <div key={i} className="border rounded-xl p-4 space-y-3">
               <input
                 type="number"
                 placeholder="Minimum Price (₹)"
                 value={s.min}
-                onChange={(e) =>
-                  updateSlab(i, "min", e.target.value)
-                }
+                onChange={(e) => updateSlab(i, "min", e.target.value)}
                 className="input"
               />
               <input
                 type="number"
                 placeholder="Maximum Price (₹)"
                 value={s.max}
-                onChange={(e) =>
-                  updateSlab(i, "max", e.target.value)
-                }
+                onChange={(e) => updateSlab(i, "max", e.target.value)}
                 className="input"
               />
               <input
@@ -114,7 +109,6 @@ export default function PricingTab({
                 }
                 className="input"
               />
-
               <button
                 onClick={() => deleteSlab(i)}
                 className="text-sm text-red-400"
@@ -125,7 +119,7 @@ export default function PricingTab({
           ))}
         </div>
 
-        {/* ===== Desktop ===== */}
+        {/* Desktop */}
         <div className="hidden md:block border rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-black/20">
@@ -193,19 +187,16 @@ export default function PricingTab({
 
       {/* ================= FIXED PRICING ================= */}
       <section className="space-y-4">
-        <h3 className="text-lg font-semibold">
-          Fixed Item Price
-        </h3>
+        <h3 className="text-lg font-semibold">Fixed Item Price</h3>
         <p className="text-sm text-[var(--muted)]">
-          This price ignores all markup rules.
+          Overrides slab pricing for specific items.
         </p>
 
-        {/* Mobile */}
-        <div className="md:hidden space-y-3">
+        <div className="space-y-3">
           {overrides.map((o, i) => (
             <div
               key={i}
-              className="border rounded-xl p-4 space-y-3"
+              className="border rounded-xl p-4 grid gap-3 md:grid-cols-4"
             >
               <input
                 placeholder="Game Slug"
@@ -225,7 +216,7 @@ export default function PricingTab({
               />
               <input
                 type="number"
-                placeholder="Final Price (₹)"
+                placeholder="Final Price ₹"
                 value={o.fixedPrice}
                 onChange={(e) =>
                   updateOverride(i, "fixedPrice", e.target.value)
@@ -234,68 +225,12 @@ export default function PricingTab({
               />
               <button
                 onClick={() => deleteOverride(i)}
-                className="text-sm text-red-400"
+                className="text-sm text-red-400 text-left md:text-right"
               >
-                Remove Fixed Price
+                Delete
               </button>
             </div>
           ))}
-        </div>
-
-        {/* Desktop */}
-        <div className="hidden md:block border rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-black/20">
-              <tr>
-                <th className="px-4 py-3">Game</th>
-                <th className="px-4 py-3">Item</th>
-                <th className="px-4 py-3">Final ₹</th>
-                <th className="px-4 py-3 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {overrides.map((o, i) => (
-                <tr key={i} className="border-t">
-                  <td className="px-4 py-2">
-                    <input
-                      value={o.gameSlug}
-                      onChange={(e) =>
-                        updateOverride(i, "gameSlug", e.target.value)
-                      }
-                      className="input"
-                    />
-                  </td>
-                  <td className="px-4 py-2">
-                    <input
-                      value={o.itemSlug}
-                      onChange={(e) =>
-                        updateOverride(i, "itemSlug", e.target.value)
-                      }
-                      className="input"
-                    />
-                  </td>
-                  <td className="px-4 py-2">
-                    <input
-                      type="number"
-                      value={o.fixedPrice}
-                      onChange={(e) =>
-                        updateOverride(i, "fixedPrice", e.target.value)
-                      }
-                      className="input"
-                    />
-                  </td>
-                  <td className="px-4 py-2 text-right">
-                    <button
-                      onClick={() => deleteOverride(i)}
-                      className="text-xs text-red-400"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
 
         <button

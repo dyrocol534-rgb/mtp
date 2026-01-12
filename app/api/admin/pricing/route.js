@@ -25,7 +25,7 @@ const requireOwner = (req) => {
   }
 };
 
-const requireAdminOrOwner = (req) => {
+const requireAdminMemberOwner = (req) => {
   const auth = req.headers.get("authorization");
 
   if (!auth || !auth.startsWith("Bearer ")) {
@@ -48,14 +48,13 @@ const requireAdminOrOwner = (req) => {
 };
 
 /* =================================================
-   GET → Fetch pricing
-   admin & member share SAME pricing
+   GET → Fetch pricing (SEPARATE FOR ALL ROLES)
    ================================================= */
 export async function GET(req) {
   try {
     await connectDB();
 
-    const authCheck = requireAdminOrOwner(req);
+    const authCheck = requireAdminMemberOwner(req);
     if (authCheck.error) {
       return NextResponse.json(
         { success: false, message: authCheck.error },
@@ -73,12 +72,15 @@ export async function GET(req) {
       );
     }
 
-    // 🔑 member uses admin pricing
-    const effectiveUserType =
-      userType === "member" ? "admin" : userType;
+    if (!["user", "member", "admin"].includes(userType)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid userType" },
+        { status: 400 }
+      );
+    }
 
     const pricing = await PricingConfig.findOne({
-      userType: effectiveUserType,
+      userType,
     }).lean();
 
     return NextResponse.json({
@@ -99,7 +101,7 @@ export async function GET(req) {
 
 /* =================================================
    PATCH → Save pricing
-   ONLY OWNER CAN SET PRICE
+   OWNER sets pricing for user / member / admin
    ================================================= */
 export async function PATCH(req) {
   try {
@@ -123,13 +125,12 @@ export async function PATCH(req) {
       );
     }
 
-    // 🔒 Pricing stored ONLY for admin
-    if (userType !== "admin") {
+    if (!["user", "member", "admin"].includes(userType)) {
       return NextResponse.json(
         {
           success: false,
           message:
-            "Pricing can only be set for admin (member inherits it)",
+            "Pricing can only be set for user, member, or admin",
         },
         { status: 400 }
       );
@@ -165,7 +166,7 @@ export async function PATCH(req) {
     }
 
     const updated = await PricingConfig.findOneAndUpdate(
-      { userType: "admin" },
+      { userType },
       {
         $set: {
           slabs,
