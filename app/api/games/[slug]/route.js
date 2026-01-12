@@ -217,7 +217,7 @@ const resolvePricingRole = (role) => {
 
 /* ================= API ================= */
 export async function GET(req, { params }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   try {
     /* ===== STATIC PRODUCTS ===== */
