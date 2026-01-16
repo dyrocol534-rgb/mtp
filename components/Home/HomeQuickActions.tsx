@@ -15,7 +15,7 @@ const topRow = [
   { title: "Region", href: "/region", icon: Globe },
   { title: " Games", href: "/games", icon: Gamepad2 },
   { title: "Services", href: "/services", icon: Layers },
-  { title: "Blogs", href: "/blogs", icon: BookOpen },
+  { title: "Blogs", href: "/blog", icon: BookOpen },
   { title: "Leaderboard", href: "/leaderboard", icon: Trophy },
 ];
 
