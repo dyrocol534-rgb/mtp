@@ -6,6 +6,7 @@ import HomeServices from "./HomeServices";
 import TrustHighlights from "./TrustHighlights";
 import TopNoticeBanner from "./TopNoticeBanner";
 import ScrollingNoticeBand from "./ScrollingNoticeBand";
+import StorySlider from "./StorySlider";
 
 export default function HeroSection() {
 
@@ -13,8 +14,10 @@ export default function HeroSection() {
   return (
     <>
      <TopNoticeBanner/>
+            <StorySlider/>
+
        <GameBannerCarousel/>
-         <ScrollingNoticeBand/>
+         {/* <ScrollingNoticeBand/> */}
     <GamesPage/>
       <ScrollingNoticeBand/>
     <div className="p-4 m-2">

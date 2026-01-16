@@ -5,7 +5,13 @@ const MLBB_MAIN_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766076026/7fd445965237d07c1583c1dfb0ee9517_bp14p4.jpg";
 
 const MLBB_SMALL_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766076026/e5467ac4556c15c54810e9a78c0d7950_1_dvzsmd.jpg";
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768536112/WhatsApp_Image_2026-01-16_at_09.29.38_pli9ba.jpg";
+
+  const MLBB_DOUBLE_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768536006/WhatsApp_Image_2026-01-16_at_09.05.31_hqquhq.jpg";
+
+    const MLBB_MY_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768536112/WhatsApp_Image_2026-01-16_at_09.31.07_tweqho.jpg";
 
 /* ================= OTT SECTION ================= */
 const OTTS = [
@@ -97,6 +103,18 @@ export async function GET() {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_SMALL_IMAGE,
+        };
+      }
+        if (updatedGame.gameName === "MLBB Double") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: MLBB_DOUBLE_IMAGE,
+        };
+      }
+        if (updatedGame.gameName === "SG/MY Mlbb") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: MLBB_MY_IMAGE,
         };
       }
 
