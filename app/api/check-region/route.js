@@ -5,7 +5,7 @@ export async function POST(req) {
     const body = await req.json();
 
     const response = await fetch(
-      `https://game-off-ten.vercel.app/api/v1/check-region`,
+      `${process.env.NEXT_PUBLIC_API_BASE}/check-region`,
       {
         method: "POST",
         headers: {
