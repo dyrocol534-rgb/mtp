@@ -31,6 +31,7 @@ export default function GamesPage() {
     // "Honor Of Kings",
     // "Wuthering of Waves",
     // "Where Winds Meet",
+    "mobile-legends-backup826"
   ];
 
   const outOfStockSet = useMemo(() => new Set(outOfStockGames), []);
