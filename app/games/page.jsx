@@ -27,11 +27,10 @@ export default function GamesPage() {
   const WEEKLY_PASS_SLUG = "mobile-legends988";
 
   const outOfStockGames = [
-    "Genshin Impact",
-    "Honor Of Kings",
-    "TEST 1",
-    "Wuthering of Waves",
-    "Where Winds Meet",
+    // "Genshin Impact",
+    // "Honor Of Kings",
+    // "Wuthering of Waves",
+    // "Where Winds Meet",
   ];
 
   const outOfStockSet = useMemo(() => new Set(outOfStockGames), []);

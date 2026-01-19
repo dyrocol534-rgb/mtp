@@ -28,10 +28,23 @@ export default function GameDetailPage() {
 
   /** ✅ detect weekly pass */
   const isWeeklyPass = searchParams.get("type") === "weekly-pass";
+const isBGMI =
+  game?.gameName?.toLowerCase() === "pubg mobile" ||
+  game?.gameName?.toLowerCase() === "bgmi" ||
+  slug?.toString().startsWith("bgmi") ||
+  slug?.toString().startsWith("pubg");
 
-  const isBGMI =
-    game?.gameName?.toLowerCase() === "pubg mobile" ||
-    game?.gameName?.toLowerCase() === "bgmi";
+const isGenshin =
+  game?.gameName?.toLowerCase().includes("genshin") ||
+  slug?.toString().startsWith("genshin-impact");
+  const isHOK =
+  game?.gameName?.toLowerCase().includes("honor") ||
+  slug?.toString().startsWith("honor-of-kings");
+
+  const isWuwa =
+  slug?.toString().toLowerCase().startsWith("wuthering-of-waves");
+const isWWM =
+  slug?.toString().toLowerCase().startsWith("where-winds-meet");
 
   /* ================= FETCH GAME ================= */
   useEffect(() => {
@@ -115,10 +128,19 @@ export default function GameDetailPage() {
       dummy: item.dummyPrice?.toString() || "",
       image: item.itemImageId?.image || "",
     });
+const basePath = isBGMI
+  ? `/games/pubg/${slug}/buy`
+  : isGenshin
+  ? `/games/genshin/${slug}/buy`
+  : isHOK
+  ? `/games/hok/${slug}/buy`
+  : isWuwa
+  ? `/games/wwow/${slug}/buy`
+   : isWWM
+  ? `/games/wwm/${slug}/buy`
+  : `/games/${slug}/buy`;
 
-    const basePath = isBGMI
-      ? `/games/pubg/${slug}/buy`
-      : `/games/${slug}/buy`;
+
 
     router.push(
       `${basePath}/${item.itemSlug}?${query.toString()}`
@@ -132,7 +154,7 @@ export default function GameDetailPage() {
       <GameHeader game={game} />
 
       {/* ================= PACKAGE SELECTOR ================= */}
-      {isBGMI ? (
+      {(isBGMI || isGenshin || isHOK) ? (
         <PackageSelectorBgmi
           items={visibleItems}
           activeItem={activeItem}
@@ -159,7 +181,7 @@ export default function GameDetailPage() {
       )}
 
       {/* ================= BUY PANEL ================= */}
-      {isBGMI ? (
+      {(isBGMI || isGenshin || isHOK) ? (
         <BuyPanelBgmi
           activeItem={activeItem}
           redirecting={redirecting}
