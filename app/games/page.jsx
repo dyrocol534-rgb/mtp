@@ -53,18 +53,19 @@ export default function GamesPage() {
         let fetchedGames = json?.data?.games || [];
 
         // Clone PUBG → BGMI
-        const pubg = fetchedGames.find(
-          (g) => g.gameName === "PUBG Mobile"
-        );
-        if (pubg && !fetchedGames.some((g) => g.gameSlug === "bgmi")) {
-          fetchedGames.push({
-            ...pubg,
-            gameName: "BGMI",
-gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
-    },          });
-        }
+        // const pubg = fetchedGames.find(
+        //   (g) => g.gameName === "PUBG Mobile"
+        // );
+        // if (pubg && !fetchedGames.some((g) => g.gameSlug === "bgmi")) {
+        //   fetchedGames.push({
+        //     ...pubg,
+        //     gameName: "BGMI",
+        //     gameImageId: {
+        //       image:
+        //         "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+        //     },
+        //   });
+        // }
         console.log("Fetched Games:", fetchedGames);
 
         // Duplicate Weekly Pass (same slug)
@@ -77,7 +78,7 @@ gameImageId: {
             (g) =>
               g.gameSlug === WEEKLY_PASS_SLUG &&
               g.gameName === "Weekly Pass",
-              
+
           );
 
           if (!alreadyExists) {
@@ -86,9 +87,9 @@ gameImageId: {
               gameName: "Weekly Pass",
               _variant: "weekly-pass",
               gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768536006/WhatsApp_Image_2026-01-16_at_08.50.36_tviv2b.jpg",
-    }, 
+                image:
+                  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768536006/WhatsApp_Image_2026-01-16_at_08.50.36_tviv2b.jpg",
+              },
             });
           }
         }
@@ -211,21 +212,19 @@ gameImageId: {
             <div className="flex p-1 rounded-xl bg-[var(--card)] border border-[var(--border)]">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg ${
-                  viewMode === "grid"
+                className={`p-2 rounded-lg ${viewMode === "grid"
                     ? "bg-[var(--accent)] text-white"
                     : "text-[var(--muted)]"
-                }`}
+                  }`}
               >
                 <FiGrid />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg ${
-                  viewMode === "list"
+                className={`p-2 rounded-lg ${viewMode === "list"
                     ? "bg-[var(--accent)] text-white"
                     : "text-[var(--muted)]"
-                }`}
+                  }`}
               >
                 <FiList />
               </button>
@@ -298,129 +297,129 @@ gameImageId: {
           />
         )}
       </div>
-{otts?.items?.length > 0 && (
-  <section className="max-w-7xl mx-auto mb-16 px-4">
-    {/* HEADER */}
-    <div className="flex items-center gap-4 mb-8">
-      <h2 className="text-2xl font-bold text-[var(--foreground)]">
-        {otts.title}
-      </h2>
-      <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
-      <span className="text-sm text-[var(--muted)]">
-        {otts.total} services
-      </span>
-    </div>
+      {otts?.items?.length > 0 && (
+        <section className="max-w-7xl mx-auto mb-16 px-4">
+          {/* HEADER */}
+          <div className="flex items-center gap-4 mb-8">
+            <h2 className="text-2xl font-bold text-[var(--foreground)]">
+              {otts.title}
+            </h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
+            <span className="text-sm text-[var(--muted)]">
+              {otts.total} services
+            </span>
+          </div>
 
-    {/* GRID */}
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-      {otts.items.map((ott) => (
-        <Link
-          key={ott.slug}
-          href={`/games/ott/${ott.slug}`}
-          className="group relative rounded-2xl bg-[var(--card)]
+          {/* GRID */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+            {otts.items.map((ott) => (
+              <Link
+                key={ott.slug}
+                href={`/games/ott/${ott.slug}`}
+                className="group relative rounded-2xl bg-[var(--card)]
             border border-[var(--border)]
             hover:border-[var(--accent)]
             transition-all duration-300
             hover:-translate-y-1
             hover:shadow-xl hover:shadow-[var(--accent)]/10
             p-5 text-center"
-        >
-          {/* ICON */}
-          <div className="relative mx-auto w-20 h-20 rounded-xl
+              >
+                {/* ICON */}
+                <div className="relative mx-auto w-20 h-20 rounded-xl
             bg-gradient-to-br from-[var(--accent)]/15 to-transparent
             flex items-center justify-center mb-4
             group-hover:scale-105 transition"
-          >
-            <Image
-              src={ott.image}
-              alt={ott.name}
-              fill
-              className="object-contain p-3"
-            />
-          </div>
+                >
+                  <Image
+                    src={ott.image}
+                    alt={ott.name}
+                    fill
+                    className="object-contain p-3"
+                  />
+                </div>
 
-          {/* TEXT */}
-          <h3 className="font-semibold text-[var(--foreground)] leading-tight">
-            {ott.name}
-          </h3>
+                {/* TEXT */}
+                <h3 className="font-semibold text-[var(--foreground)] leading-tight">
+                  {ott.name}
+                </h3>
 
-          <span className="mt-1 text-xs text-[var(--muted)]">
-            {ott.category}
-          </span>
+                <span className="mt-1 text-xs text-[var(--muted)]">
+                  {ott.category}
+                </span>
 
-          {/* HOVER CTA */}
-          <span className="mt-3 inline-block text-xs font-medium text-[var(--accent)]
+                {/* HOVER CTA */}
+                <span className="mt-3 inline-block text-xs font-medium text-[var(--accent)]
             opacity-0 group-hover:opacity-100 transition">
-            View Plans →
-          </span>
-        </Link>
-      ))}
-    </div>
-  </section>
-)}
+                  View Plans →
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
 
-{/* ================= MEMBERSHIP SECTION ================= */}
-{memberships?.items?.length > 0 && (
-  <section className="max-w-7xl mx-auto mb-16 px-4">
-    {/* HEADER */}
-    <div className="flex items-center gap-4 mb-8">
-      <h2 className="text-2xl font-bold text-[var(--foreground)]">
-        {memberships.title}
-      </h2>
-      <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
-      <span className="text-sm text-[var(--muted)]">
-        {memberships.total} plans
-      </span>
-    </div>
+      {/* ================= MEMBERSHIP SECTION ================= */}
+      {memberships?.items?.length > 0 && (
+        <section className="max-w-7xl mx-auto mb-16 px-4">
+          {/* HEADER */}
+          <div className="flex items-center gap-4 mb-8">
+            <h2 className="text-2xl font-bold text-[var(--foreground)]">
+              {memberships.title}
+            </h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
+            <span className="text-sm text-[var(--muted)]">
+              {memberships.total} plans
+            </span>
+          </div>
 
-    {/* GRID */}
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-      {memberships.items.map((plan) => (
-        <Link
-          key={plan.slug}
-          href={`/games/membership/${plan.slug}`}
-          className="group relative rounded-2xl bg-[var(--card)]
+          {/* GRID */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+            {memberships.items.map((plan) => (
+              <Link
+                key={plan.slug}
+                href={`/games/membership/${plan.slug}`}
+                className="group relative rounded-2xl bg-[var(--card)]
             border border-[var(--border)]
             hover:border-[var(--accent)]
             transition-all duration-300
             hover:-translate-y-1
             hover:shadow-xl hover:shadow-[var(--accent)]/10
             p-5 text-center"
-        >
-          {/* ICON */}
-          <div className="relative mx-auto w-20 h-20 rounded-xl
+              >
+                {/* ICON */}
+                <div className="relative mx-auto w-20 h-20 rounded-xl
             bg-gradient-to-br from-[var(--accent)]/15 to-transparent
             flex items-center justify-center mb-4
             group-hover:scale-105 transition"
-          >
-            <Image
-              src={plan.image}
-              alt={plan.name}
-              fill
-              className="object-contain p-3"
-            />
-          </div>
+                >
+                  <Image
+                    src={plan.image}
+                    alt={plan.name}
+                    fill
+                    className="object-contain p-3"
+                  />
+                </div>
 
-          {/* TEXT */}
-          <h3 className="font-semibold text-[var(--foreground)] leading-tight">
-            {plan.name}
-          </h3>
+                {/* TEXT */}
+                <h3 className="font-semibold text-[var(--foreground)] leading-tight">
+                  {plan.name}
+                </h3>
 
-          <span className="mt-1 text-xs text-[var(--muted)]">
-            {plan.duration}
-          </span>
+                <span className="mt-1 text-xs text-[var(--muted)]">
+                  {plan.duration}
+                </span>
 
-          {/* BADGE */}
-          <span className="absolute top-3 right-3 text-[10px] px-2 py-1 rounded-full
+                {/* BADGE */}
+                <span className="absolute top-3 right-3 text-[10px] px-2 py-1 rounded-full
             bg-[var(--accent)]/15 text-[var(--accent)]">
-            Popular
-          </span>
-        </Link>
-      ))}
-    </div>
-  </section>
-)}
+                  Popular
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ================= FILTER MODAL ================= */}
       {showFilter && (

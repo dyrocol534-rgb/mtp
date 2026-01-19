@@ -20,7 +20,7 @@ const storyData = [
   },
   {
     id: 3,
-    title: "BGMI",
+    title: "PUBG Mobile",
     image:
       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
     link: "/games/pubg-mobile138",
