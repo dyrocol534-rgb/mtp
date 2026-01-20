@@ -1,5 +1,6 @@
 // app/page.tsx
 import HomeSection from "@/components/Home/Home";
+import WhatsAppQRPopup from "@/components/WhatsAppQRPopup";
 
 export const metadata = {
   title: "MLBB Topup India | Buy MLBB Diamonds Instantly at Best Price",
@@ -20,6 +21,8 @@ export const metadata = {
 export default function Page() {
   return (
     <main>
+            <WhatsAppQRPopup />
+
       <HomeSection />
     </main>
   );

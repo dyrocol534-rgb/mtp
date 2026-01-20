@@ -12,7 +12,7 @@ const BANNERS = [
   {
     id: "discount",
     title: "Get 1-5% OFF on WhatsApp",
-    subtitle: "DM us directly to unlock instant discount",
+    subtitle: "DM us directly to unlock discount",
     badge: "DM & Save",
     link: "https://wa.me/916372305866?text=Hi%20I%20want%205%25%20OFF",
   },
