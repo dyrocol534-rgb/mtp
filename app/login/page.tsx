@@ -8,8 +8,11 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [userName, setUserName] = useState("");
 
   const handleGoogleLogin = async (credential: string) => {
+    if (loading) return;
+
     setLoading(true);
     setError("");
     setSuccess("");
@@ -25,6 +28,7 @@ export default function AuthPage() {
 
       if (!data.success) {
         setError(data.message || "Authentication failed");
+        setLoading(false);
         return;
       }
 
@@ -33,94 +37,121 @@ export default function AuthPage() {
       sessionStorage.setItem("email", data.user.email);
       sessionStorage.setItem("userId", data.user.userId);
 
-      setSuccess("Signed in successfully. Redirecting...");
-      setTimeout(() => (window.location.href = "/"), 800);
+      setUserName(data.user.name);
+      setSuccess("done");
+
+      setTimeout(() => {
+        window.location.replace("/");
+      }, 1200);
     } catch {
       setError("Google login failed. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-[var(--background)]">
+    <section className="relative min-h-screen flex items-center justify-center px-4 bg-background text-foreground overflow-hidden">
+      {/* BACKGROUND GLOW */}
+      <div className="absolute inset-0">
+        <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-primary/15 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-140px] right-[-140px] w-[520px] h-[520px] bg-accent/15 rounded-full blur-[140px]" />
+      </div>
 
-      {/* Watermark Background */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-center bg-no-repeat opacity-[0.04] dark:opacity-[0.06]"
-        style={{
-          backgroundImage: "url('/logoBB.png')",
-          backgroundSize: "420px",
-        }}
-      />
+      {/* CARD */}
+      <div className="relative z-10 w-full max-w-md">
+        {/* SOFT OUTER GLOW */}
+        <div className="absolute inset-0 rounded-[28px] bg-gradient-to-br from-primary/20 via-transparent to-accent/20 blur-2xl opacity-60" />
 
-      {/* Auth Card */}
-      <div className="relative z-10 w-full max-w-sm rounded-3xl bg-white/80 dark:bg-black/40 border border-black/10 dark:border-white/10 shadow-2xl backdrop-blur-xl p-6 sm:p-8">
+        <div className="relative rounded-[28px] bg-card/80 backdrop-blur-2xl border border-border shadow-[0_20px_60px_-20px_rgba(0,0,0,0.35)] p-9 sm:p-11 transition-all duration-500">
+          {/* LOGO */}
+          <div className="text-center mb-10">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-background border border-border shadow-md">
+              <Image src="/logoBB.png" alt="Logo" width={52} height={52} />
+            </div>
 
-        {/* Logo */}
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/90 dark:bg-black/40 shadow">
-            <Image
-              src="/logoBB.png"
-              alt="Logo"
-              width={48}
-              height={48}
-              priority
-            />
+            <h1 className="text-[26px] font-semibold tracking-tight">
+              {success ? `Welcome, ${userName}` : "Welcome back"}
+            </h1>
+
+            <p className="mt-2 text-sm text-foreground/60">
+              {success
+                ? "Setting things up for you…"
+                : "Sign in to continue"}
+            </p>
           </div>
 
-          <h1 className="text-xl font-semibold text-[var(--foreground)]">
-            Welcome back
-          </h1>
-          <p className="mt-1 text-sm text-[var(--muted)]">
-            Sign in to continue
-          </p>
+          {/* SUCCESS */}
+          {success && (
+            <div className="mb-8 flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-400 animate-in fade-in zoom-in-95 duration-300">
+              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Signed in successfully
+            </div>
+          )}
+
+          {/* ERROR */}
+          {error && (
+            <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-400 animate-in fade-in slide-in-from-top-2 duration-300">
+              {error}
+            </div>
+          )}
+
+          {/* GOOGLE LOGIN */}
+          {!success && (
+            <div className="flex justify-center">
+              <div
+                className={`relative transition-all duration-300 ${
+                  loading ? "opacity-40 pointer-events-none scale-[0.98]" : ""
+                }`}
+              >
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-primary to-accent opacity-0 hover:opacity-25 blur-md transition" />
+                <GoogleLogin
+                  onSuccess={(res) =>
+                    res.credential && handleGoogleLogin(res.credential)
+                  }
+                  onError={() =>
+                    setError("Google authentication was cancelled")
+                  }
+                  theme="outline"
+                  size="large"
+                  shape="pill"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* LOADING */}
+          {loading && !success && (
+            <div className="mt-6 flex items-center justify-center gap-3 text-sm text-foreground/60 animate-in fade-in duration-300">
+              <span className="relative flex h-4 w-4">
+                <span className="absolute inset-0 rounded-full border-2 border-border" />
+                <span className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+              </span>
+              Authenticating securely…
+            </div>
+          )}
+
+          {/* FOOTER */}
+          {!success && (
+            <div className="mt-10 pt-6 border-t border-border text-center">
+              <p className="text-xs text-foreground/45 leading-relaxed">
+                By continuing, you agree to our{" "}
+                <span className="font-medium text-foreground hover:text-primary transition underline underline-offset-4">
+                  Terms
+                </span>{" "}
+                and{" "}
+                <span className="font-medium text-foreground hover:text-primary transition underline underline-offset-4">
+                  Privacy Policy
+                </span>
+              </p>
+            </div>
+          )}
         </div>
-
-        {/* Success */}
-        {success && (
-          <div className="mb-4 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm text-green-600 dark:text-green-400">
-            {success}
-          </div>
-        )}
-
-        {/* Error */}
-        {error && (
-          <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-600 dark:text-red-400">
-            {error}
-          </div>
-        )}
-
-        {/* Google Button */}
-        <div className="flex justify-center">
-          <GoogleLogin
-            onSuccess={(res) =>
-              res.credential && handleGoogleLogin(res.credential)
-            }
-            onError={() => setError("Google authentication was cancelled")}
-            theme="outline"
-            size="large"
-            shape="pill"
-          />
-        </div>
-
-        {/* Loading */}
-        {loading && (
-          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-[var(--muted)]">
-            <span className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--muted)] border-t-[var(--foreground)]" />
-            Authenticating…
-          </div>
-        )}
-
-        {/* Footer */}
-        <p className="mt-6 text-center text-xs text-[var(--muted)]">
-          By continuing, you agree to our{" "}
-          <span className="text-[var(--foreground)] font-medium">Terms</span>{" "}
-          &{" "}
-          <span className="text-[var(--foreground)] font-medium">
-            Privacy Policy
-          </span>
-        </p>
       </div>
     </section>
   );

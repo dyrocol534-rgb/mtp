@@ -21,7 +21,7 @@ const MEMBERSHIPS = {
       {
         itemName: "1 Month",
         itemSlug: "silver-1m",
-        sellingPrice: 1,
+        sellingPrice: 100,
         dummyPrice: 299,
         itemAvailablity: true,
         index: 1,
@@ -33,7 +33,7 @@ const MEMBERSHIPS = {
       {
         itemName: "3 Month",
         itemSlug: "silver-3m",
-        sellingPrice: 2,
+        sellingPrice: 200,
         dummyPrice: 1099,
         itemAvailablity: true,
         index: 3,
