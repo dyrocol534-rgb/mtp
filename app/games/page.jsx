@@ -8,11 +8,17 @@ import { FiFilter, FiX, FiSearch, FiGrid, FiList } from "react-icons/fi";
 import GameGrid from "@/components/Games/GameGrid";
 import GameList from "@/components/Games/GameList";
 import FilterModal from "@/components/Games/FilterModal";
+import ServiceGridSection from "@/components/Games/ServiceGridSection";
 
 export default function GamesPage() {
   /* ================= STATE ================= */
   const [category, setCategory] = useState([]);
   const [games, setGames] = useState([]);
+
+  const [featuredGames, setFeaturedGames] = useState([]);
+    const [mlbbVeriant, setMlbbVeriant] = useState([]);
+
+
   const [otts, setOtts] = useState(null);
   const [memberships, setMemberships] = useState(null);
 
@@ -52,21 +58,9 @@ export default function GamesPage() {
         if (!mounted) return;
 
         let fetchedGames = json?.data?.games || [];
+let fetchedFeatured = json?.data?.featuredGames || [];
+let fetchedMlbbVariant = json?.data?.mlbbVariants || [];
 
-        // Clone PUBG → BGMI
-        // const pubg = fetchedGames.find(
-        //   (g) => g.gameName === "PUBG Mobile"
-        // );
-        // if (pubg && !fetchedGames.some((g) => g.gameSlug === "bgmi")) {
-        //   fetchedGames.push({
-        //     ...pubg,
-        //     gameName: "BGMI",
-        //     gameImageId: {
-        //       image:
-        //         "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
-        //     },
-        //   });
-        // }
         console.log("Fetched Games:", fetchedGames);
 
         // Duplicate Weekly Pass (same slug)
@@ -97,6 +91,9 @@ export default function GamesPage() {
 
         setCategory(json?.data?.category || []);
         setGames(fetchedGames);
+        setFeaturedGames(fetchedFeatured);
+        setMlbbVeriant(fetchedMlbbVariant);
+
         setOtts(json?.data?.otts || null);
         setMemberships(json?.data?.memberships || null);
       } catch (err) {
@@ -141,49 +138,48 @@ export default function GamesPage() {
   }, [games, searchQuery, hideOOS, sort, isOutOfStock]);
 
   /* ================= CATEGORY PROCESSING ================= */
-  const processedCategories = useMemo(() => {
-    return category.map((cat) => {
-      let list = [...cat.gameId];
+  const processedFeaturedGames = useMemo(() => {
+  let list = [...featuredGames];
 
-      if (
-        cat.categoryTitle
-          ?.toLowerCase()
-          .includes("mobile legends")
-      ) {
-        const weeklyPass = games.find(
-          (g) =>
-            g.gameName === "Weekly Pass" &&
-            g.gameSlug === WEEKLY_PASS_SLUG
-        );
-
-        const mlbbSmall = games.find(
-          (g) => g.gameName === SPECIAL_MLBB_GAME
-        );
-
-        // remove duplicates first
-        list = list.filter(
-          (g) =>
-            g.gameName !== "Weekly Pass" &&
-            g.gameName !== SPECIAL_MLBB_GAME
-        );
-
-        // order: Weekly Pass → MLBB SMALL → rest
-        if (weeklyPass) list.unshift(weeklyPass);
-        if (mlbbSmall)
-          list.splice(weeklyPass ? 1 : 0, 0, mlbbSmall);
-      }
-
-      const filtered = list.filter((g) =>
-        processedGames.some(
-          (pg) =>
-            pg.gameSlug === g.gameSlug &&
-            (pg._variant === g._variant || !pg._variant)
-        )
+  if (hideOOS) {
+    list = list.filter((g) => !isOutOfStock(g.gameName));
+  }
+     if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter((g) =>
+        g.gameName.toLowerCase().includes(q)
       );
+    }
 
-      return { ...cat, games: filtered };
-    });
-  }, [category, games, processedGames]);
+  if (sort === "az") {
+    list.sort((a, b) => a.gameName.localeCompare(b.gameName));
+  } else if (sort === "za") {
+    list.sort((a, b) => b.gameName.localeCompare(a.gameName));
+  }
+
+  return list;
+}, [featuredGames, hideOOS, sort, isOutOfStock,searchQuery]);
+  const processedMlbbGames = useMemo(() => {
+  let list = [...mlbbVeriant];
+
+  if (hideOOS) {
+    list = list.filter((g) => !isOutOfStock(g.gameName));
+  }
+     if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter((g) =>
+        g.gameName.toLowerCase().includes(q)
+      );
+    }
+
+  if (sort === "az") {
+    list.sort((a, b) => a.gameName.localeCompare(b.gameName));
+  } else if (sort === "za") {
+    list.sort((a, b) => b.gameName.localeCompare(a.gameName));
+  }
+
+  return list;
+}, [mlbbVeriant, hideOOS, sort, isOutOfStock,searchQuery]);
 
   /* ================= HANDLERS ================= */
   const clearFilters = () => {
@@ -195,90 +191,174 @@ export default function GamesPage() {
   return (
     <section className="min-h-screen px-4 py-10 bg-[var(--background)] text-[var(--foreground)]">
       {/* ================= TOP BAR ================= */}
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          {/* Search */}
-          <div className="relative flex-1 w-full sm:max-w-md">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
-            <input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search games..."
-              className="w-full pl-11 pr-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]"
-            />
-          </div>
+    <div className="max-w-7xl mx-auto mb-8 px-4">
+  <div className="flex flex-col sm:flex-row gap-4 items-center">
+    
+    {/* ================= SEARCH (65%) ================= */}
+    <div className="relative w-full sm:w-[65%]">
+      <FiSearch
+        className="absolute left-3.5 top-1/2 -translate-y-1/2
+        text-[var(--muted)] text-sm"
+      />
 
-          {/* Controls */}
-          <div className="flex items-center gap-3">
-            <div className="flex p-1 rounded-xl bg-[var(--card)] border border-[var(--border)]">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg ${viewMode === "grid"
-                    ? "bg-[var(--accent)] text-white"
-                    : "text-[var(--muted)]"
-                  }`}
-              >
-                <FiGrid />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg ${viewMode === "list"
-                    ? "bg-[var(--accent)] text-white"
-                    : "text-[var(--muted)]"
-                  }`}
-              >
-                <FiList />
-              </button>
-            </div>
+      <input
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Search games..."
+        className="
+          w-full
+          pl-10 pr-4 py-2.5
+          rounded-xl
+          bg-[var(--card)]
+          border border-[var(--border)]
+          text-sm
+          transition
+          focus:outline-none
+          focus:border-[var(--accent)]
+          focus:ring-2 focus:ring-[var(--accent)]/20
+        "
+      />
+    </div>
 
-            {activeFilterCount > 0 && (
-              <button
-                onClick={clearFilters}
-                className="px-4 py-2 rounded-xl border border-red-500/50 text-red-400"
-              >
-                <FiX />
-              </button>
-            )}
+    {/* ================= CONTROLS (35%) ================= */}
+    <div className="flex w-full sm:w-[35%] justify-end gap-2">
+      
+      {/* GRID / LIST TOGGLE */}
+      <div
+        className="flex p-1 rounded-xl
+        bg-[var(--card)]
+        border border-[var(--border)]"
+      >
+        <button
+          onClick={() => setViewMode("grid")}
+          className={`p-2 rounded-lg transition
+            ${viewMode === "grid"
+              ? "bg-[var(--accent)] text-white shadow"
+              : "text-[var(--muted)] hover:text-[var(--foreground)]"}
+          `}
+        >
+          <FiGrid size={16} />
+        </button>
 
-            <button
-              onClick={() => setShowFilter(true)}
-              className="relative px-4 py-2 rounded-xl border border-[var(--border)]"
-            >
-              <FiFilter />
-              {activeFilterCount > 0 && (
-                <span className="absolute -top-2 -right-2 text-xs bg-[var(--accent)] text-white rounded-full px-2">
-                  {activeFilterCount}
-                </span>
-              )}
-            </button>
-          </div>
-        </div>
+        <button
+          onClick={() => setViewMode("list")}
+          className={`p-2 rounded-lg transition
+            ${viewMode === "list"
+              ? "bg-[var(--accent)] text-white shadow"
+              : "text-[var(--muted)] hover:text-[var(--foreground)]"}
+          `}
+        >
+          <FiList size={16} />
+        </button>
       </div>
 
+      {/* CLEAR FILTER */}
+      {activeFilterCount > 0 && (
+        <button
+          onClick={clearFilters}
+          className="
+            p-2 rounded-xl
+            border border-red-500/40
+            text-red-400
+            hover:bg-red-500/10
+            transition
+          "
+          title="Clear filters"
+        >
+          <FiX size={16} />
+        </button>
+      )}
+
+      {/* FILTER BUTTON */}
+      <button
+        onClick={() => setShowFilter(true)}
+        className="
+          relative p-2.5 rounded-xl
+          border border-[var(--border)]
+          bg-[var(--card)]
+          hover:border-[var(--accent)]
+          transition
+        "
+        title="Filters"
+      >
+        <FiFilter size={16} />
+
+        {activeFilterCount > 0 && (
+          <span
+            className="
+              absolute -top-1.5 -right-1.5
+              min-w-[18px] h-[18px]
+              flex items-center justify-center
+              text-[10px]
+              bg-[var(--accent)]
+              text-white
+              rounded-full
+              px-1
+            "
+          >
+            {activeFilterCount}
+          </span>
+        )}
+      </button>
+    </div>
+  </div>
+</div>
+
+
       {/* ================= CATEGORIES ================= */}
-      {processedCategories.map((cat, i) => {
-        if (!cat.games.length) return null;
+    
 
-        return (
-          <div key={i} className="max-w-7xl mx-auto mb-12">
-            <h2 className="text-2xl font-bold mb-6">
-              {cat.categoryTitle}
-            </h2>
+{processedFeaturedGames.length > 0 && (
+  <div className="max-w-7xl mx-auto mb-14">
+    <div className="flex items-center gap-4 mb-6">
+      <h2 className="text-2xl font-bold">
+        Featured Games
+      </h2>
+      <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
+      <span className="text-sm text-[var(--muted)]">
+        {processedFeaturedGames.length}
+      </span>
+    </div>
 
-            {viewMode === "grid" ? (
-              <GameGrid
-                games={cat.games}
-                isOutOfStock={isOutOfStock}
-              />
-            ) : (
-              <GameList
-                games={cat.games}
-                isOutOfStock={isOutOfStock}
-              />
-            )}
-          </div>
-        );
-      })}
+    {viewMode === "grid" ? (
+      <GameGrid
+        games={processedFeaturedGames}
+        isOutOfStock={isOutOfStock}
+      />
+    ) : (
+      <GameList
+        games={processedFeaturedGames}
+        isOutOfStock={isOutOfStock}
+      />
+    )}
+  </div>
+)}
+
+{processedMlbbGames.length > 0 && (
+  <div className="max-w-7xl mx-auto mb-14">
+    <div className="flex items-center gap-4 mb-6">
+      <h2 className="text-2xl font-bold">
+        MLBB Veriant
+      </h2>
+      <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
+      <span className="text-sm text-[var(--muted)]">
+        {processedMlbbGames.length}
+      </span>
+    </div>
+
+    {viewMode === "grid" ? (
+      <GameGrid
+        games={processedMlbbGames}
+        isOutOfStock={isOutOfStock}
+      />
+    ) : (
+      <GameList
+        games={processedMlbbGames}
+        isOutOfStock={isOutOfStock}
+      />
+    )}
+  </div>
+)}
 
       {/* ================= ALL GAMES ================= */}
       <div className="max-w-7xl mx-auto">
@@ -298,64 +378,20 @@ export default function GamesPage() {
           />
         )}
       </div>
+
+      
       {otts?.items?.length > 0 && (
         <section className="max-w-7xl mx-auto mb-16 px-4">
-          {/* HEADER */}
-          <div className="flex items-center gap-4 mb-8">
-            <h2 className="text-2xl font-bold text-[var(--foreground)]">
-              {otts.title}
-            </h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
-            <span className="text-sm text-[var(--muted)]">
-              {otts.total} services
-            </span>
-          </div>
+       
 
           {/* GRID */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-            {otts.items.map((ott) => (
-              <Link
-                key={ott.slug}
-                href={`/games/ott/${ott.slug}`}
-                className="group relative rounded-2xl bg-[var(--card)]
-            border border-[var(--border)]
-            hover:border-[var(--accent)]
-            transition-all duration-300
-            hover:-translate-y-1
-            hover:shadow-xl hover:shadow-[var(--accent)]/10
-            p-5 text-center"
-              >
-                {/* ICON */}
-                <div className="relative mx-auto w-20 h-20 rounded-xl
-            bg-gradient-to-br from-[var(--accent)]/15 to-transparent
-            flex items-center justify-center mb-4
-            group-hover:scale-105 transition"
-                >
-                  <Image
-                    src={ott.image}
-                    alt={ott.name}
-                    fill
-                    className="object-contain p-3"
-                  />
-                </div>
+   <ServiceGridSection
+  title={otts.title}
+  total={otts.total}
+  items={otts.items}
+  hrefPrefix="/games/ott"
+/>
 
-                {/* TEXT */}
-                <h3 className="font-semibold text-[var(--foreground)] leading-tight">
-                  {ott.name}
-                </h3>
-
-                <span className="mt-1 text-xs text-[var(--muted)]">
-                  {ott.category}
-                </span>
-
-                {/* HOVER CTA */}
-                <span className="mt-3 inline-block text-xs font-medium text-[var(--accent)]
-            opacity-0 group-hover:opacity-100 transition">
-                  View Plans →
-                </span>
-              </Link>
-            ))}
-          </div>
         </section>
       )}
 
@@ -363,62 +399,15 @@ export default function GamesPage() {
       {/* ================= MEMBERSHIP SECTION ================= */}
       {memberships?.items?.length > 0 && (
         <section className="max-w-7xl mx-auto mb-16 px-4">
-          {/* HEADER */}
-          <div className="flex items-center gap-4 mb-8">
-            <h2 className="text-2xl font-bold text-[var(--foreground)]">
-              {memberships.title}
-            </h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
-            <span className="text-sm text-[var(--muted)]">
-              {memberships.total} plans
-            </span>
-          </div>
+        <ServiceGridSection
+  title={memberships.title}
+  total={memberships.total}
+  items={memberships.items}
+  hrefPrefix="/games/membership"
+  showCategory={false}
+  ctaText="View Details →"
+/>
 
-          {/* GRID */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-            {memberships.items.map((plan) => (
-              <Link
-                key={plan.slug}
-                href={`/games/membership/${plan.slug}`}
-                className="group relative rounded-2xl bg-[var(--card)]
-            border border-[var(--border)]
-            hover:border-[var(--accent)]
-            transition-all duration-300
-            hover:-translate-y-1
-            hover:shadow-xl hover:shadow-[var(--accent)]/10
-            p-5 text-center"
-              >
-                {/* ICON */}
-                <div className="relative mx-auto w-20 h-20 rounded-xl
-            bg-gradient-to-br from-[var(--accent)]/15 to-transparent
-            flex items-center justify-center mb-4
-            group-hover:scale-105 transition"
-                >
-                  <Image
-                    src={plan.image}
-                    alt={plan.name}
-                    fill
-                    className="object-contain p-3"
-                  />
-                </div>
-
-                {/* TEXT */}
-                <h3 className="font-semibold text-[var(--foreground)] leading-tight">
-                  {plan.name}
-                </h3>
-
-                <span className="mt-1 text-xs text-[var(--muted)]">
-                  {plan.duration}
-                </span>
-
-                {/* BADGE */}
-                <span className="absolute top-3 right-3 text-[10px] px-2 py-1 rounded-full
-            bg-[var(--accent)]/15 text-[var(--accent)]">
-                  Popular
-                </span>
-              </Link>
-            ))}
-          </div>
         </section>
       )}
 

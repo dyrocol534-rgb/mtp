@@ -75,46 +75,47 @@ const HighlightCard = memo(function HighlightCard({
   return (
     <div
       className="
-        group relative rounded-2xl
-        p-4 sm:p-6
+        group relative rounded-xl
+        px-3 py-4 sm:px-4 sm:py-5
         text-center
         bg-[var(--card)]
         border border-[var(--border)]
-        transition-all duration-300 ease-out
-        hover:-translate-y-1
-        hover:shadow-xl hover:shadow-black/20
+        transition-all duration-200 ease-out
         hover:border-[var(--accent)]
+        hover:bg-[var(--card)]/90
       "
     >
       {/* Soft glow */}
       <div
         className={`
-          pointer-events-none absolute inset-0 rounded-2xl
+          pointer-events-none absolute inset-0 rounded-xl
           opacity-0 group-hover:opacity-100
           bg-gradient-to-br ${accent}
           transition-opacity duration-300
         `}
       />
 
-      <div className="relative z-10 flex flex-col items-center gap-2 sm:gap-3">
+      <div className="relative z-10 flex flex-col items-center gap-1.5">
         {/* Icon */}
         <div
           className={`
             flex items-center justify-center
-            w-10 h-10 sm:w-12 sm:h-12
+            w-9 h-9 sm:w-10 sm:h-10
             rounded-full
             bg-black/30 border border-white/10
             ${text}
           `}
         >
-          <Icon className="text-lg sm:text-xl" aria-hidden />
+          <Icon className="text-sm sm:text-base" aria-hidden />
         </div>
 
-        <p className={`text-lg sm:text-xl font-extrabold ${text}`}>
+        {/* Title */}
+        <p className={`text-base sm:text-lg font-bold leading-none ${text}`}>
           {title}
         </p>
 
-        <p className="text-xs sm:text-sm text-[var(--muted)]">
+        {/* Subtitle */}
+        <p className="text-[11px] sm:text-xs text-[var(--muted)]">
           {subtitle}
         </p>
       </div>
@@ -128,7 +129,7 @@ export default function TrustHighlights() {
   return (
     <section
       className="
-        py-12 sm:py-16 px-4 sm:px-6
+        py-8 sm:py-10 px-4
         bg-[var(--background)]
         text-[var(--foreground)]
       "
@@ -137,7 +138,7 @@ export default function TrustHighlights() {
       <div className="max-w-6xl mx-auto">
         <div
           className="
-            grid gap-4 sm:gap-5
+            grid gap-3 sm:gap-4
             grid-cols-3
             md:grid-cols-3
             lg:grid-cols-6

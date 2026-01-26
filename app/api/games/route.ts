@@ -157,7 +157,10 @@ const filteredGames =
     const mlbbVariants = filteredGames.filter(
       (g: any) =>
         g.gameSlug.includes("mlbb") ||
-        g.gameName.toLowerCase().includes("mlbb")
+        g.gameName.toLowerCase().includes("mlbb")||
+                g.gameSlug.toLowerCase().includes("legends988")
+
+
     );
 
     // Available only
@@ -188,15 +191,15 @@ const filteredGames =
         ...data.data,
 
         games: filteredGames,
-        category: filteredCategories,
+        // category: filteredCategories,
         totalGames: filteredGames.length,
 
         // 🔥 GAME SECTIONS
         featuredGames,
         mlbbVariants,
-        availableGames,
-        publishers,
-        regionalGames,
+        // availableGames,
+        // publishers,
+        // regionalGames,
 
         // 🔥 OTT SECTION
         otts: {

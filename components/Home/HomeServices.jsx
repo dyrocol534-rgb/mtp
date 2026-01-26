@@ -9,122 +9,107 @@ const services = [
   {
     title: "Be a Reseller",
     description:
-      "Start selling game topups instantly with industry-leading prices and reliable delivery. Built for scale and long-term profit.",
-    badge: {
-      text: "Best Value",
-      className:
-        "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
-    },
+      "Start selling game topups instantly with industry pricing and automated delivery.",
+    badge: "Best Value",
     icon: FaStore,
+    accent: "from-emerald-500/20 to-transparent",
   },
   {
     title: "Website Whitelabel",
     description:
-      "Launch your own branded topup platform with full control, automated systems, and ongoing technical support.",
-    badge: {
-      text: "Available",
-      className:
-        "bg-blue-500/10 text-blue-600 border-blue-500/30",
-    },
+      "Launch your own branded topup platform with full control and automation.",
+    badge: "Available",
     icon: FaGlobe,
+    accent: "from-blue-500/20 to-transparent",
   },
   {
     title: "Custom Topup Platform",
     description:
-      "Enterprise-grade custom solutions designed around your business requirements, security needs, and growth plans.",
-    badge: {
-      text: "Custom",
-      className:
-        "bg-purple-500/10 text-purple-600 border-purple-500/30",
-    },
+      "Enterprise-grade custom solutions built around your business needs.",
+    badge: "Custom",
     icon: FaCogs,
+    accent: "from-purple-500/20 to-transparent",
   },
 ];
 
 export default function HomeServices() {
   return (
-    <section className="py-14 sm:py-16 px-4 sm:px-6 bg-[var(--background)] text-[var(--foreground)]">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-14 px-4 bg-[var(--background)]">
+      <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="mb-10 sm:mb-12 max-w-3xl">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight mb-3">
+        <div className="mb-10 max-w-3xl">
+          <h2 className="text-2xl sm:text-3xl font-semibold mb-3">
             Additional Services
           </h2>
-
-          <p className="text-[var(--muted)] text-sm sm:text-base leading-relaxed">
-            Planning to start or expand a game topup business?
-            We provide reliable reseller programs and professional website solutions.
+          <p className="text-sm text-[var(--muted)]">
+            Start, scale, or customize your game topup business with professional tools.
           </p>
         </div>
 
-        {/* Services */}
-        <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, index) => {
+        {/* Cards */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((service, i) => {
             const Icon = service.icon;
 
             return (
               <div
-                key={index}
+                key={i}
                 className="
-                  rounded-2xl p-6 sm:p-7
+                  group relative overflow-hidden rounded-2xl
                   bg-[var(--card)]
                   border border-[var(--border)]
-                  transition-all duration-200
-                  hover:border-[var(--accent)]
-                  hover:shadow-[0_6px_24px_rgba(0,0,0,0.06)]
+                  transition-all duration-300
+                  hover:-translate-y-1
+                  hover:shadow-xl hover:border-[var(--accent)]
                 "
               >
-                {/* Icon */}
-                <div className="mb-4">
-                  <Icon className="text-lg text-[var(--accent)]" />
-                </div>
+                {/* Accent Glow */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${service.accent}
+                  opacity-0 group-hover:opacity-100 transition`}
+                />
 
                 {/* Content */}
-                <h3 className="text-lg font-medium mb-2">
-                  {service.title}
-                </h3>
+                <div className="relative p-5 flex flex-col h-full">
+                  {/* Icon */}
+                  <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/15
+                  flex items-center justify-center mb-4">
+                    <Icon className="text-[var(--accent)]" />
+                  </div>
 
-                <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
-                  {service.description}
-                </p>
+                  {/* Text */}
+                  <h3 className="text-lg font-semibold mb-2">
+                    {service.title}
+                  </h3>
 
-                {/* Footer */}
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`text-[11px] px-3 py-1 rounded-full border ${service.badge.className}`}
-                  >
-                    {service.badge.text}
-                  </span>
+                  <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
+                    {service.description}
+                  </p>
 
-                  <a
-                    href="https://wa.me/916372305866"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="
-                      inline-flex items-center gap-2
-                      text-sm font-medium
-                      text-[var(--accent)]
-                      hover:underline
-                    "
-                  >
-                    <FaWhatsapp className="text-sm" />
-                    Contact
-                  </a>
+                  {/* Footer */}
+                  <div className="mt-auto flex items-center justify-between">
+                    <span className="text-[11px] px-2.5 py-1 rounded-full
+                    bg-[var(--accent)]/15 text-[var(--accent)]">
+                      {service.badge}
+                    </span>
+
+                    <a
+                      href="https://wa.me/916372305866"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5
+                      text-sm text-[var(--accent)] font-medium"
+                    >
+                      <FaWhatsapp />
+                      Contact
+                    </a>
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
-
-        {/* Bottom CTA */}
-        <div className="mt-12 sm:mt-14 border-t border-[var(--border)] pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <p className="text-sm text-[var(--muted)] max-w-xl">
-            Want to discuss pricing, customization, or reseller onboarding?
-            Our team is available for direct consultation.
-          </p>
-        </div>
-
       </div>
     </section>
   );
