@@ -1,86 +1,92 @@
 "use client";
 
-import { useState } from "react";
 import { FaInstagram, FaTwitter, FaDiscord, FaEnvelope } from "react-icons/fa";
 
 export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
-
   return (
-    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] px-6 py-15">
+    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] px-6 py-14">
       <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-12">
+
         {/* 📨 Left - Contact Info */}
         <div className="flex-1 space-y-6">
-          <h1 className="text-4xl font-bold text-[var(--accent)] mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-[var(--accent)]">
             Contact Us
           </h1>
-          <p className="text-[var(--muted)] leading-relaxed text-lg">
-            Have a question, suggestion, or collaboration idea?  
-            We’d love to hear from you — reach out via email or social media!
+
+          <p className="text-[var(--muted)] leading-relaxed text-base sm:text-lg">
+            Have a question, partnership idea, or need support?  
+            Reach out to us — we're here to help.
           </p>
 
-          {/* ✉️ Email Highlight Box */}
-          <div className="p-6 border border-[var(--border)] rounded-2xl bg-[var(--card)] shadow-lg">
-            <p className="text-lg text-[var(--muted)] mb-2">
-              You can directly email us at:
-            </p>
+          {/* 📍 Location */}
+         
+
+          {/* ✉️ Email */}
+          <div className="p-6 border border-[var(--border)] rounded-2xl bg-[var(--card)] shadow-md">
+            <p className="text-sm text-[var(--muted)] mb-1">Email</p>
             <a
-              href="mailto:zyronix.innovations@gmail.com"
-              className="text-xl font-semibold text-[var(--accent)] hover:underline break-all"
+              href="mailto:aamonvss@gmail.com"
+              className="text-lg font-semibold text-[var(--accent)] hover:underline break-all"
             >
-              zynx.anime@gmail.com
+              aamonvss@gmail.com
             </a>
           </div>
 
           {/* 🌐 Social Links */}
-          <div className="flex gap-5 mt-6">
+          <div className="flex gap-4 mt-6">
             <a
               href="https://www.instagram.com/zynx.v1"
               target="_blank"
-              className="p-3 rounded-full bg-[var(--card)] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition-all"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-[var(--card)] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition"
             >
-              <FaInstagram size={24} />
+              <FaInstagram size={22} />
             </a>
+
             <a
               href="https://x.com/tk_dev_"
               target="_blank"
-              className="p-3 rounded-full bg-[var(--card)] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition-all"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-[var(--card)] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition"
             >
-              <FaTwitter size={24} />
+              <FaTwitter size={22} />
             </a>
-            <a
-              href="https://www.instagram.com/zynx.v1"
+
+            {/* <a
+              href="https://discord.com"
               target="_blank"
-              className="p-3 rounded-full bg-[var(--card)] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition-all"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-[var(--card)] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition"
             >
-              <FaDiscord size={24} />
-            </a>
+              <FaDiscord size={22} />
+            </a> */}
+
             <a
-              href="mailto:zynx.anime@gmail.com"
-              className="p-3 rounded-full bg-[var(--card)] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition-all"
+              href="mailto:aamonvss@gmail.com"
+              className="p-3 rounded-full bg-[var(--card)] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition"
             >
-              <FaEnvelope size={24} />
+              <FaEnvelope size={22} />
             </a>
           </div>
         </div>
 
         {/* 🗺️ Right - Map */}
-        <div className="flex-1 h-[400px] rounded-2xl overflow-hidden shadow-2xl border border-[var(--border)]">
+        <div className="flex-1 h-[380px] sm:h-[420px] rounded-2xl overflow-hidden shadow-xl border border-[var(--border)]">
           <iframe
-            title="Zyronix Map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d367144.18514800455!2d77.3507349913945!3d28.63530884925121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d032d37b1b7e9%3A0xf95cb0af544e3a5d!2sIndia!5e0!3m2!1sen!2sin!4v1697641137830!5m2!1sen!2sin"
+            title="Bhubaneswar Location"
+            src="https://www.google.com/maps?q=Bhubaneswar,Odisha&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0 }}
-            allowFullScreen={true}
+            allowFullScreen
             loading="lazy"
-          ></iframe>
+          />
         </div>
       </div>
 
-      {/* ✅ Footer Message */}
-      <div className="mt-16 text-center text-[var(--muted)] text-sm">
-        <p>We usually reply within 24 hours ✨</p>
+      {/* Footer Note */}
+      <div className="mt-14 text-center text-[var(--muted)] text-sm">
+        <p>We usually respond within 24 hours.</p>
       </div>
     </main>
   );

@@ -1,116 +1,138 @@
 import Link from "next/link";
 
 const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Blue Buff";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://mlbbtopup.in";
 
 export const metadata = {
-  title: `About | ${BRAND}`,
-  description: `Learn more about ${BRAND} — a fast, secure, and affordable game top-up platform with instant delivery and 24×7 automated service.`,
+  title: `About ${BRAND} | Instant Game Top-Ups & Secure Payments`,
+  description: `${BRAND} is a fast and secure game top-up platform offering instant delivery, trusted payment gateways, and competitive pricing. Available 24×7 for gamers worldwide.`,
+  keywords: [
+    "game top up",
+    "instant game recharge",
+    "mobile legends top up",
+    "pubg recharge",
+    "secure game payments",
+    "online game credits",
+    "mlbb topup india",
+    `${BRAND}`,
+  ],
+  alternates: {
+    canonical: `${SITE_URL}/about`,
+  },
+  openGraph: {
+    title: `About ${BRAND}`,
+    description:
+      "Fast, secure, and automated game top-ups with instant delivery.",
+    url: `${SITE_URL}/about`,
+    siteName: BRAND,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `About ${BRAND}`,
+    description:
+      "Instant game top-ups with secure payments and 24×7 delivery.",
+  },
 };
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
-      
-      {/* 🌟 Hero Section */}
-      <section className="relative text-center py-28 px-6 overflow-hidden border-b border-[var(--border)] bg-gradient-to-b from-[var(--card)] to-transparent">
+    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+
+      {/* Hero */}
+      <section className="relative text-center py-20 px-6 border-b border-[var(--border)]">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[var(--accent)] opacity-10 blur-[160px] animate-pulse" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[var(--accent)] opacity-10 blur-[140px]" />
         </div>
 
-        <h1 className="text-5xl md:text-6xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-purple-500">
+        <h1 className="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-[var(--accent)] to-purple-500 bg-clip-text text-transparent">
           About {BRAND}
         </h1>
 
-        <p className="text-[var(--muted)] text-lg max-w-2xl mx-auto">
-          Your trusted destination for instant game top-ups, safe payments, and
-          automated delivery — 24×7 ⚡
+        <p className="text-[var(--muted)] text-base sm:text-lg max-w-2xl mx-auto">
+          A trusted platform delivering instant game top-ups, secure payments,
+          and automated processing — built for modern gamers.
         </p>
       </section>
 
-      {/* 📘 Our Story */}
-      <section className="max-w-5xl mx-auto px-6 py-20 text-center">
-        <h2 className="text-3xl font-semibold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-purple-400">
-          ⚡ Our Story
+      {/* Story */}
+      <section className="max-w-4xl mx-auto px-6 py-16">
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-[var(--accent)] text-center">
+          Our Mission
         </h2>
 
-        <p className="text-[var(--muted)] text-lg leading-relaxed max-w-3xl mx-auto mb-8">
-          {BRAND} was built to make in-game purchases simple, fast, and reliable.
-          We noticed players needed a platform that delivers game currency instantly,
-          without complicated steps or unsafe third-party risks.
+        <p className="text-[var(--muted)] leading-relaxed text-base sm:text-lg text-center max-w-3xl mx-auto mb-8">
+          {BRAND} was created to simplify in-game purchases. We focus on
+          speed, reliability, and transparency — ensuring gamers receive their
+          credits instantly without unnecessary steps or security concerns.
         </p>
 
-        <p className="text-[var(--muted)] text-lg leading-relaxed max-w-3xl mx-auto">
-          🔹 Instant top-ups for popular games  
-          🔹 Secure & verified payment methods  
-          🔹 Automated delivery with real-time order updates  
-          🔹 Transparent pricing with no hidden fees  
-        </p>
+        <div className="grid sm:grid-cols-2 gap-6 text-[var(--muted)] text-base">
+          <ul className="space-y-3">
+            <li>✔ Instant automated top-ups</li>
+            <li>✔ 24×7 system availability</li>
+          </ul>
+          <ul className="space-y-3">
+            <li>✔ Secure payment gateways</li>
+            <li>✔ Transparent pricing structure</li>
+          </ul>
+        </div>
       </section>
 
-      {/* 💖 Values Section */}
-      <section className="py-24 px-6 max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl font-semibold mb-12 text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-purple-400">
-          💙 Why Choose {BRAND}
+      {/* Why Choose */}
+      <section className="py-20 px-6 max-w-6xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-12 text-center text-[var(--accent)]">
+          Why Choose {BRAND}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid gap-6 md:grid-cols-3">
           {[
             {
               title: "Instant Delivery",
-              desc: "Orders are processed automatically and delivered instantly after payment confirmation.",
-              icon: "⚡",
+              desc: "Orders are processed automatically and delivered immediately after confirmation.",
             },
             {
-              title: "Safe & Secure",
-              desc: "We use trusted payment gateways and verified APIs to ensure maximum security.",
-              icon: "🔐",
+              title: "Secure Payments",
+              desc: "Integrated with trusted and verified payment providers.",
             },
             {
               title: "Affordable Pricing",
-              desc: "Competitive prices, regular offers, and no hidden charges — ever.",
-              icon: "💰",
+              desc: "Competitive rates with no hidden fees.",
             },
-          ].map((val, i) => (
+          ].map((item, i) => (
             <div
               key={i}
-              className="group relative p-8 border border-[var(--border)] rounded-2xl bg-[var(--card)] hover:shadow-[0_0_25px_var(--accent)] transition-all duration-300 hover:scale-[1.03]"
+              className="p-6 rounded-xl border border-[var(--border)] bg-[var(--card)] hover:shadow-lg hover:border-[var(--accent)] transition-all"
             >
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[var(--accent)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
-              <div className="relative z-10">
-                <span className="text-4xl mb-4 block">{val.icon}</span>
-                <h3 className="text-xl font-semibold mb-3 text-[var(--accent)]">
-                  {val.title}
-                </h3>
-                <p className="text-[var(--muted)] text-base">{val.desc}</p>
-              </div>
+              <h3 className="text-lg font-semibold mb-2 text-[var(--accent)]">
+                {item.title}
+              </h3>
+              <p className="text-[var(--muted)] text-sm sm:text-base">
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 📣 Follow / Trust Section */}
-      <section className="relative py-24 text-center border-t border-[var(--border)] bg-[var(--background)] overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/2 left-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-[var(--accent)] to-purple-700 opacity-10 blur-[180px] animate-pulse -translate-x-1/2 -translate-y-1/2" />
-        </div>
-
-        <h2 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-purple-400">
+      {/* CTA */}
+      <section className="py-20 text-center border-t border-[var(--border)] px-6">
+        <h2 className="text-3xl font-bold mb-4 text-[var(--foreground)]">
           Trusted by Gamers
         </h2>
 
-        <p className="text-[var(--muted)] mb-8 max-w-2xl mx-auto text-lg">
-          Thousands of successful top-ups delivered securely.
-          Follow us for offers, updates, and new game launches.
+        <p className="text-[var(--muted)] mb-8 max-w-xl mx-auto">
+          Thousands of successful transactions processed securely.
+          Join {BRAND} and experience fast, reliable game top-ups.
         </p>
 
-        <a
-          href="https://instagram.com/zynx.v1"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 bg-gradient-to-r from-[var(--accent)] to-purple-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:scale-110 hover:shadow-[0_0_20px_var(--accent)] transition-all duration-300"
+        <Link
+          href="/games"
+          className="inline-block bg-gradient-to-r from-[var(--accent)] to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:scale-105 transition"
         >
-          <span>@zynx.v1</span>
-        </a>
+          Explore Games
+        </Link>
       </section>
     </main>
   );

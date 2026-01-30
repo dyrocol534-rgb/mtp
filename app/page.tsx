@@ -21,7 +21,7 @@ export const metadata = {
 export default function Page() {
   return (
     <main>
-            <WhatsAppQRPopup />
+            {/* <WhatsAppQRPopup /> */}
 
       <HomeSection />
     </main>

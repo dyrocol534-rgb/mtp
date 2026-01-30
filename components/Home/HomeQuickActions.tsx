@@ -28,7 +28,7 @@ const bottomRow = [
     comingSoon: true,
   },
   {
-    title: "Silver Membership",
+    title: "Membership",
     icon: Trophy,
     href: "/games/membership/silver-membership",
   },

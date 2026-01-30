@@ -4,13 +4,13 @@ import Image from "next/image";
 
 /* ================= SEO METADATA ================= */
 export const metadata: Metadata = {
-  title: "Is MLBB Top-Up Legal in India? (Complete Explanation)",
+  title: "Is MLBB Top-Up Legal in India? (Complete 2025 Guide)",
   description:
-    "Is MLBB top-up legal in India? Learn the legality of Mobile Legends diamond recharge, rules, safety tips, and trusted top-up methods.",
+    "Is MLBB top-up legal in India? Learn the legality of Mobile Legends diamond recharge, safety rules, account risks, and secure top-up methods.",
   keywords: [
     "is mlbb top up legal in india",
     "mlbb top up india legal",
-    "mlbb diamond recharge legal",
+    "mlbb diamond recharge legal india",
     "mlbb weekly pass legal india",
   ],
   alternates: {
@@ -20,155 +20,194 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Is MLBB Top-Up Legal in India?",
     description:
-      "Understand whether MLBB diamond top-ups are legal in India and how to recharge safely.",
+      "Understand whether MLBB diamond recharges are legal in India and how to top up safely.",
     url: "https://mlbbtopup.in/blog/is-mlbb-top-up-legal-in-india",
     type: "article",
   },
 };
 
-/* ================= BLOG PAGE ================= */
+/* ================= PAGE ================= */
 export default function BlogPage() {
   return (
-    <article className="max-w-3xl mx-auto px-4 py-10 leading-relaxed text-[16px]">
-   <div className="mb-6">
-        <Image
-          src="https://res.cloudinary.com/dk0sslz1q/image/upload/v1765619191/ideogram-v3.0_A_high-quality_horizontal_rectangular_website_banner_for_a_gaming_top-up_website-0_2_rgpuck.png"
-          alt="MLBB weekly pass price in India"
-          width={800}
-          height={450}
-          className="rounded-xl border"
-          priority
-        />
-      </div>
-      {/* TITLE */}
-      <h1 className="text-3xl font-bold mb-4">
-        Is MLBB Top-Up Legal in India?
-      </h1>
+    <>
+      {/* ================= STRUCTURED DATA ================= */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "Article",
+              headline: "Is MLBB Top-Up Legal in India?",
+              description:
+                "Complete explanation of MLBB top-up legality in India.",
+              datePublished: "2025-01-05",
+              author: {
+                "@type": "Organization",
+                name: "MLBBTopup India",
+              },
+              mainEntityOfPage:
+                "https://mlbbtopup.in/blog/is-mlbb-top-up-legal-in-india",
+            },
+            {
+              "@type": "FAQPage",
+              "@context": "https://schema.org",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "Is MLBB weekly pass legal in India?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text:
+                      "Yes, the MLBB weekly pass is legal when purchased through trusted platforms.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can I use UPI for MLBB top-ups?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text:
+                      "Yes, most trusted Indian MLBB top-up platforms support UPI and other local payment methods.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can MLBB accounts get banned for top-ups?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text:
+                      "Accounts are safe when recharges are done through legitimate platforms. Bans usually occur only due to fraud or exploit abuse.",
+                  },
+                },
+              ],
+            },
+          ]),
+        }}
+      />
 
-      {/* INTRO */}
-      <p className="mb-6 text-gray-700">
-        Many Mobile Legends: Bang Bang (MLBB) players in India often wonder
-        whether buying diamonds or weekly passes online is legal. With the rise
-        of third-party top-up websites and resellers, this concern is completely
-        valid. In this article, we explain clearly whether MLBB top-up is legal
-        in India, what rules apply, and how you can recharge safely without
-        risking your account.
-      </p>
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 py-10 leading-relaxed">
 
-      {/* SECTION */}
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        Is MLBB Officially Available in India?
-      </h2>
-      <p className="mb-4">
-        Yes, Mobile Legends: Bang Bang is officially available in India. The
-        game is published by Moonton and can be downloaded from official app
-        stores. Since the game itself is legal, purchasing in-game items like
-        diamonds and passes is also permitted.
-      </p>
+        {/* FEATURED IMAGE */}
+        <div className="mb-8">
+          <Image
+            src="https://res.cloudinary.com/dk0sslz1q/image/upload/v1765619191/ideogram-v3.0_A_high-quality_horizontal_rectangular_website_banner_for_a_gaming_top-up_website-0_2_rgpuck.png"
+            alt="Is MLBB Top-Up Legal in India"
+            width={1200}
+            height={675}
+            className="rounded-2xl border shadow-sm"
+            priority
+          />
+        </div>
 
-      {/* SECTION */}
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        Is MLBB Top-Up Legal in India?
-      </h2>
-      <p className="mb-4">
-        <strong>Yes, MLBB top-up is legal in India</strong> as long as it is done
-        through legitimate and trusted platforms. Buying diamonds or weekly
-        passes does not violate Indian law when payments are made legally and
-        no fraudulent methods are involved.
-      </p>
-      <p className="mb-4">
-        Millions of Indian players purchase MLBB diamonds regularly using UPI,
-        cards, and wallets without any legal issues.
-      </p>
+        {/* TITLE */}
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4">
+          Is MLBB Top-Up Legal in India?
+        </h1>
 
-      {/* SECTION */}
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        Are Third-Party MLBB Top-Up Websites Safe?
-      </h2>
-      <p className="mb-4">
-        Third-party MLBB top-up websites are legal if they follow proper payment
-        practices and do not ask for sensitive account information. Trusted
-        platforms only require your <strong>Player ID</strong> and
-        <strong> Server ID</strong> and never request passwords or OTPs.
-      </p>
-      <p className="mb-4">
-        Problems usually occur only when users purchase from unknown sellers,
-        social media scammers, or unauthorized sources offering unrealistically
-        low prices.
-      </p>
+        <p className="text-sm text-gray-500 mb-6">
+          Updated January 2025 · 3 min read
+        </p>
 
-      {/* SECTION */}
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        Can My MLBB Account Get Banned for Top-Ups?
-      </h2>
-      <p className="mb-4">
-        Your MLBB account will <strong>not</strong> get banned if you top up
-        through trusted and compliant platforms. Account bans typically happen
-        only when diamonds are obtained through illegal methods such as refunds,
-        hacks, or exploit abuse.
-      </p>
+        {/* INTRO */}
+        <p className="mb-6 text-gray-700 dark:text-gray-300">
+          Many Mobile Legends: Bang Bang players in India wonder whether buying
+          diamonds or weekly passes online is legal. With the rise of third-party
+          recharge websites, this is a valid concern.
+        </p>
 
-      {/* SECTION */}
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        How to Buy MLBB Diamonds Legally and Safely
-      </h2>
-      <ul className="list-disc pl-6 mb-6">
-        <li>Use well-known MLBB top-up platforms</li>
-        <li>Never share login credentials or OTPs</li>
-        <li>Check reviews before purchasing</li>
-        <li>Avoid deals that look too cheap to be real</li>
-      </ul>
+        {/* SECTION */}
+        <h2 className="text-2xl font-semibold mt-10 mb-4">
+          Is MLBB Officially Available in India?
+        </h2>
+        <p className="mb-6">
+          Yes. Mobile Legends: Bang Bang is officially available on Indian app
+          stores. Since the game itself is legal, purchasing in-game items such
+          as diamonds and passes is also permitted.
+        </p>
 
-      <p className="mb-6">
-        👉 You can recharge diamonds safely from our{" "}
-        <Link
-          href="/"
-          className="text-blue-600 font-medium underline"
-        >
-          MLBB Top-Up Store
-        </Link>{" "}
-        with instant delivery and secure payments.
-      </p>
+        {/* SECTION */}
+        <h2 className="text-2xl font-semibold mt-10 mb-4">
+          Is MLBB Top-Up Legal in India?
+        </h2>
+        <p className="mb-6">
+          <strong>Yes, MLBB top-up is legal in India</strong> when done through
+          legitimate platforms using valid payment methods such as UPI, debit
+          cards, and wallets. There is no law prohibiting diamond purchases.
+        </p>
 
-      {/* FAQ */}
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        Frequently Asked Questions
-      </h2>
+        {/* SECTION */}
+        <h2 className="text-2xl font-semibold mt-10 mb-4">
+          Are Third-Party MLBB Top-Up Websites Legal?
+        </h2>
+        <p className="mb-6">
+          Third-party websites are legal if they follow proper payment
+          regulations and do not use fraudulent methods. Trusted platforms only
+          require your <strong>Player ID</strong> and{" "}
+          <strong>Server ID</strong> — never your password or OTP.
+        </p>
 
-      <p className="mb-2 font-medium">
-        Is MLBB weekly pass legal in India?
-      </p>
-      <p className="mb-4">
-        Yes, the MLBB weekly pass is completely legal and widely purchased by
-        Indian players.
-      </p>
+        {/* SECTION */}
+        <h2 className="text-2xl font-semibold mt-10 mb-4">
+          Can MLBB Accounts Get Banned for Top-Ups?
+        </h2>
+        <p className="mb-6">
+          Accounts are safe when recharges are done through compliant
+          platforms. Bans typically happen only when diamonds are obtained via
+          chargebacks, refund abuse, hacks, or exploit systems.
+        </p>
 
-      <p className="mb-2 font-medium">
-        Can I use UPI for MLBB top-ups?
-      </p>
-      <p className="mb-4">
-        Yes, most Indian MLBB top-up platforms support UPI and other local
-        payment methods.
-      </p>
+        {/* SAFE BUYING GUIDE */}
+        <h2 className="text-2xl font-semibold mt-10 mb-4">
+          How to Recharge MLBB Diamonds Safely
+        </h2>
 
-      <p className="mb-2 font-medium">
-        Is buying MLBB diamonds from Instagram sellers safe?
-      </p>
-      <p className="mb-6">
-        It is risky. Many scams originate from unofficial social media sellers.
-        Always use established platforms.
-      </p>
+        <ul className="list-disc pl-6 space-y-2 mb-6">
+          <li>Use established MLBB recharge platforms</li>
+          <li>Never share login credentials</li>
+          <li>Verify reviews before purchase</li>
+          <li>Avoid unrealistic discount offers</li>
+        </ul>
 
-      {/* CONCLUSION */}
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        Conclusion
-      </h2>
-      <p>
-        MLBB top-up is legal in India when done through legitimate and trusted
-        platforms. As long as you avoid suspicious sellers and protect your
-        account details, buying MLBB diamonds or weekly passes is completely
-        safe and lawful.
-      </p>
-    </article>
+        <p className="mb-6">
+          You can recharge securely from our{" "}
+          <Link
+            href="/games/mobile-legends988"
+            className="text-blue-600 font-medium underline"
+          >
+            MLBB Top-Up Store
+          </Link>{" "}
+          with instant delivery and secure Indian payments.
+        </p>
+
+        {/* FAQ SECTION */}
+        <h2 className="text-2xl font-semibold mt-10 mb-4">
+          Frequently Asked Questions
+        </h2>
+
+        <div className="space-y-4">
+          <div>
+            <p className="font-medium">
+              Is MLBB weekly pass legal in India?
+            </p>
+            <p className="text-gray-600 dark:text-gray-400">
+              Yes, when purchased through trusted platforms.
+            </p>
+          </div>
+
+          <div>
+            <p className="font-medium">
+              Can I use UPI for MLBB top-ups?
+            </p>
+            <p className="text-gray-600 dark:text-gray-400">
+              Yes, most Indian recharge websites support UPI.
+            </p>
+          </div>
+        </div>
+
+        {/* CTA */}
+       
+      </article>
+    </>
   );
 }

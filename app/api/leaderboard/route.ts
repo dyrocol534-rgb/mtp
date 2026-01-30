@@ -3,18 +3,23 @@ import Order from "@/models/Order";
 import jwt from "jsonwebtoken";
 
 /* ================= AUTH (ANY USER) ================= */
-function verifyUser(req) {
+function verifyUser(req: Request) {
   const auth = req.headers.get("authorization");
+
   if (!auth?.startsWith("Bearer ")) {
     throw { status: 401, message: "Unauthorized" };
   }
 
   const token = auth.split(" ")[1];
-  return jwt.verify(token, process.env.JWT_SECRET);
+  return jwt.verify(token, process.env.JWT_SECRET!);
 }
 
 /* ================= DATE HELPERS ================= */
-function getDateFilter(range) {
+function getDateFilter(
+  range: string,
+  start?: string | null,
+  end?: string | null
+) {
   const now = new Date();
 
   if (range === "weekly") {
@@ -28,30 +33,65 @@ function getDateFilter(range) {
     return { $gte: monthStart };
   }
 
+  if (range === "custom") {
+    const filter: any = {};
+
+    if (start) {
+      const startDate = new Date(start);
+      if (isNaN(startDate.getTime())) {
+        throw { status: 400, message: "Invalid start date" };
+      }
+      filter.$gte = startDate;
+    }
+
+    if (end) {
+      const endDate = new Date(end);
+      if (isNaN(endDate.getTime())) {
+        throw { status: 400, message: "Invalid end date" };
+      }
+
+      // Include full end day
+      endDate.setHours(23, 59, 59, 999);
+      filter.$lte = endDate;
+    }
+
+    if (!start && !end) {
+      throw {
+        status: 400,
+        message: "Start or end date required for custom range",
+      };
+    }
+
+    return filter;
+  }
+
   return null; // all-time
 }
 
 /* ================= LEADERBOARD ================= */
-export async function GET(req) {
+export async function GET(req: Request) {
   try {
     await connectDB();
     verifyUser(req);
 
     const { searchParams } = new URL(req.url);
 
-    const page = parseInt(searchParams.get("page")) || 1;
-    const limit = parseInt(searchParams.get("limit")) || 10;
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
     const range = searchParams.get("range") || "all";
+    const start = searchParams.get("start");
+    const end = searchParams.get("end");
 
     const skip = (page - 1) * limit;
 
     /* ---------- MATCH CONDITIONS ---------- */
-    const match = {
+    const match: any = {
       paymentStatus: "success",
       topupStatus: "success",
     };
 
-    const dateFilter = getDateFilter(range);
+    const dateFilter = getDateFilter(range, start, end);
+
     if (dateFilter) {
       match.createdAt = dateFilter;
     }
@@ -127,6 +167,7 @@ export async function GET(req) {
     return Response.json({
       success: true,
       range,
+      filters: { start, end },
       data,
       pagination: {
         total,
@@ -135,9 +176,13 @@ export async function GET(req) {
         totalPages: Math.ceil(total / limit),
       },
     });
-  } catch (err) {
+
+  } catch (err: any) {
     return Response.json(
-      { success: false, message: err.message || "Server error" },
+      {
+        success: false,
+        message: err.message || "Server error",
+      },
       { status: err.status || 500 }
     );
   }

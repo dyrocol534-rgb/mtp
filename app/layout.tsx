@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Script from "next/script";
+
 import "./globals.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
@@ -8,6 +10,8 @@ import ChristmasPopup from "@/components/Seasonal/ChristmasPopup";
 import { Poppins } from "next/font/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ChatBot from "@/components/SocialFloat/Chatbot";
+import ValentinePopup from "@/components/Seasonal/ValentinePopup";
+import ValentineEffect from "@/components/Seasonal/ValentineEffect";
 
 
 export const metadata: Metadata = {
@@ -54,27 +58,67 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={poppins.variable}>
-      <body className="bg-black text-white">
-                <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
 
-          {/* <div className="snow" />
+      <body className="bg-black text-white">
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+          <Header />
+
+               {/* <div className="snow" />
   <span className="big-snow"></span>
   <span className="big-snow"></span>
   <span className="big-snow"></span>  */}
+  {/* <div className="hearts" />
 
-        <Header />
-                {/* <ChristmasPopup />  */}
+      <span className="fall-item medium" style={{ left: "10%", animationDuration: "22s" }}>💗</span>
+      <span className="fall-item big" style={{ left: "35%", animationDuration: "28s" }}>💖</span>
+      <span className="fall-item small" style={{ left: "65%", animationDuration: "24s" }}>💞</span>
 
-        <main className="pt-20">{children}</main>
-        <Footer/>
-              <SocialFloat />
-              <ChatBot />
-              {/* <div/> */}
+      <span className="fall-item medium" style={{ left: "20%", animationDuration: "26s" }}>🌹</span>
+      <span className="fall-item small" style={{ left: "75%", animationDuration: "30s" }}>🌸</span>
+
+      <span className="fall-item big" style={{ left: "50%", animationDuration: "32s" }}>🧸</span>
+
+      <span className="fall-item medium" style={{ left: "85%", animationDuration: "27s" }}>💍</span>
+
+      <span className="fall-item small" style={{ left: "45%", animationDuration: "25s" }}>✨</span> */}
+
+          {/* <ChristmasPopup />  */}
+          <ValentineEffect />
+
+          <ValentinePopup />
+
+          <main className="pt-20">{children}</main>
+          <Footer />
+          <SocialFloat />
+          <ChatBot />
+          <div/>
         </GoogleOAuthProvider>
 
+
+{/* OneSignal SDK */}
+<Script
+  src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+  defer
+/>
+
+<Script id="onesignal-init" strategy="afterInteractive">
+  {`
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+      appId: "b7844eac-b557-40e4-ad01-11546347a279",
+              safari_web_id: "web.onesignal.auto.5ccade99-0f35-4775-9ae0-5e2c3bfd110b",
+        notifyButton: {
+          enable: true,
+        },
+      });
+    });
+  `}
+</Script>
+
       </body>
-       <GoogleAnalytics gaId="G-CKCKWLGJ9N" />
-       {/* <script src="https://quge5.com/88/tag.min.js" data-zone="191906" async data-cfasync="false"></script> */}
+      <GoogleAnalytics gaId="G-CKCKWLGJ9N" />
+      {/* <script src="https://quge5.com/88/tag.min.js" data-zone="191906" async data-cfasync="false"></script> */}
     </html>
   );
 }
