@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 
 import Loader from "@/components/Loader/Loader";
 import MLBBPurchaseGuide from "@/components/HelpImage/MLBBPurchaseGuide";
@@ -108,14 +109,23 @@ export default function GameDetailPage() {
 
   if (error || !game || !activeItem) {
     return (
-      <section className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4">
-        <div className="max-w-md w-full text-center">
+      <section className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-20">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-md w-full text-center"
+        >
           {/* Icon */}
-          <div className="mb-6 flex justify-center">
+          <div className="mb-8 flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full" />
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute inset-0 bg-[var(--accent)]/20 blur-3xl rounded-full"
+              />
               <svg
-                className="w-24 h-24 text-blue-400/60 relative"
+                className="w-28 h-28 text-[var(--accent)]/60 relative"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -131,23 +141,25 @@ export default function GameDetailPage() {
           </div>
 
           {/* Title */}
-          <h2 className="text-2xl font-bold mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            No items Found
+          <h2 className="text-3xl font-extrabold mb-4 bg-gradient-to-r from-[var(--accent)] to-purple-400 bg-clip-text text-transparent">
+            No Items Found
           </h2>
 
           {/* Message */}
-          <p className="text-gray-400 mb-8">
+          <p className="text-[var(--muted)] mb-10 text-base">
             {error || "We couldn't find any packages for this game. Please try again later or contact support."}
           </p>
 
           {/* Action Button */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => router.push("/")}
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105"
+            className="px-8 py-4 bg-gradient-to-r from-[var(--accent)] to-purple-600 hover:from-[var(--accent)] hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-[var(--accent)]/25 hover:shadow-[var(--accent)]/40"
           >
             Back to Home
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </section>
     );
   }
@@ -211,60 +223,83 @@ export default function GameDetailPage() {
 
   /* ================= RENDER ================= */
   return (
-    <section className="min-h-screen bg-[var(--background)] text-[var(--foreground)] px-4 py-6">
+    <section className="min-h-screen bg-[var(--background)] text-[var(--foreground)] px-4 py-10">
       {/* ================= HEADER ================= */}
-      <GameHeader game={game} />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <GameHeader game={game} />
+      </motion.div>
 
       {/* ================= PACKAGE SELECTOR ================= */}
-      {(isBGMI || isGenshin || isHOK) ? (
-        <PackageSelectorBgmi
-          items={visibleItems}
-          activeItem={activeItem}
-          setActiveItem={setActiveItem}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          sliderRef={sliderRef}
-          buyPanelRef={buyPanelRef}
-          calculateDiscount={calculateDiscount}
-          scrollToItem={scrollToItem}
-        />
-      ) : (
-        <PackageSelector
-          items={visibleItems}
-          activeItem={activeItem}
-          setActiveItem={setActiveItem}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          sliderRef={sliderRef}
-          buyPanelRef={buyPanelRef}
-          calculateDiscount={calculateDiscount}
-          scrollToItem={scrollToItem}
-        />
-      )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+      >
+        {(isBGMI || isGenshin || isHOK) ? (
+          <PackageSelectorBgmi
+            items={visibleItems}
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            sliderRef={sliderRef}
+            buyPanelRef={buyPanelRef}
+            calculateDiscount={calculateDiscount}
+            scrollToItem={scrollToItem}
+          />
+        ) : (
+          <PackageSelector
+            items={visibleItems}
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            sliderRef={sliderRef}
+            buyPanelRef={buyPanelRef}
+            calculateDiscount={calculateDiscount}
+            scrollToItem={scrollToItem}
+          />
+        )}
+      </motion.div>
 
       {/* ================= BUY PANEL ================= */}
-      {(isBGMI || isGenshin || isHOK) ? (
-        <BuyPanelBgmi
-          activeItem={activeItem}
-          redirecting={redirecting}
-          goBuy={goBuy}
-          calculateDiscount={calculateDiscount}
-          buyPanelRef={buyPanelRef}
-        />
-      ) : (
-        <BuyPanel
-          activeItem={activeItem}
-          redirecting={redirecting}
-          goBuy={goBuy}
-          calculateDiscount={calculateDiscount}
-          buyPanelRef={buyPanelRef}
-        />
-      )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+      >
+        {(isBGMI || isGenshin || isHOK) ? (
+          <BuyPanelBgmi
+            activeItem={activeItem}
+            redirecting={redirecting}
+            goBuy={goBuy}
+            calculateDiscount={calculateDiscount}
+            buyPanelRef={buyPanelRef}
+          />
+        ) : (
+          <BuyPanel
+            activeItem={activeItem}
+            redirecting={redirecting}
+            goBuy={goBuy}
+            calculateDiscount={calculateDiscount}
+            buyPanelRef={buyPanelRef}
+          />
+        )}
+      </motion.div>
 
       {/* ================= PURCHASE GUIDE ================= */}
-      <div className="max-w-6xl mx-auto mt-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.3 }}
+        className="max-w-6xl mx-auto mt-6"
+      >
         {!isBGMI && <MLBBPurchaseGuide />}
-      </div>
+      </motion.div>
     </section>
   );
 }
