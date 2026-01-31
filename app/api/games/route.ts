@@ -7,26 +7,28 @@ const MLBB_MAIN_IMAGE =
 const MLBB_SMALL_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769515220/WhatsApp_Image_2026-01-27_at_17.25.55_torxmi.jpg";
 
-  const MLBB_DOUBLE_IMAGE =
+const MLBB_DOUBLE_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769515824/WhatsApp_Image_2026-01-27_at_17.39.55_w4gtnf.jpg";
 
-    const MLBB_MY_IMAGE =
+const MLBB_MY_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769516571/WhatsApp_Image_2026-01-27_at_17.52.30_ophoce.jpg";
 
-      const MLBB_RUSSIA_IMAGE =
+const MLBB_RUSSIA_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769517478/WhatsApp_Image_2026-01-27_at_18.06.40_jbdmp0.jpg";
-  const MLBB_INDO_IMAGE =
+const MLBB_INDO_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769517648/WhatsApp_Image_2026-01-27_at_18.10.21_njkud1.jpg";
 
-    const MAGIC_IMAGE =
+const MAGIC_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769520322/WhatsApp_Image_2026-01-27_at_18.53.25_daldvs.jpg";
 
-      const HOK_IMAGE =
+const HOK_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769530599/WhatsApp_Image_2026-01-27_at_19.26.11_vczosl.jpg";
 
 
-      const GENSIN_IMAGE =
+const GENSIN_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769530599/WhatsApp_Image_2026-01-27_at_19.17.57_cjsh5f.jpg";
+const WEEKLY_MONTHLY_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769872025/WhatsApp_Image_2026-01-31_at_20.33.31_nzn2ll.jpg";
 
 
 /* ================= OTT SECTION ================= */
@@ -121,65 +123,72 @@ export async function GET() {
           image: MLBB_SMALL_IMAGE,
         };
       }
-        if (updatedGame.gameName === "MLBB Double") {
+      if (updatedGame.gameName === "MLBB Double") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_DOUBLE_IMAGE,
         };
       }
-        if (updatedGame.gameName === "SG/MY Mlbb") {
+      if (updatedGame.gameName === "SG/MY Mlbb") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_MY_IMAGE,
         };
       }
-          if (updatedGame.gameName === "MLBB RUSSIA") {
+      if (updatedGame.gameName === "MLBB RUSSIA") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
-          image: MLBB_RUSSIA_IMAGE  ,
+          image: MLBB_RUSSIA_IMAGE,
         };
       }
-         if (updatedGame.gameName === "MLBB INDO") {
+      if (updatedGame.gameName === "MLBB INDO") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_INDO_IMAGE,
         };
       }
-      
-       if (updatedGame.gameSlug === "magic-chess-gogo-india924") {
+
+      if (updatedGame.gameSlug === "magic-chess-gogo-india924") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MAGIC_IMAGE,
         };
       }
-        if (updatedGame.gameSlug === "genshin-impact742") {
+      if (updatedGame.gameSlug === "genshin-impact742") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: GENSIN_IMAGE,
         };
       }
-        if (updatedGame.gameSlug === "honor-of-kings57") {
+      if (updatedGame.gameSlug === "honor-of-kings57") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: HOK_IMAGE,
         };
       }
+      if (updatedGame.gameSlug === "weeklymonthly-bundle931") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: WEEKLY_MONTHLY_IMAGE,
+        };
+      }
+
 
       return updatedGame;
     };
 
     /* ================= FILTER GAMES ================= */
-const excludedGameSlugs = [
-  "test-1637",
-  "mobile-legends-backup826",
-];
+    const excludedGameSlugs = [
+      "test-1637",
+      "mobile-legends-backup826",
+    ];
 
-const filteredGames =
-  data?.data?.games
-    ?.filter(
-      (game: any) => !excludedGameSlugs.includes(game.gameSlug)
-    )
-    ?.map(normalizeGame) || [];
+    const filteredGames =
+      data?.data?.games
+        ?.filter(
+          (game: any) => !excludedGameSlugs.includes(game.gameSlug)
+        )
+        ?.map(normalizeGame) || [];
 
     /* ================= FILTER CATEGORY GAMES ================= */
     const filteredCategories =
@@ -204,8 +213,8 @@ const filteredGames =
     const mlbbVariants = filteredGames.filter(
       (g: any) =>
         g.gameSlug.includes("mlbb") ||
-        g.gameName.toLowerCase().includes("mlbb")||
-                g.gameSlug.toLowerCase().includes("legends988")
+        g.gameName.toLowerCase().includes("mlbb") ||
+        g.gameSlug.toLowerCase().includes("legends988")
 
 
     );
@@ -255,11 +264,11 @@ const filteredGames =
           total: OTTS.filter((o) => o.available).length,
         },
         // 🔥 MEMBERSHIP SECTION
-memberships: {
-  title: "Memberships & Passes",
-  items: MEMBERSHIPS.filter((m) => m.available),
-  total: MEMBERSHIPS.filter((m) => m.available).length,
-},
+        memberships: {
+          title: "Memberships & Passes",
+          items: MEMBERSHIPS.filter((m) => m.available),
+          total: MEMBERSHIPS.filter((m) => m.available).length,
+        },
 
       },
     });
