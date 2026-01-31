@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import {
   FaComments,
@@ -50,7 +51,7 @@ export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
-      text: "Hi 👋 I’m your assistant. How can I help you today?",
+      text: "Hi 👋 I'm your assistant. How can I help you today?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -156,7 +157,7 @@ export default function ChatBot() {
     if (msg.includes("support") || msg.includes("issue")) {
       ctx.topic = "support";
       ctx.unknownCount = 0;
-      return "I’m sorry about that 😕 Is it a payment issue or delivery issue?";
+      return "I'm sorry about that 😕 Is it a payment issue or delivery issue?";
     }
 
     ctx.unknownCount++;
@@ -209,101 +210,251 @@ export default function ChatBot() {
   /* ================= UI ================= */
 
   return (
-    <div
+    <motion.div
       ref={chatRef}
-      className={`
-        fixed bottom-6 left-6 z-50
-        transition-all duration-300
-        ${
-          isVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-6 pointer-events-none"
-        }
-      `}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{
+        opacity: isVisible ? 1 : 0,
+        scale: isVisible ? 1 : 0.8,
+        y: isVisible ? 0 : 20,
+      }}
+      transition={{ duration: 0.3 }}
+      className="fixed bottom-6 left-6 z-50"
+      style={{ pointerEvents: isVisible ? "auto" : "none" }}
     >
-      {isOpen && (
-        <div className="mb-4 w-80 sm:w-96 h-[500px] bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-4 flex items-center justify-between">
-            <div className="flex gap-3 items-center">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                <FaRobot className="text-white" />
-              </div>
-              <div>
-                <h3 className="text-white font-semibold">AI Assistant</h3>
-                <p className="text-xs text-white/80">Online</p>
-              </div>
-            </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="mb-4 w-80 sm:w-96 h-[500px] bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+          >
+            {/* Header */}
+            <div className="relative bg-gradient-to-r from-indigo-500 to-purple-500 p-4 flex items-center justify-between overflow-hidden">
+              {/* Animated background */}
+              <motion.div
+                animate={{
+                  x: ["-100%", "100%"],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+              />
 
-            {/* ❌ Close Button */}
-            <button
-              onClick={() => setIsOpen(false)}
-              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
-              aria-label="Close chat"
-            >
-              <FaXmark />
-            </button>
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={`flex gap-2 ${
-                  m.sender === "user" ? "flex-row-reverse" : ""
-                }`}
-              >
-                {m.sender === "bot" && (
-                  <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center">
-                    <FaRobot />
-                  </div>
-                )}
-                <div
-                  className={`px-4 py-2 rounded-2xl max-w-[75%] text-sm whitespace-pre-line ${
-                    m.sender === "user"
-                      ? "bg-indigo-500 text-white rounded-tr-sm"
-                      : "bg-gray-100 dark:bg-zinc-800 text-gray-800 dark:text-gray-100 rounded-tl-sm"
-                  }`}
+              <div className="flex gap-3 items-center relative z-10">
+                <motion.div
+                  animate={{
+                    rotate: [0, 10, -10, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
                 >
-                  {m.text}
+                  <FaRobot className="text-white" />
+                </motion.div>
+                <div>
+                  <h3 className="text-white font-semibold">AI Assistant</h3>
+                  <div className="flex items-center gap-1.5">
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [1, 0.7, 1],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                      }}
+                      className="w-2 h-2 rounded-full bg-green-400"
+                    />
+                    <p className="text-xs text-white/80">Online</p>
+                  </div>
                 </div>
               </div>
-            ))}
-            {isTyping && (
-              <div className="text-xs opacity-60">typing…</div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
 
-          {/* Input */}
-          <form
-            onSubmit={handleSendMessage}
-            className="p-3 border-t border-gray-200 dark:border-zinc-700 flex gap-2"
-          >
-            <input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type a message…"
-              className="flex-1 px-4 py-2 rounded-full bg-gray-100 dark:bg-zinc-800 outline-none text-sm"
-            />
-            <button
-              disabled={!message.trim()}
-              className="w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center disabled:opacity-50"
+              {/* Close Button */}
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsOpen(false)}
+                className="relative z-10 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+                aria-label="Close chat"
+              >
+                <FaXmark />
+              </motion.button>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+              <AnimatePresence initial={false}>
+                {messages.map((m, index) => (
+                  <motion.div
+                    key={m.id}
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2, delay: index * 0.05 }}
+                    className={`flex gap-2 ${m.sender === "user" ? "flex-row-reverse" : ""
+                      }`}
+                  >
+                    {m.sender === "bot" && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-lg"
+                      >
+                        <FaRobot className="text-sm" />
+                      </motion.div>
+                    )}
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className={`px-4 py-2 rounded-2xl max-w-[75%] text-sm whitespace-pre-line shadow-md ${m.sender === "user"
+                        ? "bg-gradient-to-br from-indigo-500 to-purple-500 text-white rounded-tr-sm"
+                        : "bg-gray-100 dark:bg-zinc-800 text-gray-800 dark:text-gray-100 rounded-tl-sm"
+                        }`}
+                    >
+                      {m.text}
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {/* Typing Indicator */}
+              <AnimatePresence>
+                {isTyping && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex gap-2 items-center"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-lg">
+                      <FaRobot className="text-sm" />
+                    </div>
+                    <div className="px-4 py-3 rounded-2xl rounded-tl-sm bg-gray-100 dark:bg-zinc-800 flex gap-1">
+                      {[0, 1, 2].map((i) => (
+                        <motion.div
+                          key={i}
+                          animate={{
+                            y: [0, -8, 0],
+                          }}
+                          transition={{
+                            duration: 0.6,
+                            repeat: Infinity,
+                            delay: i * 0.15,
+                          }}
+                          className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500"
+                        />
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <form
+              onSubmit={handleSendMessage}
+              className="p-3 border-t border-gray-200 dark:border-zinc-700 flex gap-2"
             >
-              <FaPaperPlane />
-            </button>
-          </form>
-        </div>
-      )}
+              <input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type a message…"
+                className="flex-1 px-4 py-2 rounded-full bg-gray-100 dark:bg-zinc-800 outline-none text-sm focus:ring-2 focus:ring-indigo-500 transition"
+              />
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                disabled={!message.trim()}
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              >
+                <FaPaperPlane className="text-sm" />
+              </motion.button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Toggle */}
-      <button
+      {/* Toggle Button */}
+      <motion.button
         onClick={() => setIsOpen((v) => !v)}
-        className="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-xl flex items-center justify-center"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        className="group relative"
+        aria-label="Toggle chat"
       >
-        <FaComments />
-      </button>
-    </div>
+        {/* Pulsing glow */}
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.5, 0.8, 0.5],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 blur-xl"
+        />
+
+        {/* Button */}
+        <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-2xl flex items-center justify-center overflow-hidden">
+          {/* Shimmer */}
+          <motion.div
+            animate={{
+              x: ["-100%", "100%"],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+          />
+
+          {/* Icon */}
+          <motion.div
+            animate={{
+              rotate: isOpen ? 180 : 0,
+            }}
+            transition={{ duration: 0.3 }}
+            className="relative z-10"
+          >
+            {isOpen ? <FaXmark className="text-xl" /> : <FaComments className="text-xl" />}
+          </motion.div>
+
+          {/* Notification dot */}
+          {!isOpen && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"
+            >
+              <motion.div
+                animate={{
+                  scale: [1, 1.5, 1],
+                  opacity: [1, 0, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+                className="absolute inset-0 bg-red-500 rounded-full"
+              />
+            </motion.div>
+          )}
+        </div>
+      </motion.button>
+    </motion.div>
   );
 }

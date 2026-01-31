@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 const themes = [
   // 🌞 Core
   { id: "light", icon: "☀️", label: "Light" },
@@ -13,7 +14,7 @@ const themes = [
   { id: "tropical", icon: "🌺", label: "Tropical" },
   { id: "ice", icon: "❄️", label: "Ice" },
 
-    // 🧔 Manly / Strong
+  // 🧔 Manly / Strong
   { id: "steel", icon: "🔩", label: "Steel Gray" },
   { id: "gunmetal", icon: "🛠️", label: "Gunmetal" },
   { id: "midnightblack", icon: "🖤", label: "Midnight Black" },
@@ -22,7 +23,7 @@ const themes = [
   { id: "warzone", icon: "⚔️", label: "War Zone" },
   { id: "carbon", icon: "🏴", label: "Carbon Fiber" },
 
-    // 💖 Girly / Cute
+  // 💖 Girly / Cute
   { id: "rose", icon: "🌹", label: "Rose Blush" },
   { id: "lavender", icon: "💜", label: "Lavender Dream" },
   { id: "peach", icon: "🍑", label: "Peach Glow" },
@@ -55,7 +56,6 @@ const themes = [
   { id: "coffee", icon: "☕", label: "Coffee" },
   { id: "obsidian", icon: "🖤", label: "Obsidian" },
 ];
-
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<string>("dark");
@@ -95,67 +95,37 @@ export default function ThemeToggle() {
 
   return (
     <div className="relative inline-block text-left theme-toggle-container">
-      {/* 🎨 Current Theme Button */}
+      {/* Current Theme Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-3 py-1 border border-[var(--border)] rounded-full bg-[var(--card)] hover:bg-[var(--accent)] hover:text-white text-xs font-medium transition-all shadow-md hover:shadow-lg"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--accent)]/10 hover:bg-[var(--accent)]/20 text-xs font-medium transition-colors"
         aria-label="Select Theme"
       >
-        <span className="text-base inline-block animate-sway">
-          {currentTheme?.icon || "🎨"}
-        </span>
-        <span>{currentTheme?.label || "Theme"}</span>
+        <span className="text-base">{currentTheme?.icon || "🎨"}</span>
+        <span className="hidden sm:inline">{currentTheme?.label || "Theme"}</span>
       </button>
 
-      {/* 🪄 Dropdown Menu */}
+      {/* Dropdown Menu */}
       {open && (
-        <div className="absolute right-0 mt-2 w-40 bg-[var(--card)] border border-[var(--border)] rounded-xl shadow-2xl overflow-hidden z-50 backdrop-blur-md max-h-56 overflow-y-auto">
-          <div className="py-1">
+        <div className="absolute right-0 mt-2 w-48 bg-[var(--card)] backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden z-50 max-h-64 overflow-y-auto border border-[var(--border)]">
+          <div className="p-1">
             {themes.map((t) => (
               <button
                 key={t.id}
                 onClick={() => changeTheme(t.id)}
-                className={`flex items-center gap-2 w-full text-left px-3 py-1.5 text-xs transition-all ${
-                  theme === t.id
-                    ? "bg-[var(--accent)] text-white font-semibold"
-                    : "hover:bg-[var(--accent)] hover:text-white text-[var(--foreground)]"
-                }`}
+                className={`flex items-center gap-2 w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${theme === t.id
+                  ? "bg-[var(--accent)] text-white font-semibold"
+                  : "hover:bg-[var(--accent)]/10 text-[var(--foreground)]"
+                  }`}
               >
-                <span className="text-base emoji-icon">{t.icon}</span>
-                <span>{t.label}</span>
+                <span className="text-base">{t.icon}</span>
+                <span className="flex-1">{t.label}</span>
+                {theme === t.id && <span className="text-xs">✓</span>}
               </button>
             ))}
           </div>
         </div>
       )}
-
-      {/* 💫 Animations */}
-      <style jsx>{`
-        /* Gentle 45° sway animation */
-        @keyframes sway {
-          0%, 100% {
-            transform: rotate(0deg);
-          }
-          25% {
-            transform: rotate(15deg);
-          }
-          75% {
-            transform: rotate(-15deg);
-          }
-        }
-
-        .animate-sway {
-          animation: sway 4s ease-in-out infinite;
-        }
-
-        .emoji-icon {
-          transition: transform 0.4s ease;
-        }
-
-        .emoji-icon:hover {
-          transform: rotate(360deg);
-        }
-      `}</style>
     </div>
   );
 }

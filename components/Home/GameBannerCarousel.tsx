@@ -29,7 +29,7 @@ export default function GameBannerCarousel() {
     intervalRef.current = setInterval(() => {
       setDirection("next");
       setCurrent((prev) => (prev + 1) % banners.length);
-    }, 1500); // smoother timing
+    }, 3000); // smoother timing
 
     return () => clearInterval(intervalRef.current);
   }, [banners.length]);
