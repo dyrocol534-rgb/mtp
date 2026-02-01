@@ -25,6 +25,7 @@ function BuyFlowContent() {
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const [userEmail, setUserEmail] = useState("");
   const [userPhone, setUserPhone] = useState("");
@@ -71,7 +72,7 @@ function BuyFlowContent() {
         );
 
         if (!foundItem) {
-          alert("Invalid item selected");
+          setError("Invalid item selected");
           return;
         }
 
@@ -92,44 +93,60 @@ function BuyFlowContent() {
 
   /* ================= VALIDATION ================= */
   const handleValidate = async () => {
+    setError(""); // reset error
     if (!playerId || !zoneId) {
-      alert("Please enter Player ID and Zone ID");
+      setError("Please enter Player ID and Zone ID");
       return;
     }
 
     setLoading(true);
 
-    const res = await fetch("/api/check-region", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: playerId, zone: zoneId }),
-    });
+    try {
+      const res = await fetch("/api/check-region", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: playerId, zone: zoneId }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data?.success !== 200) {
-      alert("Invalid Player ID / Zone ID");
+      if (
+        data?.success === 200 &&
+        data?.data &&
+        (data?.data?.username || data?.data?.region)
+      ) {
+        saveVerifiedPlayer({
+          playerId,
+          zoneId,
+          username: data.data.username || "Unknown",
+          region: data.data.region || "Unknown",
+          savedAt: Date.now(),
+        });
+
+        setReviewData({
+          userName: data.data.username || "Unknown",
+          region: data.data.region || "Unknown",
+          playerId,
+          zoneId,
+        });
+
+        setLoading(false);
+        setStep(2);
+      } else {
+        // Even if success is 200, if we lack data, it's a fail.
+        // If the API returns "Region checked successfully" but provides no data, we should say "Player Not Found".
+        const serverMsg = data?.message || "Invalid Player ID / Zone ID";
+        const finalError = serverMsg.toLowerCase().includes("success")
+          ? "Player Not Found (Invalid ID/Zone)"
+          : serverMsg;
+
+        setError(finalError);
+        setLoading(false);
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
       setLoading(false);
-      return;
     }
-
-    saveVerifiedPlayer({
-      playerId,
-      zoneId,
-      username: data.data.username,
-      region: data.data.region,
-      savedAt: Date.now(),
-    });
-
-    setReviewData({
-      userName: data.data.username,
-      region: data.data.region,
-      playerId,
-      zoneId,
-    });
-
-    setLoading(false);
-    setStep(2);
   };
 
   /* ================= PAYMENT ================= */
@@ -288,6 +305,8 @@ function BuyFlowContent() {
                         setZoneId={setZoneId}
                         onValidate={handleValidate}
                         loading={loading}
+                        error={error}
+                        setError={setError}
                       />
                     </motion.div>
                   ) : (

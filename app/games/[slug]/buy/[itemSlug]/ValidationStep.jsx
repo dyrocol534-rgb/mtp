@@ -1,3 +1,4 @@
+import { FiUser, FiGlobe, FiInfo } from "react-icons/fi";
 import HelpImagePopup from "../../../../../components/HelpImage/HelpImagePopup";
 import RecentVerifiedPlayers from "../../../../region/RecentVerifiedPlayers";
 
@@ -7,46 +8,89 @@ export default function ValidationStep({
   zoneId,
   setZoneId,
   onValidate,
-  loading, // 👈 NEW
+  loading,
+  error,
+  setError,
 }) {
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-2xl font-bold">Player Verification</h2>
+    <div className="space-y-6">
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 rounded-xl text-sm font-bold flex items-center gap-2">
+          <FiInfo className="text-lg" />
+          {error}
+        </div>
+      )}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-[900] uppercase tracking-wide text-[var(--foreground)]">Player Verification</h2>
+          <p className="text-xs text-[var(--muted)] font-medium mt-1">Enter your details to proceed.</p>
+        </div>
         <HelpImagePopup />
       </div>
 
-      <input
-        value={playerId}
-        onChange={(e) => setPlayerId(e.target.value)}
-        placeholder="Enter Player ID"
-        className="p-3 rounded-lg bg-black/20 border border-gray-700 w-full"
-        disabled={loading}
-      />
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <label className="text-xs font-bold uppercase tracking-wider text-[var(--muted)] ml-1">Player ID</label>
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-[var(--accent)] transition-colors">
+              <FiUser className="text-xl" />
+            </div>
+            <input
+              value={playerId}
+              onChange={(e) => {
+                setPlayerId(e.target.value);
+                if (error && setError) setError("");
+              }}
+              placeholder="Enter Player ID"
+              className={`w-full pl-12 pr-4 py-4 rounded-xl bg-[var(--background)] border text-[var(--foreground)] placeholder-[var(--muted)] focus:ring-1 outline-none transition-all font-medium
+                ${error ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20" : "border-[var(--border)] focus:border-[var(--accent)] focus:ring-[var(--accent)]"}
+              `}
+              disabled={loading}
+            />
+          </div>
+        </div>
 
-      <input
-        value={zoneId}
-        onChange={(e) => setZoneId(e.target.value)}
-        placeholder="Enter Zone ID"
-        className="p-3 rounded-lg bg-black/20 border border-gray-700 w-full"
-        disabled={loading}
-      />
+        <div className="space-y-2">
+          <label className="text-xs font-bold uppercase tracking-wider text-[var(--muted)] ml-1">Zone ID</label>
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-[var(--accent)] transition-colors">
+              <FiGlobe className="text-xl" />
+            </div>
+            <input
+              value={zoneId}
+              onChange={(e) => {
+                setZoneId(e.target.value);
+                if (error && setError) setError("");
+              }}
+              placeholder="Enter Zone ID"
+              className={`w-full pl-12 pr-4 py-4 rounded-xl bg-[var(--background)] border text-[var(--foreground)] placeholder-[var(--muted)] focus:ring-1 outline-none transition-all font-medium
+                ${error ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20" : "border-[var(--border)] focus:border-[var(--accent)] focus:ring-[var(--accent)]"}
+              `}
+              disabled={loading}
+            />
+          </div>
+        </div>
+      </div>
 
       <button
         onClick={onValidate}
-        disabled={loading}
-        className={`py-3 rounded-lg w-full font-semibold transition
-          ${
-            loading
-              ? "bg-gray-600 text-gray-300 cursor-not-allowed"
-              : "bg-[var(--accent)] text-black hover:opacity-90"
+        disabled={loading || !!error}
+        className={`w-full py-4 rounded-xl font-[900] uppercase tracking-widest transition-all transform active:scale-[0.98]
+          ${loading || error
+            ? "bg-[var(--muted)]/20 text-[var(--muted)] cursor-not-allowed border border-[var(--border)]"
+            : "bg-[var(--accent)] text-black hover:shadow-[0_0_20px_var(--accent)] hover:-translate-y-1"
           }`}
       >
-        {loading ? "Validating…" : "Validate"}
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+            Validating...
+          </span>
+        ) : "Validate Player"}
       </button>
 
       <RecentVerifiedPlayers
-        limit={10}
+        limit={5}
         onSelect={(player) => {
           setPlayerId(player.playerId);
           setZoneId(player.zoneId);
