@@ -1,14 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FiShield,
+  FiZap,
+  FiActivity,
+  FiCheckCircle,
+  FiAlertCircle,
+  FiLock,
+  FiTerminal
+} from "react-icons/fi";
+import { useSearchParams } from "next/navigation";
 
 export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [userName, setUserName] = useState("");
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/";
 
   const handleGoogleLogin = async (credential: string) => {
     if (loading) return;
@@ -27,7 +40,7 @@ export default function AuthPage() {
       const data = await res.json();
 
       if (!data.success) {
-        setError(data.message || "Authentication failed");
+        setError(data.message || "Authentication Protocol Failed");
         setLoading(false);
         return;
       }
@@ -36,177 +49,179 @@ export default function AuthPage() {
       sessionStorage.setItem("userName", data.user.name);
       sessionStorage.setItem("email", data.user.email);
       sessionStorage.setItem("userId", data.user.userId);
+      sessionStorage.setItem("phone", data.user.phone || "");
 
       setUserName(data.user.name);
       setSuccess("done");
 
       setTimeout(() => {
-        window.location.replace("/");
-      }, 1200);
+        window.location.replace(redirectPath);
+      }, 1500);
     } catch {
-      setError("Google login failed. Please try again.");
+      setError("Nexus Connection Interrupted");
       setLoading(false);
     }
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 bg-[var(--background)]">
-      {/* Simple gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/5 to-transparent" />
+    <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-[#020202]">
+      {/* TACTICAL BACKGROUND ASSETS */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(var(--accent-rgb),0.08),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[var(--accent)]/5 blur-[120px] rounded-full" />
+      </div>
 
-      {/* Card */}
-      <div className="relative z-10 w-full max-w-md">
-        <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] shadow-xl px-8 py-10">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="relative z-10 w-full max-w-md"
+      >
+        <div className="rounded-[2.5rem] bg-[#0A0A0A]/80 backdrop-blur-3xl border border-white/5 shadow-2xl overflow-hidden relative group">
+          {/* Subtle top edge glow */}
+          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent" />
 
-          {/* Logo & Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex h-16 w-16 items-center justify-center rounded-xl bg-[var(--accent)]/10 mb-4">
-              <Image
-                src="/logoBB.png"
-                alt="Logo"
-                width={40}
-                height={40}
-              />
-            </div>
-
-            <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">
-              {success ? `Welcome Back!` : "Welcome Back"}
-            </h1>
-
-            <p className="text-sm text-[var(--muted)]">
-              {success ? `Hey ${userName}, setting things up...` : "Sign in to continue"}
-            </p>
-          </div>
-
-          {/* Success State */}
-          {success && (
-            <div className="mb-6 flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-green-600 dark:text-green-400">
-              <svg className="h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z"
-                  clipRule="evenodd"
+          <div className="px-8 pt-12 pb-10">
+            {/* TERMINAL HEADER */}
+            <div className="flex flex-col items-center text-center mb-10">
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: 5 }}
+                className="inline-flex h-20 w-20 items-center justify-center rounded-[2.5rem] bg-[var(--accent)]/10 border border-[var(--accent)]/20 shadow-[0_0_30px_rgba(var(--accent-rgb),0.1)] mb-6 relative group"
+              >
+                <Image
+                  src="/logoBB.png"
+                  alt="Logo"
+                  width={48}
+                  height={48}
+                  className="z-10 group-hover:scale-110 transition-transform duration-500"
                 />
-              </svg>
-              <div className="text-sm">
-                <p className="font-semibold">Signed in successfully</p>
-                <p className="opacity-80">Redirecting...</p>
-              </div>
-            </div>
-          )}
+                <div className="absolute inset-0 bg-[var(--accent)]/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </motion.div>
 
-          {/* Error State */}
-          {error && (
-            <div className="mb-6 flex items-center gap-3 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-600 dark:text-red-400">
-              <svg className="h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.7 7.3a1 1 0 00-1.4 1.4L8.6 10l-1.3 1.3a1 1 0 101.4 1.4L10 11.4l1.3 1.3a1 1 0 001.4-1.4L11.4 10l1.3-1.3a1 1 0 00-1.4-1.4L10 8.6 8.7 7.3z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <div className="text-sm">
-                <p className="font-semibold">Authentication failed</p>
-                <p className="opacity-80">{error}</p>
-              </div>
-            </div>
-          )}
-
-          {/* Google Login Button */}
-          {!success && (
-            <div className="space-y-6">
-              <div className={`flex justify-center transition-opacity ${loading ? "opacity-50 pointer-events-none" : ""
-                }`}>
-                <GoogleLogin
-                  onSuccess={(res) =>
-                    res.credential && handleGoogleLogin(res.credential)
-                  }
-                  onError={() =>
-                    setError("Google authentication was cancelled")
-                  }
-                  theme="outline"
-                  size="large"
-                  shape="pill"
-                />
-              </div>
-
-              {/* Loading State */}
-              {loading && (
-                <div className="flex items-center justify-center gap-2 text-[var(--muted)] text-sm">
-                  <div className="h-4 w-4 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
-                  <span>Authenticating...</span>
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 uppercase tracking-[0.2em] text-[8px] font-black text-[var(--accent)] italic">
+                  <FiTerminal className="animate-pulse" />
+                  Identity Verification
                 </div>
+                <h1 className="text-3xl font-black uppercase italic tracking-tighter leading-none">
+                  SECURE <span className="text-[var(--accent)]">LOGIN</span>
+                </h1>
+
+              </div>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {/* STATUS MESSAGES */}
+              {success && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: -10 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  className="mb-8 p-5 rounded-3xl bg-green-500/10 border border-green-500/20 flex flex-col items-center gap-3 text-center overflow-hidden"
+                >
+                  <div className="w-10 h-10 rounded-full bg-green-500 text-black flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.3)]">
+                    <FiCheckCircle size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black uppercase tracking-tight text-green-500 mb-0.5">Access Granted</h3>
+                    <p className="text-[10px] font-bold text-green-500/60 uppercase tracking-widest leading-none">Redirecting to Operative Dashboard</p>
+                  </div>
+                </motion.div>
               )}
 
-              {/* Divider */}
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[var(--border)]" />
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: -10 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  className="mb-8 p-5 rounded-3xl bg-red-500/10 border border-red-500/20 flex flex-col items-center gap-3 text-center overflow-hidden"
+                >
+                  <div className="w-10 h-10 rounded-full bg-red-500 text-black flex items-center justify-center shadow-[0_0_20px_rgba(239,44,44,0.3)]">
+                    <FiAlertCircle size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black uppercase tracking-tight text-red-500 mb-0.5">Critical Error</h3>
+                    <p className="text-[10px] font-bold text-red-500/60 uppercase tracking-widest leading-none">{error}</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* ACTION AREA */}
+            {!success && (
+              <div className="space-y-10">
+                <div className={`flex justify-center transition-all duration-500 hover:scale-[1.02] active:scale-95 ${loading ? "opacity-40 grayscale pointer-events-none" : ""
+                  }`}>
+                  <div className="p-[2px] rounded-full bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent shadow-[0_0_30px_rgba(var(--accent-rgb),0.1)]">
+                    <div className="bg-[#050505] rounded-full p-1 border border-white/5">
+                      <GoogleLogin
+                        onSuccess={(res) => res.credential && handleGoogleLogin(res.credential)}
+                        onError={() => setError("Handshake Terminated by User")}
+                        theme="filled_black"
+                        size="large"
+                        shape="pill"
+                        text="continue_with"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="px-3 bg-[var(--card)] text-[var(--muted)]">
-                    Secure authentication
-                  </span>
+
+                {/* TACTICAL DIVIDER */}
+                <div className="flex items-center gap-4">
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-white/10" />
+                  <span className="text-[8px] font-black uppercase tracking-[0.3em] text-[var(--muted)] opacity-30 italic">Nexus Link</span>
+                  <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-white/10" />
+                </div>
+
+                {/* FEATURES - TACTICAL GRID */}
+                <div className="grid grid-cols-3 gap-4">
+                  <Feature icon={FiShield} label="Encrypted" />
+                  <Feature icon={FiZap} label="Instant" />
+                  <Feature icon={FiActivity} label="Dynamic" />
                 </div>
               </div>
+            )}
+          </div>
 
-              {/* Features */}
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="space-y-1.5">
-                  <div className="w-10 h-10 mx-auto rounded-lg bg-[var(--accent)]/10 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
-                  <p className="text-xs text-[var(--muted)]">Secure</p>
-                </div>
-                <div className="space-y-1.5">
-                  <div className="w-10 h-10 mx-auto rounded-lg bg-[var(--accent)]/10 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <p className="text-xs text-[var(--muted)]">Fast</p>
-                </div>
-                <div className="space-y-1.5">
-                  <div className="w-10 h-10 mx-auto rounded-lg bg-[var(--accent)]/10 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <p className="text-xs text-[var(--muted)]">Reliable</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Footer */}
+          {/* FOOTER */}
           {!success && (
-            <div className="mt-8 pt-6 border-t border-[var(--border)]">
-              <p className="text-xs text-center text-[var(--muted)] leading-relaxed">
-                By continuing, you agree to our{" "}
-                <a href="#" className="text-[var(--accent)] hover:underline">
-                  Terms
-                </a>{" "}
-                and{" "}
-                <a href="#" className="text-[var(--accent)] hover:underline">
-                  Privacy Policy
-                </a>
+            <div className="px-8 py-6 bg-black/40 border-t border-white/5 backdrop-blur-md">
+              <p className="text-[9px] text-center text-[var(--muted)] font-bold uppercase tracking-[0.15em] leading-relaxed opacity-40">
+                Authorized Use Only. By proceeding you sync with our{" "}
+                <a href="/terms" className="text-[var(--accent)] hover:text-white transition-colors underline decoration-[var(--accent)]/40 underline-offset-4">Terms</a>
+                {" • "}
+                <a href="/privacy" className="text-[var(--accent)] hover:text-white transition-colors underline decoration-[var(--accent)]/40 underline-offset-4">Privacy</a>
               </p>
             </div>
           )}
         </div>
 
-        {/* Trust Badge */}
+        {/* SECURITY STATUS */}
         {!success && (
-          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-[var(--muted)]">
-            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span>Protected by Google OAuth 2.0</span>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-6 flex items-center justify-center gap-2"
+          >
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/5 select-none">
+              <FiLock className="text-green-500" size={12} />
+              <span className="text-[8px] font-black uppercase tracking-[0.1em] text-[var(--muted)]/60">
+                Hardware Secured • <span className="text-green-500">Google OAuth 2.0</span>
+              </span>
+            </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     </section>
+  );
+}
+
+function Feature({ icon: Icon, label }: { icon: any, label: string }) {
+  return (
+    <div className="group flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.03] hover:bg-[var(--accent)]/5 hover:border-[var(--accent)]/20 transition-all duration-300">
+      <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[var(--accent)] group-hover:scale-110 transition-all">
+        <Icon size={16} />
+      </div>
+      <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)] group-hover:text-white transition-colors">{label}</span>
+    </div>
   );
 }

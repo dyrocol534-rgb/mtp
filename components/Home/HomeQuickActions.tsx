@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -13,7 +14,9 @@ import {
   Zap,
   Crown,
   LayoutGrid,
-  Flower2
+  Flower2,
+  Inbox,
+  LifeBuoy
 } from "lucide-react";
 
 /* ===================== CONFIG ===================== */
@@ -27,8 +30,10 @@ const topRow = [
 ];
 
 const bottomRow = [
+  { title: "Orders", href: "/dashboard/orders", icon: Inbox },
+  { title: "Support", href: "/dashboard/support", icon: LifeBuoy },
   { title: "Silver", href: "/games/membership/silver-membership", icon: Crown },
-  { title: "Reseller", href: "/games/membership/reseller-membership", icon: Zap },
+  { title: "Reseller", href: "/games/membership/reseller-membership", icon: Crown },
   {
     title: "Valentine",
     icon: Flower2,
@@ -36,13 +41,26 @@ const bottomRow = [
     isColorful: true,
     accent: "from-rose-400 to-pink-600"
   },
-  { title: "Skins Grid", icon: LayoutGrid, comingSoon: true },
-  { title: "Market", icon: BadgePercent, comingSoon: true },
 ];
 
 /* ===================== COMPONENT ===================== */
 
 export default function HomeQuickActions() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const getTargetHref = (item: any) => {
+    const isAuthProtected = item.title === "Orders" || item.title === "Support";
+    if (isAuthProtected && !isLoggedIn) {
+      return `/login?redirect=${item.originalHref || item.href}`;
+    }
+    return item.href;
+  };
+
   return (
     <section className="relative max-w-7xl mx-auto px-4 mt-8 pb-4 overflow-hidden">
       {/* Background Decorative Glow */}
@@ -83,24 +101,22 @@ export default function HomeQuickActions() {
 
         {/* ================= BOTTOM ROW ================= */}
         <div className="grid grid-cols-5 gap-2">
-          {bottomRow.map((item, index) => {
+          {bottomRow.map((item: any, index: number) => {
             const isColorful = item.isColorful;
 
             const Content = (
               <div
-                className={`
+                className="
                   group flex flex-col items-center justify-center py-2 px-1
                   transition-all duration-300
-                  ${item.comingSoon ? "opacity-30 grayscale cursor-not-allowed" : "active:scale-95"}
-                `}
+                  active:scale-95
+                "
               >
                 <div className={`
                   w-12 h-12 rounded-2xl flex items-center justify-center transition-all
-                  ${item.comingSoon
-                    ? "bg-[var(--muted)]/5 text-[var(--muted)]"
-                    : isColorful
-                      ? `bg-gradient-to-br ${item.accent} text-white shadow-lg shadow-rose-500/20 group-hover:scale-110 group-hover:rotate-6`
-                      : "bg-[var(--accent)]/5 text-[var(--accent)] group-hover:bg-[var(--accent)]/15 group-hover:scale-110 group-hover:-rotate-3"
+                  ${isColorful
+                    ? `bg-gradient-to-br ${item.accent} text-white shadow-lg shadow-rose-500/20 group-hover:scale-110 group-hover:rotate-6`
+                    : "bg-[var(--accent)]/5 text-[var(--accent)] group-hover:bg-[var(--accent)]/15 group-hover:scale-110 group-hover:-rotate-3"
                   }
                 `}>
                   <item.icon size={20} className={isColorful ? "drop-shadow-sm" : ""} />
@@ -112,9 +128,6 @@ export default function HomeQuickActions() {
                 `}>
                   {item.title}
                 </span>
-                {item.comingSoon && (
-                  <span className="text-[7px] font-bold text-[var(--muted)] uppercase tracking-tighter mt-0.5">Soon</span>
-                )}
               </div>
             );
 
@@ -126,7 +139,7 @@ export default function HomeQuickActions() {
                 transition={{ delay: 0.3 + index * 0.05 }}
               >
                 {item.href ? (
-                  <Link href={item.href} className="block group">
+                  <Link href={getTargetHref(item)} className="block group">
                     {Content}
                   </Link>
                 ) : (

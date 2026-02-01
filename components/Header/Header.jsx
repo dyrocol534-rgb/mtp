@@ -18,17 +18,18 @@ const HEADER_CONFIG = {
   },
 
   nav: [
+    // { label: "Orders", href: "/dashboard/orders" },
+    // { label: "Support", href: "/dashboard/support" },
     { label: "Region Check", href: "/region" },
     { label: "Services", href: "/services" },
   ],
 
   userMenu: {
     common: [
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Customer Support", href: "/dashboard" },
-      // { label: "Account Settings", href: "/dashboard" },
-      // { label: "My Wallet", href: "/dashboard" },
-      { label: "My Orders", href: "/dashboard" },
+      { label: "My Orders", href: "/dashboard/orders" },
+      { label: "Customer Support", href: "/dashboard/support" },
+      // { label: "My Wallet", href: "/dashboard/wallet" },
+      // { label: "Account Matrix", href: "/dashboard/account" },
       { label: "Membership", href: "/admin-panal" },
     ],
     roles: {

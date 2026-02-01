@@ -12,7 +12,7 @@ interface DashboardCardProps {
     icon: IconType;
   };
   activeTab: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export default function DashboardCard({
@@ -20,11 +20,11 @@ export default function DashboardCard({
   activeTab,
   onClick,
 }: DashboardCardProps) {
-  const isActive = activeTab === tab.key;
+  const isActive = activeTab === (tab.key === 'query' ? 'support' : tab.key);
   const Icon = tab.icon || FiActivity;
 
   return (
-    <motion.button
+    <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
@@ -64,6 +64,6 @@ export default function DashboardCard({
           className="absolute bottom-0 left-0 h-1 w-full bg-white/20"
         />
       )}
-    </motion.button>
+    </motion.div>
   );
 }
