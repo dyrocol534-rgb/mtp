@@ -1,26 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useParams, useSearchParams } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiCheck, FiShoppingBag, FiCreditCard, FiUserCheck, FiLoader } from "react-icons/fi";
 
 import AuthGuard from "@/components/AuthGuard";
 import ValidationStep from "./ValidationStep";
 import ReviewAndPaymentStep from "./ReviewAndPaymentStep";
 import { saveVerifiedPlayer } from "@/utils/storage/verifiedPlayerStorage";
 
-export default function BuyFlowPage() {
+function BuyFlowContent() {
   const { slug, itemSlug } = useParams();
   const params = useSearchParams();
 
+  /* ================= STATE ================= */
   const [step, setStep] = useState(1);
-  const [playerId, setPlayerId] = useState(""); // BGMI Character ID
+
+  const [playerId, setPlayerId] = useState("");
+  const [zoneId, setZoneId] = useState("");
+
   const [reviewData, setReviewData] = useState(null);
+
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [userEmail, setUserEmail] = useState("");
   const [userPhone, setUserPhone] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
+
+  /* ================= VERIFIED ITEM STATE ================= */
+  const [game, setGame] = useState(null);
+  const [item, setItem] = useState(null);
+
+  const [price, setPrice] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  /* ================= FALLBACK DISPLAY PARAMS ================= */
+  const fallbackName = params.get("name");
+  const fallbackImage = params.get("image");
 
   /* ================= LOAD USER DATA ================= */
   useEffect(() => {
@@ -30,153 +50,297 @@ export default function BuyFlowPage() {
     setWalletBalance(Number(sessionStorage.getItem("walletBalance") || 0));
   }, []);
 
-  /* ================= ITEM DATA ================= */
-  const itemName = params.get("name") || "";
-  const price = Number(params.get("price") || 0);
-  const discount = Number(params.get("discount") || 0);
-  const totalPrice = price - discount;
-  const itemImage = params.get("image") || "";
+  /* ================= FETCH GAME & VERIFY PRICE ================= */
+  useEffect(() => {
+    if (!slug || !itemSlug) return;
 
-  /* ================= BGMI VALIDATION (ALWAYS PASS) ================= */
-  const handleValidate = () => {
-    if (!playerId) {
-      alert("Please enter Character ID");
+    const token = sessionStorage.getItem("token");
+
+    fetch(`/api/games/${slug}`, {
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const gameData = data?.data;
+        if (!gameData) return;
+
+        const foundItem = gameData.itemId.find(
+          (i) => i.itemSlug === itemSlug
+        );
+
+        if (!foundItem) {
+          alert("Invalid item selected");
+          return;
+        }
+
+        const sellingPrice = Number(foundItem.sellingPrice);
+        const dummyPrice = Number(foundItem.dummyPrice || 0);
+
+        const calculatedDiscount =
+          dummyPrice > sellingPrice ? dummyPrice - sellingPrice : 0;
+
+        setGame(gameData);
+        setItem(foundItem);
+
+        setPrice(sellingPrice);
+        setDiscount(calculatedDiscount);
+        setTotalPrice(sellingPrice);
+      });
+  }, [slug, itemSlug]);
+
+  /* ================= VALIDATION ================= */
+  const handleValidate = async () => {
+    if (!playerId || !zoneId) {
+      alert("Please enter Player ID and Zone ID");
       return;
     }
 
-    // ✅ Temporary BGMI bypass
+    setLoading(true);
+
+    const res = await fetch("/api/check-region", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: playerId, zone: zoneId }),
+    });
+
+    const data = await res.json();
+
+    if (data?.success !== 200) {
+      alert("Invalid Player ID / Zone ID");
+      setLoading(false);
+      return;
+    }
+
     saveVerifiedPlayer({
       playerId,
-      zoneId: "", // BGMI does not use zone
-      username: "BGMI Player",
-      region: "INDIA",
+      zoneId,
+      username: data.data.username,
+      region: data.data.region,
       savedAt: Date.now(),
     });
 
     setReviewData({
-      userName: "BGMI Player",
-      region: "INDIA",
+      userName: data.data.username,
+      region: data.data.region,
       playerId,
-      zoneId: "",
+      zoneId,
     });
 
+    setLoading(false);
     setStep(2);
   };
 
-  /* ================= PAYMENT COMPLETE ================= */
+  /* ================= PAYMENT ================= */
   const handlePayment = async () => {
-    setTimeout(() => setShowSuccess(true), 500);
+    // Example secure order creation
+    const res = await fetch("/api/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        slug,
+        itemSlug,
+        price: totalPrice, // ✅ VERIFIED PRICE
+        playerId,
+        zoneId,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      setShowSuccess(true);
+      window.scrollTo(0, 0);
+    }
   };
 
   return (
     <AuthGuard>
-      <section className="px-6 py-8 max-w-3xl mx-auto">
-        {/* ================= SELECTED ITEM ================= */}
-        {itemName && (
-          <div className="flex items-center gap-4 mb-6 p-4 rounded-xl bg-[var(--card)] border border-[var(--border)]">
-            {itemImage && (
-              <img
-                src={itemImage}
-                alt={itemName}
-                className="w-14 h-14 rounded-lg object-cover"
-              />
-            )}
+      <section className="min-h-screen px-4 py-8 md:py-12 bg-gradient-to-b from-[var(--background)] to-[var(--card)]/20">
+        <div className="max-w-4xl mx-auto">
 
-            <div className="flex-1">
-              <p className="text-sm text-[var(--muted)]">Selected Item</p>
-              <h3 className="font-semibold text-base">{itemName}</h3>
+          {/* ================= HEADER & PROGRESS ================= */}
+          <div className="mb-10">
+            <div className="flex items-center justify-between relative mb-8 max-w-2xl mx-auto">
+              {/* Progress Line */}
+              <div className="absolute top-1/2 left-0 w-full h-1 bg-[var(--border)] rounded-full -z-10 overflow-hidden">
+                <motion.div
+                  className="h-full bg-[var(--accent)]"
+                  initial={{ width: "0%" }}
+                  animate={{
+                    width: step === 1 ? "0%" : step === 2 ? "50%" : "100%"
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                />
+              </div>
 
-              <div className="text-sm mt-1">
-                <span className="text-[var(--accent)] font-medium">
-                  ₹{totalPrice}
-                </span>
-
-                {discount > 0 && (
-                  <span className="ml-2 line-through text-gray-500 text-xs">
-                    ₹{price}
+              {/* Steps */}
+              {[
+                { id: 1, label: "Verify", icon: FiUserCheck },
+                { id: 2, label: "Review", icon: FiShoppingBag },
+                { id: 3, label: "Pay", icon: FiCreditCard },
+              ].map((s) => (
+                <div key={s.id} className="flex flex-col items-center gap-2 bg-[var(--background)] px-3 py-1 rounded-full border border-dashed border-transparent">
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      borderColor: step >= s.id ? "var(--accent)" : "var(--border)",
+                      backgroundColor: step >= s.id ? "var(--accent)" : "var(--card)"
+                    }}
+                    className={`w-10 h-10 md:w-12 md:h-12 rounded-full border-2 flex items-center justify-center transition-colors duration-300
+                        ${step >= s.id ? "shadow-[0_0_15px_var(--accent)]" : "shadow-none"}
+                      `}
+                  >
+                    <s.icon className={`text-lg md:text-xl ${step >= s.id ? "text-white" : "text-[var(--muted)]"}`} />
+                  </motion.div>
+                  <span className={`hidden md:block text-xs font-bold uppercase tracking-wider ${step >= s.id ? "text-[var(--accent)]" : "text-[var(--muted)]"}`}>
+                    {s.label}
                   </span>
-                )}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
-        )}
 
-        {/* ================= STEP INDICATOR ================= */}
-        <div className="relative flex items-center justify-between mb-10">
-          <div className="absolute top-[31%] left-[15%] w-[70%] h-[3px] bg-gray-700 -z-0 rounded-full">
-            <div
-              className="h-full bg-[var(--accent)] transition-all duration-500 rounded-full"
-              style={{
-                width:
-                  step === 1 ? "0%" :
-                    step === 2 ? "50%" :
-                      step === 3 ? "100%" : "0%",
-              }}
-            />
-          </div>
+          <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
 
-          {[1, 2, 3].map((num) => (
-            <div key={num} className="relative z-10 flex flex-col items-center w-1/3">
-              <div
-                className={`w-10 h-10 flex items-center justify-center rounded-full border-2 font-semibold text-sm
-                ${step >= num
-                    ? "border-[var(--accent)] bg-[var(--accent)] text-black"
-                    : "border-gray-600 bg-[var(--card)] text-gray-400"}`}
+            {/* ================= ITEM SUMMARY CARD ================= */}
+            {(item || fallbackName) && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="w-full md:w-1/3 order-1 md:order-2"
               >
-                {num}
-              </div>
+                <div className="sticky top-24 bg-[var(--card)]/50 backdrop-blur-xl border border-[var(--border)] rounded-2xl p-4 shadow-2xl overflow-hidden relative">
+                  <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none" />
+                  <div className="absolute -top-10 -right-10 w-24 h-24 bg-[var(--accent)]/10 blur-2xl rounded-full" />
 
-              <p className={`text-sm mt-2 ${step >= num ? "text-[var(--accent)]" : "text-gray-500"}`}>
-                {num === 1 ? "Validate" : num === 2 ? "Review" : "Payment"}
-              </p>
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-[var(--border)] shrink-0 group">
+                      {(item?.itemImageId?.image || fallbackImage) && (
+                        <img
+                          src={item?.itemImageId?.image || fallbackImage || ""}
+                          alt={item?.itemName || fallbackName}
+                          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-[10px] font-[900] uppercase tracking-widest text-[var(--muted)] mb-1 flex items-center gap-2">
+                        <FiShoppingBag /> Pack Details
+                      </h3>
+                      <h4 className="font-[900] text-sm leading-tight uppercase tracking-tight truncate">{item?.itemName || fallbackName}</h4>
+
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-xl font-[900] text-[var(--accent)]">₹{totalPrice}</span>
+                        {discount > 0 && (
+                          <span className="text-xs font-bold text-[var(--muted)] line-through decoration-red-500/50">
+                            ₹{price + discount}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ================= MAIN FORM STEPS ================= */}
+            <div className="w-full md:w-2/3 order-2 md:order-1">
+              <AnimatePresence mode="wait">
+                {showSuccess ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="bg-green-500/10 border border-green-500/20 p-8 rounded-3xl text-center backdrop-blur-sm"
+                  >
+                    <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/20">
+                      <FiCheck className="text-4xl text-white" />
+                    </div>
+                    <h2 className="text-3xl font-[900] text-green-400 mb-2 uppercase tracking-tight">Payment Successful!</h2>
+                    <p className="text-[var(--muted)] max-w-sm mx-auto mb-8 font-medium">
+                      Your verification was successful and your order has been placed.
+                    </p>
+                    <button
+                      onClick={() => window.location.href = "/"}
+                      className="px-8 py-3 bg-[var(--card)] hover:bg-[var(--accent)] hover:text-white border border-[var(--border)] hover:border-[var(--accent)] rounded-xl font-bold uppercase tracking-widest transition-all shadow-lg"
+                    >
+                      Return Home
+                    </button>
+                  </motion.div>
+                ) : (
+                  step === 1 ? (
+                    <motion.div
+                      key="step1"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-[var(--card)]/40 backdrop-blur-md border border-[var(--border)] rounded-[2rem] p-6 md:p-8 shadow-xl relative overflow-hidden"
+                    >
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/5 rounded-full blur-3xl -z-10" />
+                      <ValidationStep
+                        playerId={playerId}
+                        setPlayerId={setPlayerId}
+                        zoneId={zoneId}
+                        setZoneId={setZoneId}
+                        onValidate={handleValidate}
+                        loading={loading}
+                      />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="step2"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-[var(--card)]/40 backdrop-blur-md border border-[var(--border)] rounded-[2rem] p-6 md:p-8 shadow-xl relative overflow-hidden"
+                    >
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/5 rounded-full blur-3xl -z-10" />
+                      {(step === 2 || step === 3) && reviewData && (
+                        <ReviewAndPaymentStep
+                          step={step}
+                          setStep={setStep}
+                          itemName={item?.itemName || fallbackName}
+                          itemImage={item?.itemImageId?.image || fallbackImage}
+                          price={price}
+                          discount={discount}
+                          totalPrice={totalPrice}
+                          userEmail={userEmail}
+                          userPhone={userPhone}
+                          reviewData={reviewData}
+                          walletBalance={walletBalance}
+                          paymentMethod={paymentMethod}
+                          setPaymentMethod={setPaymentMethod}
+                          onPaymentComplete={handlePayment}
+                          slug={slug}
+                          itemSlug={itemSlug}
+                        />
+                      )}
+                    </motion.div>
+                  )
+                )}
+              </AnimatePresence>
             </div>
-          ))}
-        </div>
 
-        {/* ================= SUCCESS ================= */}
-        {showSuccess && (
-          <div className="bg-green-600/20 border border-green-600 text-green-500 p-6 rounded-xl text-center">
-            <h2 className="text-xl font-bold">Payment Successful ✔</h2>
-            <p className="text-sm mt-2">Your BGMI order has been placed.</p>
           </div>
-        )}
-
-        {/* ================= STEPS ================= */}
-        {!showSuccess && (
-          <>
-            {step === 1 && (
-              <ValidationStep
-                playerId={playerId}
-                setPlayerId={setPlayerId}
-                onValidate={handleValidate}
-                label="Character ID"
-                placeholder="Enter Character ID"
-              />
-            )}
-
-            {(step === 2 || step === 3) && reviewData && (
-              <ReviewAndPaymentStep
-                step={step}
-                setStep={setStep}
-                itemName={itemName}
-                itemImage={itemImage}
-                price={price}
-                discount={discount}
-                totalPrice={totalPrice}
-                userEmail={userEmail}
-                userPhone={userPhone}
-                reviewData={reviewData}
-                walletBalance={walletBalance}
-                paymentMethod={paymentMethod}
-                setPaymentMethod={setPaymentMethod}
-                onPaymentComplete={handlePayment}
-                slug={slug}
-                itemSlug={itemSlug}
-              />
-            )}
-          </>
-        )}
+        </div>
       </section>
     </AuthGuard>
+  );
+}
+
+export default function BuyFlowPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
+        <FiLoader className="animate-spin text-3xl text-[var(--accent)]" />
+      </div>
+    }>
+      <BuyFlowContent />
+    </Suspense>
   );
 }
