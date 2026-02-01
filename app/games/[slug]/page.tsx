@@ -14,7 +14,9 @@ import BuyPanel from "@/components/GameDetail/BuyPanel";
 import PackageSelectorBgmi from "@/components/GameDetail/PackageSelectorBgmi";
 import BuyPanelBgmi from "@/components/GameDetail/BuyPanelBgmi";
 
-export default function GameDetailPage() {
+import { Suspense } from "react";
+
+function GameDetailContent() {
   const { slug } = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -301,5 +303,13 @@ export default function GameDetailPage() {
         {!isBGMI && <MLBBPurchaseGuide />}
       </motion.div>
     </section>
+  );
+}
+
+export default function GameDetailPage() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <GameDetailContent />
+    </Suspense>
   );
 }

@@ -8,7 +8,9 @@ import ValidationStep from "./ValidationStep";
 import ReviewAndPaymentStep from "./ReviewAndPaymentStep";
 import { saveVerifiedPlayer } from "@/utils/storage/verifiedPlayerStorage";
 
-export default function BuyFlowPage() {
+import { Suspense } from "react";
+
+function BuyFlowContent() {
   const { slug, itemSlug } = useParams();
   const params = useSearchParams();
 
@@ -194,8 +196,8 @@ export default function BuyFlowPage() {
               style={{
                 width:
                   step === 1 ? "0%" :
-                  step === 2 ? "50%" :
-                  step === 3 ? "100%" : "0%",
+                    step === 2 ? "50%" :
+                      step === 3 ? "100%" : "0%",
               }}
             />
           </div>
@@ -205,8 +207,8 @@ export default function BuyFlowPage() {
               <div
                 className={`w-10 h-10 flex items-center justify-center rounded-full border-2 font-semibold text-sm
                 ${step >= num
-                  ? "border-[var(--accent)] bg-[var(--accent)] text-black"
-                  : "border-gray-600 bg-[var(--card)] text-gray-400"}`}
+                    ? "border-[var(--accent)] bg-[var(--accent)] text-black"
+                    : "border-gray-600 bg-[var(--card)] text-gray-400"}`}
               >
                 {num}
               </div>
@@ -263,5 +265,13 @@ export default function BuyFlowPage() {
         )}
       </section>
     </AuthGuard>
+  );
+}
+
+export default function BuyFlowPage() {
+  return (
+    <Suspense fallback={null}>
+      <BuyFlowContent />
+    </Suspense>
   );
 }
