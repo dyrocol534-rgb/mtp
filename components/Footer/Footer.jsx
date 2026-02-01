@@ -4,210 +4,179 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { QRCodeCanvas } from "qrcode.react";
 import {
-  FaInstagram,
-  FaXTwitter,
-  FaYoutube,
-  FaHeart,
-} from "react-icons/fa6";
+  FiInstagram,
+  FiTwitter,
+  FiYoutube,
+  FiHeart,
+  FiChevronUp,
+  FiShield,
+  FiExternalLink
+} from "react-icons/fi";
 
-const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Meow Ji";
-const TRUSTPILOT_URL =
-  "https://www.trustpilot.com/evaluate/mlbbtopup.in";
-
-/* ===================== CONFIG ===================== */
+const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Blue Buff";
+const TRUSTPILOT_URL = "https://www.trustpilot.com/evaluate/mlbbtopup.in";
 
 const FOOTER_LINKS = [
   {
-    title: "Quick Links",
+    title: "Market",
     links: [
       { label: "Home", href: "/" },
-      { label: "Games", href: "/games" },
+      { label: "Store", href: "/games" },
       { label: "Services", href: "/services" },
-      { label: "Region Check", href: "/region" },
-      { label: "Blog", href: "/blog" },
+      { label: "Scanner", href: "/region" },
+      { label: "Insights", href: "/blog" },
     ],
   },
   {
-    title: "Support",
+    title: "Legal",
     links: [
-      { label: "About", href: "/about" },
-      { label: "Privacy Policy", href: "/privacy-policy" },
-      { label: "Terms & Conditions", href: "/terms-and-conditions" },
-      { label: "Contact Us", href: "/contact" },
-      { label: "Refund Policy", href: "/refund-policy" },
+      { label: "Identity", href: "/about" },
+      { label: "Privacy", href: "/privacy-policy" },
+      { label: "Terms", href: "/terms-and-conditions" },
+      { label: "Support", href: "/contact" },
+      { label: "Refunds", href: "/refund-policy" },
     ],
   },
 ];
 
 const SOCIALS = [
-  { label: "Instagram", href: "https://instagram.com/mlbbtopup.in", icon: FaInstagram },
-  { label: "Twitter", href: "https://x.com/tk_dev_", icon: FaXTwitter },
-  { label: "YouTube", href: "https://youtube.com", icon: FaYoutube },
+  { label: "Instagram", href: "https://instagram.com/mlbbtopup.in", icon: FiInstagram },
+  { label: "Twitter", href: "https://x.com/tk_dev_", icon: FiTwitter },
+  { label: "YouTube", href: "https://youtube.com", icon: FiYoutube },
 ];
 
-/* ===================== COMPONENT ===================== */
-
 export default function Footer() {
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
-    <footer className="mt-8 bg-[var(--card)] text-[var(--muted)] border-t border-[var(--border)]">
+    <footer className="relative mt-12 bg-[var(--background)] border-t border-[var(--border)] pt-16 pb-8 overflow-hidden">
 
-      {/* ================= MAIN ================= */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {/* Subtle Background Lighting */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[120px] bg-[#56CCF2]/5 rounded-full blur-[80px] pointer-events-none" />
 
-          {/* Brand + QR */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="col-span-2 md:col-span-1 flex justify-between items-start gap-3"
-          >
-            {/* Brand */}
-            <div>
-              <h2 className="text-xl font-extrabold bg-gradient-to-r from-[var(--accent)] to-purple-500 bg-clip-text text-transparent">
-                {BRAND}
-              </h2>
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-16">
 
-              <p className="text-xs leading-relaxed max-w-[200px] opacity-75 mt-2">
-                Instant game top-ups & automated delivery — 24×7 ⚡
+          {/* BRAND BLOCK - COMPACT */}
+          <div className="md:col-span-4 space-y-6">
+            <div className="space-y-3">
+              <Link href="/" className="inline-block group">
+                <h2 className="text-3xl md:text-4xl font-[1000] italic tracking-tighter uppercase leading-none bg-gradient-to-r from-[#56CCF2] via-[#A5F3FC] to-[#2D9CDB] bg-clip-text text-transparent group-hover:brightness-110 transition-all">
+                  {BRAND}
+                </h2>
+                <div className="h-0.5 w-0 group-hover:w-full bg-[#56CCF2] transition-all duration-500 rounded-full mt-1" />
+              </Link>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30 italic leading-relaxed max-w-[280px]">
+                THE GOLD STANDARD IN AUTOMATED GAME TOP-UPS & ELITE SOLUTIONS.
               </p>
             </div>
 
-            {/* Trustpilot QR */}
+            {/* Review Card - Slimmer */}
             <motion.a
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               href={TRUSTPILOT_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Give us a review on Trustpilot"
-              className="flex flex-col items-center gap-1 hover:opacity-90 transition"
+              whileHover={{ scale: 1.02, x: 2 }}
+              className="inline-flex items-center gap-4 p-4 rounded-2xl bg-[var(--card)]/40 border border-[var(--border)] hover:border-[#56CCF2]/30 transition-all border-dashed"
             >
-              <div className="bg-white p-1 rounded-lg border border-[var(--border)] shadow-sm">
+              <div className="bg-white p-1.5 rounded-lg group-hover:rotate-3 transition-transform">
                 <QRCodeCanvas
                   value={TRUSTPILOT_URL}
-                  size={48}
+                  size={44}
                   bgColor="#ffffff"
                   fgColor="#000000"
                   level="Q"
                 />
               </div>
-
-              <span className="text-[10px] opacity-70 text-center">
-                Give us a<br />review here
-              </span>
+              <div className="text-left">
+                <div className="flex items-center gap-0.5 text-[#56CCF2] mb-0.5">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <FiShield key={i} size={8} fill="currentColor" />
+                  ))}
+                </div>
+                <p className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)] opacity-50">
+                  VERIFIED BY TRUSTPILOT
+                </p>
+              </div>
+              <FiExternalLink className="text-[var(--muted)] opacity-10 transition-all" size={12} />
             </motion.a>
-          </motion.div>
+          </div>
 
-          {/* Navigation */}
-          {FOOTER_LINKS.map((section, sectionIndex) => (
-            <motion.div
-              key={section.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (sectionIndex + 1) * 0.1 }}
-              className="flex flex-col gap-2"
-            >
-              <h3 className="text-[var(--accent)] font-semibold text-sm mb-1">
-                {section.title}
+          {/* LINKS GRID - DENSER */}
+          <div className="md:col-span-5 grid grid-cols-2 gap-4">
+            {FOOTER_LINKS.map((section) => (
+              <div key={section.title} className="space-y-4">
+                <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-[#56CCF2]/60 italic">
+                  {section.title}
+                </h3>
+                <ul className="space-y-2.5">
+                  {section.links.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="text-[10px] font-[900] uppercase italic tracking-wider text-[var(--muted)] hover:text-[#56CCF2] transition-colors leading-none block hover:translate-x-1 transform duration-200"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {/* CONNECT BLOCK */}
+          <div className="md:col-span-3 space-y-6 flex flex-col items-center md:items-end">
+            <div className="space-y-4 flex flex-col items-center md:items-end">
+              <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-[#56CCF2]/60 italic">
+                Connect
               </h3>
-
-              {section.links.map((link, linkIndex) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: (sectionIndex + 1) * 0.1 + linkIndex * 0.05 }}
-                >
-                  <Link
-                    href={link.href}
-                    className="text-xs opacity-75 hover:opacity-100 hover:text-[var(--accent)] transition inline-block"
+              <div className="flex items-center gap-3">
+                {SOCIALS.map(({ label, href, icon: Icon }) => (
+                  <motion.a
+                    key={label}
+                    whileHover={{ y: -3, scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[#56CCF2] hover:border-[#56CCF2]/40 transition-all"
                   >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
-          ))}
-
-          {/* Socials (Desktop) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="hidden md:flex flex-col gap-2"
-          >
-            <h3 className="text-[var(--accent)] font-semibold text-sm mb-1">
-              Connect
-            </h3>
-
-            <div className="flex items-center gap-3">
-              {SOCIALS.map(({ label, href, icon: Icon }) => (
-                <motion.a
-                  key={label}
-                  whileHover={{ scale: 1.2, y: -2 }}
-                  whileTap={{ scale: 0.9 }}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center hover:bg-[var(--accent)]/20 transition"
-                >
-                  <Icon className="w-4 h-4 text-[var(--accent)]" />
-                </motion.a>
-              ))}
+                    <Icon size={16} />
+                  </motion.a>
+                ))}
+              </div>
             </div>
-          </motion.div>
+
+            <button
+              onClick={scrollToTop}
+              className="mt-2 flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-[var(--muted)] hover:text-[#56CCF2] transition-colors group italic"
+            >
+              Elevate
+              <div className="w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center group-hover:border-[#56CCF2] transition-colors">
+                <FiChevronUp size={14} />
+              </div>
+            </button>
+          </div>
 
         </div>
-      </div>
 
-      {/* ================= BOTTOM BAR ================= */}
-      <div className="border-t border-[var(--border)] py-4">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+        {/* BOTTOM STRIP - TIGHTER */}
+        <div className="pt-8 border-t border-[var(--border)] flex flex-col md:flex-row items-center justify-between gap-6 opacity-30">
+          <div className="flex items-center gap-4 text-[8px] font-black uppercase tracking-[0.2em] italic group/india">
+            <span>© {new Date().getFullYear()} {BRAND.toUpperCase()}</span>
+            <span className="w-1 h-1 rounded-full bg-[var(--muted)] opacity-30" />
+            <span className="flex items-center gap-1.5 group-hover/india:text-[#56CCF2] transition-colors">
+              MADE IN INDIA <span className="text-[11px] not-italic">🇮🇳</span>
+            </span>
+          </div>
 
-            {/* Socials (Mobile) */}
-            <div className="flex md:hidden gap-3">
-              {SOCIALS.map(({ label, href, icon: Icon }) => (
-                <motion.a
-                  key={label}
-                  whileHover={{ scale: 1.2, y: -2 }}
-                  whileTap={{ scale: 0.9 }}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center"
-                >
-                  <Icon className="w-4 h-4 text-[var(--accent)]" />
-                </motion.a>
-              ))}
-            </div>
+          <div className="hidden md:flex items-center gap-2 text-[8px] font-black uppercase tracking-[0.1em] italic">
+            Crafted for Legends <FiHeart className="text-[#56CCF2]" size={10} />
+          </div>
 
-            {/* Made With */}
-            <p className="text-[10px] text-center flex items-center gap-1">
-              Made with{" "}
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity, repeatDelay: 1 }}
-              >
-                <FaHeart className="w-3 h-3 text-[var(--accent)]" />
-              </motion.span>{" "}
-              by{" "}
-              <span className="text-[var(--accent)] font-medium">
-                {BRAND}
-              </span>
-            </p>
-
-            {/* Copyright */}
-            <p className="text-[10px] opacity-60">
-              © {new Date().getFullYear()} {BRAND}
-            </p>
-
+          <div className="text-[8px] font-black uppercase tracking-[0.2em] italic">
+            24/7 AUTOMATED DELIVERY
           </div>
         </div>
       </div>

@@ -1,151 +1,100 @@
 "use client";
 
-import { memo } from "react";
+import { motion } from "framer-motion";
 import {
-  FaBolt,
-  FaShieldAlt,
-  FaCreditCard,
-  FaHeadset,
-  FaUsers,
-  FaRobot,
-} from "react-icons/fa";
-
-/* ================= DATA ================= */
+  FiZap,
+  FiShield,
+  FiCreditCard,
+  FiPhone,
+  FiUsers,
+  FiCpu
+} from "react-icons/fi";
 
 const HIGHLIGHTS = [
   {
-    title: "24/7",
+    label: "VELOCITY",
+    value: "24/7",
     subtitle: "Instant Delivery",
-    icon: FaBolt,
-    accent: "from-yellow-400/20 to-orange-400/20",
-    text: "text-yellow-400",
+    icon: FiZap,
+    color: "#56CCF2",
   },
   {
-    title: "100%",
-    subtitle: "Safe & Legitimate",
-    icon: FaShieldAlt,
-    accent: "from-green-400/20 to-emerald-400/20",
-    text: "text-green-400",
+    label: "FORTRESS",
+    value: "100%",
+    subtitle: "Safe & Legal",
+    icon: FiShield,
+    color: "#56CCF2",
   },
   {
-    title: "Easy",
+    label: "GATEWAY",
+    value: "PURE",
     subtitle: "Secure Payments",
-    icon: FaCreditCard,
-    accent: "from-blue-400/20 to-cyan-400/20",
-    text: "text-blue-400",
+    icon: FiCreditCard,
+    color: "#56CCF2",
   },
   {
-    title: "24/7",
-    subtitle: "Instant Support",
-    icon: FaHeadset,
-    accent: "from-purple-400/20 to-pink-400/20",
-    text: "text-purple-400",
+    label: "SUPPORT",
+    value: "ELITE",
+    subtitle: "Instant Assist",
+    icon: FiPhone,
+    color: "#56CCF2",
   },
   {
-    title: "Trusted",
-    subtitle: "By Thousands",
-    icon: FaUsers,
-    accent: "from-yellow-300/20 to-amber-400/20",
-    text: "text-yellow-300",
+    label: "COMMUNITY",
+    value: "10K+",
+    subtitle: "Trusted Players",
+    icon: FiUsers,
+    color: "#56CCF2",
   },
   {
-    title: "Fast",
-    subtitle: "Automated Topups",
-    icon: FaRobot,
-    accent: "from-cyan-400/20 to-sky-400/20",
-    text: "text-cyan-400",
+    label: "ENGINE",
+    value: "AUTO",
+    subtitle: "Automated Flow",
+    icon: FiCpu,
+    color: "#56CCF2",
   },
 ];
 
-/* ================= CARD ================= */
-
-const HighlightCard = memo(function HighlightCard({
-  title,
-  subtitle,
-  icon: Icon,
-  accent,
-  text,
-}: {
-  title: string;
-  subtitle: string;
-  icon: any;
-  accent: string;
-  text: string;
-}) {
-  return (
-    <div
-      className="
-        group relative rounded-xl
-        px-3 py-4 sm:px-4 sm:py-5
-        text-center
-        bg-[var(--card)]
-        border border-[var(--border)]
-        transition-all duration-200 ease-out
-        hover:border-[var(--accent)]
-        hover:bg-[var(--card)]/90
-      "
-    >
-      {/* Soft glow */}
-      <div
-        className={`
-          pointer-events-none absolute inset-0 rounded-xl
-          opacity-0 group-hover:opacity-100
-          bg-gradient-to-br ${accent}
-          transition-opacity duration-300
-        `}
-      />
-
-      <div className="relative z-10 flex flex-col items-center gap-1.5">
-        {/* Icon */}
-        <div
-          className={`
-            flex items-center justify-center
-            w-9 h-9 sm:w-10 sm:h-10
-            rounded-full
-            bg-black/30 border border-white/10
-            ${text}
-          `}
-        >
-          <Icon className="text-sm sm:text-base" aria-hidden />
-        </div>
-
-        {/* Title */}
-        <p className={`text-base sm:text-lg font-bold leading-none ${text}`}>
-          {title}
-        </p>
-
-        {/* Subtitle */}
-        <p className="text-[11px] sm:text-xs text-[var(--muted)]">
-          {subtitle}
-        </p>
-      </div>
-    </div>
-  );
-});
-
-/* ================= SECTION ================= */
-
 export default function TrustHighlights() {
   return (
-    <section
-      className="
-        py-8 sm:py-10 px-4
-        bg-[var(--background)]
-        text-[var(--foreground)]
-      "
-      aria-label="Trust highlights"
-    >
+    <section className="py-12 bg-[var(--background)] px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto">
-        <div
-          className="
-            grid gap-3 sm:gap-4
-            grid-cols-3
-            md:grid-cols-3
-            lg:grid-cols-6
-          "
-        >
-          {HIGHLIGHTS.map((item) => (
-            <HighlightCard key={item.subtitle} {...item} />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {HIGHLIGHTS.map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              whileHover={{ y: -2 }}
+              className="group relative p-5 rounded-2xl bg-[var(--card)]/40 border border-[var(--border)] hover:border-[#56CCF2]/30 transition-all duration-300"
+            >
+              <div className="flex flex-col items-center text-center space-y-3">
+                {/* ICON TAG */}
+                <div className="w-10 h-10 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-[#56CCF2]/60 group-hover:text-[#56CCF2] group-hover:bg-[#56CCF2]/10 transition-all shadow-sm">
+                  <item.icon size={18} />
+                </div>
+
+                {/* LABEL */}
+                <div className="text-[8px] font-black uppercase tracking-[0.3em] text-[var(--muted)] opacity-30 italic leading-none">
+                  {item.label}
+                </div>
+
+                {/* VALUE & SUBTITLE */}
+                <div className="space-y-0.5">
+                  <h3 className="text-xl font-[1000] italic uppercase tracking-tighter text-[var(--foreground)] group-hover:text-[#56CCF2] transition-colors leading-none">
+                    {item.value}
+                  </h3>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)] opacity-50 italic">
+                    {item.subtitle}
+                  </p>
+                </div>
+              </div>
+
+              {/* SIDE GLOW ON HOVER */}
+              <div className="absolute inset-x-4 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-[#56CCF2]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            </motion.div>
           ))}
         </div>
       </div>

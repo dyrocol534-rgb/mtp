@@ -1,115 +1,120 @@
-import {
-  FaStore,
-  FaGlobe,
-  FaCogs,
-  FaWhatsapp,
-} from "react-icons/fa";
+"use client";
 
-const services = [
+import { motion } from "framer-motion";
+import { FiUsers, FiGlobe, FiZap, FiArrowRight, FiMessageCircle } from "react-icons/fi";
+
+const SERVICES = [
   {
-    title: "Be a Reseller",
-    description:
-      "Start selling game topups instantly with industry pricing and automated delivery.",
-    badge: "Best Value",
-    icon: FaStore,
-    accent: "from-emerald-500/20 to-transparent",
+    title: "Reseller Program",
+    desc: "Scale your business with market-leading rates. Bulk solutions with instant delivery.",
+    icon: FiUsers,
+    badge: "LOWEST RATES",
+    active: true,
   },
   {
-    title: "Website Whitelabel",
-    description:
-      "Launch your own branded topup platform with full control and automation.",
-    badge: "Available",
-    icon: FaGlobe,
-    accent: "from-blue-500/20 to-transparent",
+    title: "Whitelabel Site",
+    desc: "Launch your own branded empire. Fully hosted platform with integrated automation.",
+    icon: FiGlobe,
+    badge: "READY TO GO",
+    active: true,
   },
   {
-    title: "Custom Topup Platform",
-    description:
-      "Enterprise-grade custom solutions built around your business needs.",
-    badge: "Custom",
-    icon: FaCogs,
-    accent: "from-purple-500/20 to-transparent",
+    title: "Enterprise Solutions",
+    desc: "Tailor-made top-up portals designed for specific large-scale business needs.",
+    icon: FiZap,
+    badge: "CUSTOM BUILD",
+    active: true,
   },
 ];
 
 export default function HomeServices() {
+  const whatsappLink = "https://wa.me/916372305866";
+
   return (
-    <section className="py-14 px-4 bg-[var(--background)]">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-20 bg-[var(--background)] px-6 relative overflow-hidden">
+      {/* Background Lighting */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[40%] bg-[#56CCF2]/5 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Header */}
-        <div className="mb-10 max-w-3xl">
-          <h2 className="text-2xl sm:text-3xl font-semibold mb-3">
-            Additional Services
+      <div className="max-w-6xl mx-auto relative z-10">
+
+        {/* HEADER SECTION - ELITE TYPOGRAPHY */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-14 text-center"
+        >
+          <div className="inline-block px-4 py-1 rounded-full bg-[#56CCF2]/5 border border-[#56CCF2]/10 mb-4">
+            <span className="text-[#56CCF2] text-[9px] font-black uppercase tracking-widest italic">Expansion Pack</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-[900] italic tracking-tighter uppercase leading-none mb-3">
+            ELITE <span className="text-[#56CCF2]">SOLUTIONS</span>
           </h2>
-          <p className="text-sm text-[var(--muted)]">
-            Start, scale, or customize your game topup business with professional tools.
+          <p className="text-[var(--muted)] text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic">
+            Professional Tools for Professional Scale
           </p>
-        </div>
+        </motion.div>
 
-        {/* Cards */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, i) => {
-            const Icon = service.icon;
-
-            return (
-              <div
-                key={i}
-                className="
-                  group relative overflow-hidden rounded-2xl
-                  bg-[var(--card)]
-                  border border-[var(--border)]
-                  transition-all duration-300
-                  hover:-translate-y-1
-                  hover:shadow-xl hover:border-[var(--accent)]
-                "
-              >
-                {/* Accent Glow */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${service.accent}
-                  opacity-0 group-hover:opacity-100 transition`}
-                />
-
-                {/* Content */}
-                <div className="relative p-5 flex flex-col h-full">
-                  {/* Icon */}
-                  <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/15
-                  flex items-center justify-center mb-4">
-                    <Icon className="text-[var(--accent)]" />
-                  </div>
-
-                  {/* Text */}
-                  <h3 className="text-lg font-semibold mb-2">
-                    {service.title}
-                  </h3>
-
-                  <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
-                    {service.description}
-                  </p>
-
-                  {/* Footer */}
-                  <div className="mt-auto flex items-center justify-between">
-                    <span className="text-[11px] px-2.5 py-1 rounded-full
-                    bg-[var(--accent)]/15 text-[var(--accent)]">
-                      {service.badge}
-                    </span>
-
-                    <a
-                      href="https://wa.me/916372305866"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5
-                      text-sm text-[var(--accent)] font-medium"
-                    >
-                      <FaWhatsapp />
-                      Contact
-                    </a>
-                  </div>
-                </div>
+        {/* SERVICES GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {SERVICES.map((service, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="group relative p-8 rounded-[40px] bg-[var(--card)]/40 border border-[var(--border)] hover:border-[#56CCF2]/30 transition-all duration-300 flex flex-col items-center text-center"
+            >
+              {/* Icon Container */}
+              <div className="w-16 h-16 rounded-3xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-[#56CCF2]/60 group-hover:text-[#56CCF2] group-hover:bg-[#56CCF2]/10 transition-all shadow-xl group-hover:scale-110 mb-6">
+                <service.icon size={28} />
               </div>
-            );
-          })}
+
+              {/* Content */}
+              <div className="space-y-3 mb-8">
+                <span className="text-[8px] font-black px-2 py-0.5 rounded bg-[#56CCF2]/5 text-[#56CCF2]/60 border border-[#56CCF2]/10 tracking-widest uppercase italic">
+                  {service.badge}
+                </span>
+                <h3 className="text-xl font-[900] uppercase tracking-tighter italic text-[var(--foreground)] group-hover:text-[#56CCF2] transition-colors leading-none">
+                  {service.title}
+                </h3>
+                <p className="text-[11px] text-[var(--muted)] leading-relaxed opacity-60 italic">
+                  {service.desc}
+                </p>
+              </div>
+
+              {/* Action Link */}
+              <button
+                onClick={() => window.open(whatsappLink, "_blank")}
+                className="mt-auto inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#56CCF2]/60 group-hover:text-[#56CCF2] transition-all"
+              >
+                CONNECT NOW <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              {/* Subtle Side Glow */}
+              <div className="absolute inset-x-12 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-[#56CCF2]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            </motion.div>
+          ))}
         </div>
+
+        {/* BOTTOM CTA STRIP */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="mt-12 text-center"
+        >
+          <button
+            onClick={() => window.open(whatsappLink, "_blank")}
+            className="px-8 py-4 rounded-full bg-[var(--card)]/40 border border-[var(--border)] text-[var(--muted)] hover:text-[#56CCF2] hover:border-[#56CCF2]/30 transition-all flex items-center gap-3 mx-auto shadow-lg group"
+          >
+            <FiMessageCircle size={14} className="group-hover:rotate-12 transition-transform" />
+            <span className="text-[10px] font-black uppercase tracking-widest italic">Discuss Custom Architecture</span>
+          </button>
+        </motion.div>
+
       </div>
     </section>
   );

@@ -1,183 +1,84 @@
 "use client";
 
-const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Blue Buff";
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://mlbbtopup.in";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { FiShield, FiInfo } from "react-icons/fi";
 
+const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Blue Buff";
 
 export default function PrivacyPolicy() {
+  const sections = [
+    {
+      id: "01",
+      title: "Data Collection",
+      content: "We collect account details (Email, Phone, Game ID) and technical data (IP, Browser) exclusively for order delivery and fraud prevention."
+    },
+    {
+      id: "02",
+      title: "Usage Protocol",
+      content: "Your data is used solely to process orders and improve platform security. We never sell or trade your personal information for marketing."
+    },
+    {
+      id: "03",
+      title: "Security & Retention",
+      content: "We utilize encrypted gateways and retain logs only as long as legally required for transaction verification and auditing."
+    },
+    {
+      id: "04",
+      title: "Third-Party Apps",
+      content: "Our platform integrates with verified payment and analytics providers who operate under their own strict privacy standards."
+    }
+  ];
+
   return (
-    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] px-5 py-12">
-      <div className="max-w-3xl mx-auto">
+    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-[#56CCF2]/30 pb-32 transition-colors duration-300 px-6">
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-[var(--accent)] mb-4">
-          Privacy Policy
-        </h1>
+      <div className="max-w-4xl mx-auto pt-16 md:pt-24 relative z-10">
 
-        <p className="text-sm text-[var(--muted)] mb-10">
-          Last updated: November 2025
-        </p>
+        {/* HEADER - SIMPLIFIED */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-16 text-center md:text-left"
+        >
+          <h1 className="text-4xl md:text-6xl font-[1000] italic tracking-tighter uppercase leading-none mb-2">
+            PRIVACY <span className="text-[#56CCF2]">POLICY</span>
+          </h1>
+          <p className="text-[var(--muted)] text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic">
+            Data Protection Standards
+          </p>
+        </motion.div>
 
-        <p className="mb-8 leading-relaxed">
-          At <strong>{BRAND}</strong>, your privacy is important to us. This
-          Privacy Policy explains how we collect, use, disclose, and safeguard
-          your information when you access or use our platform.
-        </p>
-
-        <Section
-          title="1. Information We Collect"
-          content={
-            <>
-              <strong>Account & Order Information:</strong> Email address,
-              phone number, game ID, server details, and order history.
-              <br /><br />
-              <strong>Payment Information:</strong> Payments are processed via
-              secure third-party gateways. We do not store sensitive payment
-              credentials.
-              <br /><br />
-              <strong>Technical Data:</strong> IP address, browser type,
-              device information, and usage logs for analytics and fraud
-              prevention.
-            </>
-          }
-        />
-
-        <Section
-          title="2. How We Use Your Information"
-          content={
-            <>
-              We use collected information to:
-              <br /><br />
-              • Process and deliver orders accurately  
-              <br />
-              • Prevent fraud and unauthorized transactions  
-              <br />
-              • Improve platform functionality  
-              <br />
-              • Provide customer support  
-              <br /><br />
-              We do not sell or trade personal data for marketing purposes.
-            </>
-          }
-        />
-
-        <Section
-          title="3. Cookies & Tracking Technologies"
-          content={
-            <>
-              We use cookies to maintain sessions, remember preferences, and
-              analyze traffic. You may disable cookies through browser settings,
-              though some features may not function properly.
-            </>
-          }
-        />
-
-        <Section
-          title="4. Data Retention"
-          content={
-            <>
-              We retain personal data only as long as necessary to fulfill
-              transactional, legal, or regulatory obligations. Order records may
-              be stored for accounting and dispute resolution purposes.
-            </>
-          }
-        />
-
-        <Section
-          title="5. Data Security"
-          content={
-            <>
-              We implement appropriate technical and organizational safeguards
-              to protect personal information. However, no online system can
-              guarantee absolute security.
-            </>
-          }
-        />
-
-        <Section
-          title="6. Third-Party Services"
-          content={
-            <>
-              We may rely on third-party providers for payment processing,
-              analytics, hosting, and content delivery. These services operate
-              under their own privacy policies.
-            </>
-          }
-        />
-
-        <Section
-          title="7. International Data Transfers"
-          content={
-            <>
-              If you access our platform from outside our primary operating
-              jurisdiction, your data may be transferred and processed in other
-              regions in accordance with applicable laws.
-            </>
-          }
-        />
-
-        <Section
-          title="8. Your Rights"
-          content={
-            <>
-              Depending on your location, you may have the right to:
-              <br /><br />
-              • Access your personal data  
-              <br />
-              • Request corrections  
-              <br />
-              • Request deletion (subject to legal obligations)  
-              <br /><br />
-              To exercise these rights, please contact us via our{" "}
-              <a href="/contact" className="text-[var(--accent)] hover:underline">
-                Contact Page
-              </a>.
-            </>
-          }
-        />
-
-        <Section
-          title="9. Children’s Privacy"
-          content={
-            <>
-              Our services are not directed toward children under 13 (or the
-              minimum legal age in your jurisdiction). We do not knowingly
-              collect personal data from minors without parental consent.
-            </>
-          }
-        />
-
-        <Section
-          title="10. Policy Updates"
-          content={
-            <>
-              We may update this Privacy Policy from time to time. Updates will
-              be posted on this page with a revised “Last updated” date.
-            </>
-          }
-        />
-
-        <div className="mt-12 pt-6 border-t border-[var(--border)] text-sm text-[var(--muted)]">
-          If you have questions regarding this Privacy Policy, please contact{" "}
-          <a href="/contact" className="text-[var(--accent)] hover:underline">
-            {BRAND} Support
-          </a>.
+        {/* COMPACT LIST */}
+        <div className="space-y-3">
+          {sections.map((section, i) => (
+            <motion.section
+              key={section.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: i * 0.05 }}
+              whileHover={{ backgroundColor: "var(--card)" }}
+              className="p-6 rounded-2xl bg-[var(--card)]/40 border border-[var(--border)] group flex items-start gap-5 transition-all"
+            >
+              <div className="text-xl font-black italic text-[#56CCF2] opacity-20 group-hover:opacity-100 transition-opacity pt-0.5">
+                {section.id}
+              </div>
+              <div>
+                <h2 className="text-base font-[900] italic uppercase tracking-tighter text-[var(--foreground)] mb-1.5">{section.title}</h2>
+                <p className="text-[11px] md:text-xs text-[var(--muted)] leading-relaxed opacity-60 italic">{section.content}</p>
+              </div>
+            </motion.section>
+          ))}
         </div>
+
+        {/* FULL POLICY LINK */}
+        <div className="mt-12 p-8 rounded-3xl border border-[var(--border)] text-center opacity-40">
+          <FiShield className="mx-auto mb-4 text-[#56CCF2]" size={20} />
+          <p className="text-[10px] font-bold uppercase tracking-widest max-w-xs mx-auto mb-6">Standard compliance protocols are active. For full legal disclosure, contact our data protection officer.</p>
+          <Link href="/contact" className="text-[9px] font-black uppercase text-[#56CCF2] border-b border-[#56CCF2]/30 pb-1">Legal Support Access</Link>
+        </div>
+
       </div>
     </main>
-  );
-}
-
-/* Reusable Section */
-function Section({ title, content }) {
-  return (
-    <section className="mb-8">
-      <h2 className="text-xl sm:text-2xl font-semibold text-[var(--accent)] mb-3">
-        {title}
-      </h2>
-      <p className="leading-relaxed text-[var(--foreground)]/90">
-        {content}
-      </p>
-    </section>
   );
 }

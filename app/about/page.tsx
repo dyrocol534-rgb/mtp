@@ -1,139 +1,137 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Link from "next/link";
+import { FiCheck, FiZap, FiShield, FiTrendingUp, FiArrowRight } from "react-icons/fi";
 
 const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Blue Buff";
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://mlbbtopup.in";
-
-export const metadata = {
-  title: `About ${BRAND} | Instant Game Top-Ups & Secure Payments`,
-  description: `${BRAND} is a fast and secure game top-up platform offering instant delivery, trusted payment gateways, and competitive pricing. Available 24×7 for gamers worldwide.`,
-  keywords: [
-    "game top up",
-    "instant game recharge",
-    "mobile legends top up",
-    "pubg recharge",
-    "secure game payments",
-    "online game credits",
-    "mlbb topup india",
-    `${BRAND}`,
-  ],
-  alternates: {
-    canonical: `${SITE_URL}/about`,
-  },
-  openGraph: {
-    title: `About ${BRAND}`,
-    description:
-      "Fast, secure, and automated game top-ups with instant delivery.",
-    url: `${SITE_URL}/about`,
-    siteName: BRAND,
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `About ${BRAND}`,
-    description:
-      "Instant game top-ups with secure payments and 24×7 delivery.",
-  },
-};
 
 export default function AboutPage() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
+
   return (
-    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+    <main className="min-h-screen relative overflow-hidden bg-[var(--background)] text-[var(--foreground)] selection:bg-[#56CCF2]/30 pb-32 transition-colors duration-300 px-6">
 
-      {/* Hero */}
-      <section className="relative text-center py-20 px-6 border-b border-[var(--border)]">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[var(--accent)] opacity-10 blur-[140px]" />
-        </div>
+      {/* Background Lighting */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[20%] w-[70%] h-[50%] bg-blue-500/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[50%] h-[50%] bg-purple-500/5 rounded-full blur-[120px]" />
+      </div>
 
-        <h1 className="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-[var(--accent)] to-purple-500 bg-clip-text text-transparent">
-          About {BRAND}
-        </h1>
+      <div className="max-w-4xl mx-auto pt-16 md:pt-28 relative z-10">
 
-        <p className="text-[var(--muted)] text-base sm:text-lg max-w-2xl mx-auto">
-          A trusted platform delivering instant game top-ups, secure payments,
-          and automated processing — built for modern gamers.
-        </p>
-      </section>
-
-      {/* Story */}
-      <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-[var(--accent)] text-center">
-          Our Mission
-        </h2>
-
-        <p className="text-[var(--muted)] leading-relaxed text-base sm:text-lg text-center max-w-3xl mx-auto mb-8">
-          {BRAND} was created to simplify in-game purchases. We focus on
-          speed, reliability, and transparency — ensuring gamers receive their
-          credits instantly without unnecessary steps or security concerns.
-        </p>
-
-        <div className="grid sm:grid-cols-2 gap-6 text-[var(--muted)] text-base">
-          <ul className="space-y-3">
-            <li>✔ Instant automated top-ups</li>
-            <li>✔ 24×7 system availability</li>
-          </ul>
-          <ul className="space-y-3">
-            <li>✔ Secure payment gateways</li>
-            <li>✔ Transparent pricing structure</li>
-          </ul>
-        </div>
-      </section>
-
-      {/* Why Choose */}
-      <section className="py-20 px-6 max-w-6xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-semibold mb-12 text-center text-[var(--accent)]">
-          Why Choose {BRAND}
-        </h2>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            {
-              title: "Instant Delivery",
-              desc: "Orders are processed automatically and delivered immediately after confirmation.",
-            },
-            {
-              title: "Secure Payments",
-              desc: "Integrated with trusted and verified payment providers.",
-            },
-            {
-              title: "Affordable Pricing",
-              desc: "Competitive rates with no hidden fees.",
-            },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="p-6 rounded-xl border border-[var(--border)] bg-[var(--card)] hover:shadow-lg hover:border-[var(--accent)] transition-all"
-            >
-              <h3 className="text-lg font-semibold mb-2 text-[var(--accent)]">
-                {item.title}
-              </h3>
-              <p className="text-[var(--muted)] text-sm sm:text-base">
-                {item.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 text-center border-t border-[var(--border)] px-6">
-        <h2 className="text-3xl font-bold mb-4 text-[var(--foreground)]">
-          Trusted by Gamers
-        </h2>
-
-        <p className="text-[var(--muted)] mb-8 max-w-xl mx-auto">
-          Thousands of successful transactions processed securely.
-          Join {BRAND} and experience fast, reliable game top-ups.
-        </p>
-
-        <Link
-          href="/games"
-          className="inline-block bg-gradient-to-r from-[var(--accent)] to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:scale-105 transition"
+        {/* HEADER SECTION */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-20 text-center md:text-left"
         >
-          Explore Games
-        </Link>
-      </section>
+          <div className="inline-block px-4 py-1.5 rounded-full bg-[#56CCF2]/5 border border-[#56CCF2]/10 mb-6">
+            <span className="text-[#56CCF2] text-[10px] font-black uppercase tracking-widest italic">Our Identity</span>
+          </div>
+          <h1 className="text-5xl md:text-8xl font-[1000] italic tracking-tighter uppercase leading-[0.85] mb-6">
+            ABOUT <span className="text-[#56CCF2]">{BRAND.toUpperCase()}</span>
+          </h1>
+          <p className="text-[var(--muted)] text-[10px] md:text-xs font-[900] uppercase tracking-[0.4em] opacity-60 italic leading-relaxed max-w-xl">
+            DEFINING THE GOLD STANDARD IN AUTOMATED GAME TOP-UPS
+          </p>
+        </motion.div>
+
+        {/* MISSION SECTION */}
+        <motion.section
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="mb-32"
+        >
+          <motion.div variants={itemVariants} className="bg-[var(--card)]/40 border border-[var(--border)] rounded-[40px] p-8 md:p-12 relative overflow-hidden mb-12">
+            <h2 className="text-2xl md:text-4xl font-[900] italic uppercase tracking-tighter text-[var(--foreground)] mb-6">
+              OUR <span className="text-[#56CCF2]">MISSION</span>
+            </h2>
+            <p className="text-[var(--muted)] text-base md:text-lg leading-relaxed opacity-70 mb-10 italic">
+              {BRAND} was engineered to eliminate the friction in premium gaming transactions. We believe that securing your diamonds, passes, and credits should be as fast as the games you play.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                "Instant automated delivery systems",
+                "24/7 high-availability infrastructure",
+                "Secure Indian payment integrations",
+                "Transparent & market-leading rates"
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-0 md:last:border-b">
+                  <div className="w-5 h-5 rounded-full bg-[#56CCF2]/10 flex items-center justify-center text-[#56CCF2]">
+                    <FiCheck size={12} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-60 italic">{item}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </motion.section>
+
+        {/* FEATURES GRID */}
+        <motion.section
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="mb-32"
+        >
+          <div className="flex items-center gap-4 mb-12 px-2">
+            <div className="h-[1px] flex-1 bg-[var(--border)]" />
+            <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--muted)] opacity-40 italic whitespace-nowrap">WHY CHOOSE US</h2>
+            <div className="h-[1px] flex-1 bg-[var(--border)]" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                title: "Velocity",
+                icon: FiZap,
+                desc: "Automated processing ensures credits hit your ID within seconds of confirmation."
+              },
+              {
+                title: "Fortress",
+                icon: FiShield,
+                desc: "Bank-grade encryption and verified gateways protect every single transaction."
+              },
+              {
+                title: "Elite Rates",
+                icon: FiTrendingUp,
+                desc: "We negotiate the best deals to ensure you get maximum value for every rupee."
+              }
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                variants={itemVariants}
+                className="p-8 rounded-[32px] bg-[var(--card)]/20 border border-[var(--border)] hover:border-[#56CCF2]/30 transition-all group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-[#56CCF2] group-hover:bg-[#56CCF2] group-hover:text-black transition-all mb-6">
+                  <feature.icon size={20} />
+                </div>
+                <h3 className="text-xl font-[900] italic uppercase tracking-tighter text-[var(--foreground)] mb-3">{feature.title}</h3>
+                <p className="text-xs text-[var(--muted)] leading-relaxed opacity-50">{feature.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+
+      </div>
     </main>
   );
 }
