@@ -1,17 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FiChevronDown,
   FiCalendar,
   FiUser,
   FiGrid,
   FiCreditCard,
-  FiPackage,
   FiHash,
-  FiShare2,
+  FiCheckCircle,
+  FiAlertCircle,
+  FiLoader,
   FiCopy,
-  FiX,
+  FiCheck,
 } from "react-icons/fi";
 
 /* ================= TYPES ================= */
@@ -29,237 +31,150 @@ export type OrderType = {
   createdAt: string;
 };
 
-/* ================= GAME NAME ================= */
+/* ================= HELPERS ================= */
 
 const getGameName = (slug: string) => {
   const s = slug.toLowerCase();
-
-  const mlbbSlugs = [
-    "mobile-legends988",
-    "mlbb-smallphp638",
-    "mlbb-double332",
-    "sgmy-mlbb893",
-    "value-pass-ml948",
-    "mlbb-russia953",
-    "mlbb-indo42",
-  ];
-
+  const mlbbSlugs = ["mobile-legends", "mlbb", "diamond"];
   if (mlbbSlugs.some((k) => s.includes(k))) return "Mobile Legends";
-  if (s.includes("pubg-mobile138")) return "BGMI";
-
-  return slug;
+  if (s.includes("pubg") || s.includes("bgmi")) return "BGMI";
+  return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 };
 
-/* ================= MAIN ================= */
+/* ================= MAIN ITEM COMPONENT ================= */
 
 export default function OrderItem({ order }: { order: OrderType }) {
   const [open, setOpen] = useState(false);
-  const [showReceipt, setShowReceipt] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const status = order.topupStatus || order.status;
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(order.orderId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
-  const statusStyle = {
-    success: "bg-green-500/10 text-green-400 border-green-500/30",
-    failed: "bg-red-500/10 text-red-400 border-red-500/30",
-    pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
-  }[status] || "bg-yellow-500/10 text-yellow-400 border-yellow-500/30";
+  const rawStatus = (order.topupStatus || order.status || "").toLowerCase();
+
+  const getStatusConfig = (s: string) => {
+    if (s.includes("success") || s.includes("completed") || s.includes("deployed")) {
+      return { color: "#10b981", icon: FiCheckCircle, label: "SUCCESS" };
+    }
+    if (s.includes("failed") || s.includes("cancelled") || s.includes("error")) {
+      return { color: "#ef4444", icon: FiAlertCircle, label: "FAILED" };
+    }
+    return { color: "#f59e0b", icon: FiLoader, label: "PENDING" };
+  };
+
+  const config = getStatusConfig(rawStatus);
 
   return (
-    <>
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-sm">
-        {/* HEADER */}
-        <div className="px-4 py-4 space-y-2">
-          {/* ROW 1 */}
-          <div className="flex items-center gap-2 text-xs font-mono text-[var(--muted)]">
-            <FiHash />
-            <span className="truncate">{order.orderId}</span>
-          </div>
+    <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-[var(--card)]/40 backdrop-blur-xl transition-all duration-300">
 
-          {/* ROW 2 */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
-              <FiCalendar />
-              {new Date(order.createdAt).toLocaleDateString()}
-            </div>
-            <div className="text-base font-bold">₹{order.price}</div>
-          </div>
-
-          {/* ROW 3 */}
-          <div className="flex items-center justify-between">
-            <span
-              className={`px-3 py-1 text-xs rounded-full font-semibold border ${statusStyle}`}
-            >
-              {status.toUpperCase()}
-            </span>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowReceipt(true)}
-                className="p-2 rounded-lg border border-[var(--border)]"
-                aria-label="Open receipt"
-              >
-                <FiShare2 size={16} />
-              </button>
-
-              <button
-                onClick={() => setOpen(!open)}
-                className="p-2"
-                aria-label="Expand"
-              >
-                <FiChevronDown
-                  className={`transition-transform ${
-                    open ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
+      {/* TOP STATUS BAR */}
+      <div
+        className="px-4 py-1.5 flex items-center justify-between border-b border-white/5"
+        style={{ backgroundColor: `${config.color}05` }}
+      >
+        <div className="flex items-center gap-2" style={{ color: config.color }}>
+          <config.icon size={10} className={config.label === 'PENDING' ? 'animate-spin' : ''} />
+          <span className="text-[9px] font-black uppercase tracking-[0.2em] italic">
+            {config.label}
+          </span>
         </div>
+        <div className="flex items-center gap-3 min-w-0 flex-1 justify-end">
+          <div className="flex flex-col items-end min-w-0">
+            <div className="text-[8px] font-black uppercase tracking-widest text-white/20 mb-0.5">Order Identity</div>
+            <div className="text-[9px] font-black italic text-white/60 font-mono break-all text-right leading-tight">
+              {order.orderId.toUpperCase()}
+            </div>
+          </div>
+          <button
+            onClick={handleCopy}
+            className={`p-2 rounded-lg transition-all border ${copied
+              ? "bg-green-500/10 border-green-500/20 text-green-500"
+              : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:text-white"
+              }`}
+          >
+            {copied ? <FiCheck size={12} /> : <FiCopy size={12} />}
+          </button>
+        </div>
+      </div>
 
-        {/* EXPANDED */}
-        <div
-          className={`grid transition-all duration-300 ${
-            open
-              ? "grid-rows-[1fr] opacity-100"
-              : "grid-rows-[0fr] opacity-0"
-          }`}
-        >
-          <div className="overflow-hidden px-4 pb-4">
-            <div className="border-t border-[var(--border)] pt-4 space-y-3 text-sm">
-              <Info label="Game" value={getGameName(order.gameSlug)} icon={<FiUser />} />
-              <Info label="Player ID" value={order.playerId} mono icon={<FiUser />} />
-              <Info label="Zone ID" value={order.zoneId} mono icon={<FiGrid />} />
-              <Info
-                label="Payment"
-                value={order.paymentMethod.toUpperCase()}
-                icon={<FiCreditCard />}
-              />
+      {/* CONTENT AREA */}
+      <div className="p-4 sm:p-5 cursor-pointer select-none" onClick={() => setOpen(!open)}>
+        <div className="flex items-center justify-between gap-4">
 
-              <div className="rounded-xl border border-[var(--border)] bg-[var(--background)]/60 p-3">
-                <div className="flex items-center gap-2 text-xs text-[var(--muted)] mb-1">
-                  <FiPackage /> Item
-                </div>
-                <p className="font-medium break-words">
-                  {order.itemName}
-                </p>
+          {/* GAME & ITEM */}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-black uppercase italic tracking-tighter leading-none mb-1">
+              {getGameName(order.gameSlug)}
+            </h3>
+            <div className="flex flex-col gap-1">
+              <p className="text-[9px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em] italic">
+                {order.itemName}
+              </p>
+              <div className="flex items-center gap-1.5 py-1 px-2 rounded-lg bg-white/5 border border-white/5 w-fit">
+                <FiUser className="text-[var(--accent)]/40" size={10} />
+                <span className="text-[9px] font-black uppercase tracking-widest text-white/60 font-mono break-all leading-none">
+                  {order.playerId}
+                </span>
               </div>
             </div>
           </div>
+
+          {/* PRICE & TOGGLE */}
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-end">
+              <div className="text-xl font-black italic tracking-tighter text-white leading-none">
+                ₹{order.price}
+              </div>
+              <div className="text-[8px] font-bold text-[var(--muted)]/30 uppercase mt-1">
+                {new Date(order.createdAt).toLocaleDateString()}
+              </div>
+            </div>
+
+            <motion.div
+              animate={{ rotate: open ? 180 : 0 }}
+              className="p-1 text-[var(--muted)]/20"
+            >
+              <FiChevronDown size={20} />
+            </motion.div>
+          </div>
         </div>
       </div>
 
-      {showReceipt && (
-        <ReceiptModal order={order} onClose={() => setShowReceipt(false)} />
-      )}
-    </>
-  );
-}
-
-/* ================= RECEIPT MODAL ================= */
-
-function ReceiptModal({
-  order,
-  onClose,
-}: {
-  order: OrderType;
-  onClose: () => void;
-}) {
-  const receiptText = `
-Order Receipt
-
-Order ID: ${order.orderId}
-Game: ${getGameName(order.gameSlug)}
-Player ID: ${order.playerId}
-Zone ID: ${order.zoneId}
-Item: ${order.itemName}
-Payment: ${order.paymentMethod.toUpperCase()}
-Date: ${new Date(order.createdAt).toLocaleString()}
-`.trim();
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(receiptText);
-    alert("Copied");
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: "Order Receipt",
-        text: receiptText,
-      });
-    } else {
-      await navigator.clipboard.writeText(receiptText);
-      alert("Share not supported. Copied instead.");
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-end justify-center">
-      <div className="w-full bg-white text-black rounded-t-2xl p-5 relative">
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 text-gray-500"
-        >
-          <FiX size={18} />
-        </button>
-
-        <h2 className="text-lg font-bold text-center mb-4">
-          Receipt
-        </h2>
-
-        <pre className="text-xs bg-gray-100 rounded-xl p-3 whitespace-pre-wrap mb-4">
-          {receiptText}
-        </pre>
-
-        {/* COPY LEFT · SHARE RIGHT */}
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={handleCopy}
-            className="flex items-center justify-center gap-2
-                       border border-[var(--border)] py-2.5 rounded-xl font-semibold"
+      {/* EXPANDED DATA */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="px-5 pb-5 overflow-hidden"
           >
-            <FiCopy /> Copy
-          </button>
-
-          <button
-            onClick={handleShare}
-            className="flex items-center justify-center gap-2
-                       bg-[var(--primary)] text-white py-2.5 rounded-xl font-semibold"
-          >
-            <FiShare2 /> Share
-          </button>
-        </div>
-      </div>
+            <div className="border-t border-white/5 pt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <InfoNode label="Player ID" value={order.playerId} icon={FiUser} mono />
+              <InfoNode label="Zone ID" value={order.zoneId} icon={FiGrid} mono />
+              <InfoNode label="Payment" value={order.paymentMethod.toUpperCase()} icon={FiCreditCard} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-/* ================= HELPERS ================= */
-
-function Info({
-  icon,
-  label,
-  value,
-  mono,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
+function InfoNode({ label, value, icon: Icon, mono }: any) {
   return (
-    <div className="flex justify-between items-center gap-3">
-      <div className="flex items-center gap-2 text-[var(--muted)]">
-        {icon}
-        <span>{label}</span>
+    <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+      <div className="flex items-center gap-2 text-[var(--muted)] font-black uppercase text-[8px] tracking-widest opacity-30">
+        <Icon size={12} />
+        {label}
       </div>
-      <span
-        className={`${
-          mono ? "font-mono text-xs" : "font-medium"
-        } text-right break-all`}
-      >
-        {value}
-      </span>
+      <div className={`text-white uppercase font-black text-[10px] ${mono ? 'font-mono' : ''}`}>
+        {value || 'N/A'}
+      </div>
     </div>
   );
 }

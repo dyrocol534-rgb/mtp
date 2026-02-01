@@ -1,6 +1,7 @@
 "use client";
 
-import { JSX, useState } from "react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaPhoneAlt,
   FaInstagram,
@@ -9,72 +10,25 @@ import {
   FaHeadset,
   FaPaperPlane,
 } from "react-icons/fa";
-
-/* ===================== CONFIG ===================== */
+import { FiChevronDown, FiZap, FiTarget } from "react-icons/fi";
 
 const SUPPORT_CONFIG = {
   header: {
-    title: "Support Center",
-    subtitle:
-      "Facing an issue? Contact us instantly or submit a support query and our team will assist you.",
+    title: "MISSION",
+    highlight: "CONTROL",
+    subtitle: "DIRECT COMMS ESTABLISHED. OUR ELITE OVERSEERS ARE STANDING BY FOR ARCHITECTURAL SUPPORT.",
   },
-
   contacts: {
-    title: "Contact Us Directly",
+    title: "Support Access Points",
     items: [
-      {
-        id: "phone",
-        title: "Call Support",
-        value: "+91 6372305866",
-        href: "tel:+916372305866",
-        icon: "phone",
-        external: false,
-      },
-      {
-        id: "instagram",
-        title: "Instagram",
-        value: "@mlbbtopup.in",
-        href: "https://www.instagram.com/mlbbtopup.in",
-        icon: "instagram",
-        external: true,
-      },
-      {
-        id: "youtube",
-        title: "YouTube",
-        value: "Support Channel",
-        href: "https://whatsapp.com/channel/0029Vb87jgR17En1n5PKy129",
-        icon: "youtube",
-        external: true,
-      },
-      {
-        id: "whatsapp",
-        title: "WhatsApp Group",
-        value: "Join Support Group",
-        href: "https://whatsapp.com/channel/0029Vb87jgR17En1n5PKy129",
-        icon: "whatsapp",
-        external: true,
-      },
+      { id: "phone", title: "Voice Comm", value: "+91 6372305866", href: "tel:+916372305866", icon: <FaPhoneAlt /> },
+      { id: "instagram", title: "Instagram", value: "@mlbbtopup.in", href: "https://www.instagram.com/mlbbtopup.in", icon: <FaInstagram /> },
+      { id: "youtube", title: "YouTube", value: "Signal Channel", href: "https://whatsapp.com/channel/0029Vb87jgR17En1n5PKy129", icon: <FaYoutube /> },
+      { id: "whatsapp", title: "WhatsApp", value: "Tactical Group", href: "https://whatsapp.com/channel/0029Vb87jgR17En1n5PKy129", icon: <FaWhatsapp /> },
     ],
   },
-
-  queryTypes: [
-    "Order Issue",
-    "Payment Issue",
-    "Wallet Issue",
-    "General Inquiry",
-  ],
+  queryTypes: ["Order Anomaly", "Payment Failure", "Wallet Protocol", "General Intelligence"],
 };
-
-/* ===================== ICON MAP ===================== */
-
-const ICON_MAP: Record<string, JSX.Element> = {
-  phone: <FaPhoneAlt />,
-  instagram: <FaInstagram />,
-  youtube: <FaYoutube />,
-  whatsapp: <FaWhatsapp />,
-};
-
-/* ===================== COMPONENT ===================== */
 
 export default function QueryTab() {
   const [queryType, setQueryType] = useState("");
@@ -84,153 +38,130 @@ export default function QueryTab() {
 
   const handleSubmit = async () => {
     if (!queryType || !queryMessage.trim()) return;
-
     setIsSubmitting(true);
     const storedEmail = sessionStorage.getItem("email");
     const storedPhone = sessionStorage.getItem("phone");
-
     try {
       const res = await fetch("/api/support/query", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: storedEmail || null,
-          phone: storedPhone || null,
-          type: queryType,
-          message: queryMessage,
-        }),
+        body: JSON.stringify({ email: storedEmail, phone: storedPhone, type: queryType, message: queryMessage }),
       });
-
       const data = await res.json();
-
-      if (data.success) {
-        setQuerySuccess("Your query has been submitted successfully.");
-      } else {
-        setQuerySuccess(data.message || "Something went wrong.");
-      }
-
-      setQueryType("");
-      setQueryMessage("");
+      if (data.success) setQuerySuccess("TRANSMISSION SUCCESSFUL. STAND BY.");
+      else setQuerySuccess(data.message || "PROTOCOL BREACH. RETRY.");
+      setQueryType(""); setQueryMessage("");
     } catch {
-      setQuerySuccess("Failed to submit query. Please try again.");
+      setQuerySuccess("CONNECTION LOST. RETRY.");
     } finally {
       setIsSubmitting(false);
-      setTimeout(() => setQuerySuccess(""), 3000);
+      setTimeout(() => setQuerySuccess(""), 4000);
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-10">
-
-      {/* ================= HEADER ================= */}
-      <div>
-        <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <FaHeadset /> {SUPPORT_CONFIG.header.title}
-        </h2>
-        <p className="text-sm text-[var(--muted)] max-w-lg mt-1">
-          {SUPPORT_CONFIG.header.subtitle}
-        </p>
-      </div>
-
-      {/* ================= CONTACT SECTION ================= */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-        <h3 className="text-lg font-semibold mb-4">
-          {SUPPORT_CONFIG.contacts.title}
-        </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {SUPPORT_CONFIG.contacts.items.map((item) => (
-            <a
-              key={item.id}
-              href={item.href}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
-              className="flex items-center gap-4 rounded-xl
-                         border border-[var(--border)] p-4
-                         hover:border-[var(--accent)]
-                         hover:bg-[var(--background)]
-                         transition"
-            >
-              <div className="p-3 rounded-xl
-                              bg-[var(--accent)]/10
-                              text-[var(--accent)] text-lg shrink-0">
-                {ICON_MAP[item.icon]}
-              </div>
-
-              <div className="min-w-0">
-                <p className="font-medium">{item.title}</p>
-                <p className="text-xs text-[var(--muted)] truncate">
-                  {item.value}
-                </p>
-              </div>
-            </a>
-          ))}
+    <div className="max-w-5xl mx-auto space-y-12">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-3">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/20 mb-1">
+            <FiZap className="text-[var(--accent)] animate-pulse" size={12} />
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--accent)] italic">Comms Protocol</span>
+          </div>
+          <h2 className="text-4xl font-black uppercase italic tracking-tighter leading-none">
+            {SUPPORT_CONFIG.header.title} <span className="text-[var(--accent)]">{SUPPORT_CONFIG.header.highlight}</span>
+          </h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--muted)] opacity-50 max-w-lg leading-relaxed">
+            {SUPPORT_CONFIG.header.subtitle}
+          </p>
         </div>
       </div>
 
-      {/* ================= QUERY FORM ================= */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-        <h3 className="text-lg font-semibold mb-5">
-          Submit a Query
-        </h3>
-
-        {querySuccess && (
-          <div className="mb-4 rounded-xl
-                          bg-green-500/10 text-green-500
-                          px-4 py-2 text-sm">
-            {querySuccess}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        {/* DIRECT ACCESS NODES */}
+        <div className="space-y-6">
+          <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--muted)]/60 italic flex items-center gap-2">
+            <FiTarget className="text-[var(--accent)]" /> {SUPPORT_CONFIG.contacts.title}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {SUPPORT_CONFIG.contacts.items.map((item, idx) => (
+              <motion.a
+                key={item.id}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: idx * 0.05 }}
+                className="group relative h-full flex items-center gap-3.5 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-[var(--accent)]/30 transition-all duration-300 overflow-hidden"
+              >
+                <div className="p-3 rounded-xl bg-white/5 text-[var(--muted)] group-hover:bg-[var(--accent)] group-hover:text-black transition-all">
+                  {item.icon}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-black uppercase tracking-widest italic leading-none mb-1">{item.title}</p>
+                  <p className="text-[8px] font-medium text-[var(--muted)]/40 truncate">{item.value}</p>
+                </div>
+              </motion.a>
+            ))}
           </div>
-        )}
 
-        {/* Type */}
-        <select
-          value={queryType}
-          onChange={(e) => setQueryType(e.target.value)}
-          className="w-full mb-4 p-3 rounded-xl
-                     bg-[var(--background)]
-                     border border-[var(--border)]
-                     focus:border-[var(--accent)]
-                     outline-none"
-        >
-          <option value="">Select Query Type</option>
-          {SUPPORT_CONFIG.queryTypes.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
+          <div className="p-5 rounded-[2rem] bg-[var(--accent)]/2 border border-[var(--accent)]/5 flex items-center justify-between border-dashed">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping" />
+              <span className="text-[8px] font-black tracking-widest text-green-500/80 uppercase">Signals Normal</span>
+            </div>
+            <span className="text-[8px] font-black tracking-widest text-[var(--muted)]/20 uppercase italic">Response Est. 15m</span>
+          </div>
+        </div>
 
-        {/* Message */}
-        <textarea
-          className="w-full mb-4 p-3 rounded-xl h-32
-                     bg-[var(--background)]
-                     border border-[var(--border)]
-                     focus:border-[var(--accent)]
-                     outline-none resize-none"
-          placeholder="Describe your issue in detail..."
-          value={queryMessage}
-          onChange={(e) => setQueryMessage(e.target.value)}
-        />
+        {/* TACTICAL QUERY FORM */}
+        <div className="p-6 sm:p-8 rounded-[2.5rem] bg-white/5 border border-white/5 backdrop-blur-xl space-y-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-8 text-white/5 rotate-12">
+            <FaHeadset size={80} />
+          </div>
 
-        {/* Submit */}
-        <button
-          disabled={!queryType || !queryMessage || isSubmitting}
-          onClick={handleSubmit}
-          className={`w-full py-3 rounded-xl
-                      font-medium flex items-center
-                      justify-center gap-2 transition ${
-            !queryType || !queryMessage || isSubmitting
-              ? "bg-gray-500 cursor-not-allowed"
-              : "bg-[var(--accent)] hover:opacity-90"
-          }`}
-        >
-          {isSubmitting ? "Submitting..." : (
-            <>
-              <FaPaperPlane />
-              Submit Query
-            </>
-          )}
-        </button>
+          <h3 className="text-xl font-black uppercase italic tracking-tighter relative z-10">Intelligence Report</h3>
+
+          <AnimatePresence mode="wait">
+            {querySuccess && (
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 rounded-xl bg-[var(--accent)]/10 border border-[var(--accent)]/20 text-[var(--accent)] text-[9px] font-black uppercase tracking-widest flex items-center gap-3">
+                <FiZap size={14} /> {querySuccess}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="space-y-4 relative z-10">
+            <div className="relative">
+              <select
+                value={queryType}
+                onChange={(e) => setQueryType(e.target.value)}
+                className="w-full p-4 rounded-2xl bg-black/40 border border-white/10 text-[xs] font-black uppercase tracking-widest outline-none focus:border-[var(--accent)]/40 appearance-none cursor-pointer"
+              >
+                <option value="" className="bg-black">SELECT DATA TYPE</option>
+                {SUPPORT_CONFIG.queryTypes.map((type) => (
+                  <option key={type} value={type} className="bg-black">{type.toUpperCase()}</option>
+                ))}
+              </select>
+              <FiChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none opacity-40" />
+            </div>
+
+            <textarea
+              className="w-full p-5 rounded-[2rem] h-28 bg-black/40 border border-white/10 text-xs font-black uppercase tracking-widest outline-none focus:border-[var(--accent)]/40 resize-none transition-all placeholder:text-white/5"
+              placeholder="DETAILS OF ANOMALY..."
+              value={queryMessage}
+              onChange={(e) => setQueryMessage(e.target.value)}
+            />
+
+            <button
+              disabled={!queryType || !queryMessage || isSubmitting}
+              onClick={handleSubmit}
+              className="w-full p-4 rounded-[2rem] bg-[var(--accent)] text-black font-black uppercase tracking-[0.2em] italic text-xs shadow-[0_20px_40px_-10px_rgba(var(--accent-rgb),0.3)] hover:scale-[1.01] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-3"
+            >
+              {isSubmitting ? <FiZap className="animate-spin" size={18} /> : <>INITIATE BURST</>}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

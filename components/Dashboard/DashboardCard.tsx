@@ -1,79 +1,69 @@
-  import { JSX } from "react";
-  import {
-    FiShoppingBag,
-    FiUsers,
-    FiDollarSign,
-    FiActivity,
-  } from "react-icons/fi";
+"use client";
 
-  interface DashboardCardProps {
-    tab: {
-      key: string;
-      label: string;
-      value: string | number;
-    };
-    activeTab: string;
-    onClick: () => void;
-  }
+import { motion } from "framer-motion";
+import { IconType } from "react-icons";
+import { FiActivity } from "react-icons/fi";
 
-  /* ================= ICON MAP ================= */
-  const ICON_MAP: Record<string, JSX.Element> = {
-    orders: <FiShoppingBag />,
-    users: <FiUsers />,
-    revenue: <FiDollarSign />,
-    activity: <FiActivity />,
+interface DashboardCardProps {
+  tab: {
+    key: string;
+    label: string;
+    value: string | number;
+    icon: IconType;
   };
+  activeTab: string;
+  onClick: () => void;
+}
 
-  export default function DashboardCard({
-    tab,
-    activeTab,
-    onClick,
-  }: DashboardCardProps) {
-    const isActive = activeTab === tab.key;
+export default function DashboardCard({
+  tab,
+  activeTab,
+  onClick,
+}: DashboardCardProps) {
+  const isActive = activeTab === tab.key;
+  const Icon = tab.icon || FiActivity;
 
-    return (
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={onClick}
-        onKeyDown={(e) => e.key === "Enter" && onClick()}
-        className={`group p-5 rounded-2xl cursor-pointer border
-                    transition-all duration-300
-                    active:scale-[0.98]
-                    shadow-sm hover:shadow-lg
-          ${
-            isActive
-              ? "border-[var(--accent)] bg-[var(--card)]"
-              : "border-[var(--border)] bg-[var(--card)]/60 hover:bg-[var(--card)]"
-          }`}
-      >
-        {/* ================= HEADER ================= */}
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-[var(--muted)]">
+  return (
+    <motion.button
+      whileHover={{ y: -3, scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className={`relative w-full group p-4 rounded-2xl border transition-all duration-300 text-left overflow-hidden
+        ${isActive
+          ? "bg-[var(--accent)] border-[var(--accent)] shadow-[0_12px_24px_-8px_rgba(var(--accent-rgb),0.4)]"
+          : "bg-[var(--card)]/40 backdrop-blur-md border-white/5 hover:border-[var(--accent)]/30"
+        }`}
+    >
+      <div className="relative z-10 flex items-center justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <span className={`text-[8px] font-black uppercase tracking-[0.2em] italic
+            ${isActive ? "text-black/50" : "text-[var(--muted)]/50"}
+          `}>
             {tab.label}
-          </p>
-
-          <div
-            className={`p-2 rounded-xl text-lg transition
-              ${
-                isActive
-                  ? "bg-[var(--accent)]/15 text-[var(--accent)]"
-                  : "bg-black/10 text-[var(--muted)] group-hover:text-[var(--accent)]"
-              }`}
-          >
-            {ICON_MAP[tab.key] || <FiActivity />}
-          </div>
+          </span>
+          <h3 className={`text-lg font-black uppercase italic tracking-tighter leading-none
+            ${isActive ? "text-white" : "text-[var(--foreground)]"}
+          `}>
+            {tab.value}
+          </h3>
         </div>
 
-        {/* ================= VALUE ================= */}
-        <h2 className="text-2xl font-bold mt-3 tracking-tight">
-          {/* {tab.value} */}
-        </h2>
-
-        {/* ================= ACTIVE INDICATOR ================= */}
-        {isActive && (
-          <div className="mt-3 h-1 w-10 rounded-full bg-[var(--accent)]" />
-        )}
+        <div className={`p-2 rounded-xl transition-all duration-300
+          ${isActive
+            ? "bg-black/10 text-white"
+            : "bg-white/5 text-[var(--muted)] group-hover:text-[var(--accent)]"
+          }`}
+        >
+          <Icon size={18} />
+        </div>
       </div>
-    );
-  }
+
+      {isActive && (
+        <motion.div
+          layoutId="activeTabIndicator"
+          className="absolute bottom-0 left-0 h-1 w-full bg-white/20"
+        />
+      )}
+    </motion.button>
+  );
+}
