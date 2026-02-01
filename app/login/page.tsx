@@ -15,7 +15,9 @@ import {
 } from "react-icons/fi";
 import { useSearchParams } from "next/navigation";
 
-export default function AuthPage() {
+import { Suspense } from "react";
+
+function AuthContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -213,6 +215,14 @@ export default function AuthPage() {
         )}
       </motion.div>
     </section>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={null}>
+      <AuthContent />
+    </Suspense>
   );
 }
 
