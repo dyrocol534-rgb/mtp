@@ -67,11 +67,11 @@ function AuthContent() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-[#020202]">
+    <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-[var(--background)]">
       {/* TACTICAL BACKGROUND ASSETS */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(var(--accent-rgb),0.08),transparent_70%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)] opacity-20" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[var(--accent)]/5 blur-[120px] rounded-full" />
       </div>
 
@@ -80,7 +80,7 @@ function AuthContent() {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="relative z-10 w-full max-w-md"
       >
-        <div className="rounded-[2.5rem] bg-[#0A0A0A]/80 backdrop-blur-3xl border border-white/5 shadow-2xl overflow-hidden relative group">
+        <div className="rounded-[2.5rem] bg-[var(--card)]/80 backdrop-blur-3xl border border-[var(--border)] shadow-2xl overflow-hidden relative group">
           {/* Subtle top edge glow */}
           <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent" />
 
@@ -102,11 +102,11 @@ function AuthContent() {
               </motion.div>
 
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 uppercase tracking-[0.2em] text-[8px] font-black text-[var(--accent)] italic">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--foreground)]/5 border border-[var(--border)] uppercase tracking-[0.2em] text-[8px] font-black text-[var(--accent)] italic">
                   <FiTerminal className="animate-pulse" />
                   Identity Verification
                 </div>
-                <h1 className="text-3xl font-black uppercase italic tracking-tighter leading-none">
+                <h1 className="text-3xl font-black uppercase italic tracking-tighter leading-none text-[var(--foreground)]">
                   SECURE <span className="text-[var(--accent)]">LOGIN</span>
                 </h1>
 
@@ -154,7 +154,7 @@ function AuthContent() {
                 <div className={`flex justify-center transition-all duration-500 hover:scale-[1.02] active:scale-95 ${loading ? "opacity-40 grayscale pointer-events-none" : ""
                   }`}>
                   <div className="p-[2px] rounded-full bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent shadow-[0_0_30px_rgba(var(--accent-rgb),0.1)]">
-                    <div className="bg-[#050505] rounded-full p-1 border border-white/5">
+                    <div className="bg-[var(--background)] rounded-full p-1 border border-[var(--border)]">
                       <GoogleLogin
                         onSuccess={(res) => res.credential && handleGoogleLogin(res.credential)}
                         onError={() => setError("Handshake Terminated by User")}
@@ -169,9 +169,9 @@ function AuthContent() {
 
                 {/* TACTICAL DIVIDER */}
                 <div className="flex items-center gap-4">
-                  <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-white/10" />
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-[var(--border)]" />
                   <span className="text-[8px] font-black uppercase tracking-[0.3em] text-[var(--muted)] opacity-30 italic">Nexus Link</span>
-                  <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-white/10" />
+                  <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-[var(--border)]" />
                 </div>
 
                 {/* FEATURES - TACTICAL GRID */}
@@ -186,12 +186,12 @@ function AuthContent() {
 
           {/* FOOTER */}
           {!success && (
-            <div className="px-8 py-6 bg-black/40 border-t border-white/5 backdrop-blur-md">
+            <div className="px-8 py-6 bg-[var(--card)]/50 border-t border-[var(--border)] backdrop-blur-md">
               <p className="text-[9px] text-center text-[var(--muted)] font-bold uppercase tracking-[0.15em] leading-relaxed opacity-40">
                 Authorized Use Only. By proceeding you sync with our{" "}
-                <a href="/terms" className="text-[var(--accent)] hover:text-white transition-colors underline decoration-[var(--accent)]/40 underline-offset-4">Terms</a>
+                <a href="/terms" className="text-[var(--accent)] hover:text-[var(--foreground)] transition-colors underline decoration-[var(--accent)]/40 underline-offset-4">Terms</a>
                 {" • "}
-                <a href="/privacy" className="text-[var(--accent)] hover:text-white transition-colors underline decoration-[var(--accent)]/40 underline-offset-4">Privacy</a>
+                <a href="/privacy" className="text-[var(--accent)] hover:text-[var(--foreground)] transition-colors underline decoration-[var(--accent)]/40 underline-offset-4">Privacy</a>
               </p>
             </div>
           )}
@@ -205,7 +205,7 @@ function AuthContent() {
             transition={{ delay: 0.5 }}
             className="mt-6 flex items-center justify-center gap-2"
           >
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/5 select-none">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--foreground)]/5 border border-[var(--border)] select-none">
               <FiLock className="text-green-500" size={12} />
               <span className="text-[8px] font-black uppercase tracking-[0.1em] text-[var(--muted)]/60">
                 Hardware Secured • <span className="text-green-500">Google OAuth 2.0</span>
@@ -228,11 +228,11 @@ export default function AuthPage() {
 
 function Feature({ icon: Icon, label }: { icon: any, label: string }) {
   return (
-    <div className="group flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.03] hover:bg-[var(--accent)]/5 hover:border-[var(--accent)]/20 transition-all duration-300">
-      <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[var(--accent)] group-hover:scale-110 transition-all">
+    <div className="group flex flex-col items-center gap-2 p-3 rounded-2xl bg-[var(--foreground)]/[0.02] border border-[var(--border)] hover:bg-[var(--accent)]/5 hover:border-[var(--accent)]/20 transition-all duration-300">
+      <div className="w-8 h-8 rounded-xl bg-[var(--foreground)]/5 flex items-center justify-center text-[var(--accent)] group-hover:scale-110 transition-all">
         <Icon size={16} />
       </div>
-      <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)] group-hover:text-white transition-colors">{label}</span>
+      <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)] group-hover:text-[var(--foreground)] transition-colors">{label}</span>
     </div>
   );
 }

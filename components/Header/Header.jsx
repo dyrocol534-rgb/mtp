@@ -139,7 +139,7 @@ export default function Header() {
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled
-        ? "backdrop-blur-3xl bg-black/80 shadow-[0_8px_32px_rgba(0,0,0,0.8)] border-b border-white/5 active-header"
+        ? "backdrop-blur-3xl bg-[var(--background)]/80 shadow-2xl border-b border-[var(--border)] active-header"
         : "bg-transparent"
         }`}
     >
@@ -203,9 +203,9 @@ export default function Header() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setUserMenuOpen((p) => !p)}
-              className="relative flex items-center gap-2 h-10 px-4 rounded-full bg-white/[0.03] border border-white/5 hover:border-[var(--accent)]/40 hover:bg-white/[0.06] transition-all duration-500 group shadow-2xl"
+              className="relative flex items-center gap-2 h-10 px-4 rounded-full bg-[var(--foreground)]/5 border border-[var(--border)] hover:border-[var(--accent)]/40 hover:bg-[var(--foreground)]/10 transition-all duration-500 group shadow-2xl"
             >
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[var(--accent)] to-purple-600 flex items-center justify-center overflow-hidden ring-1 ring-white/10 group-hover:rotate-12 transition-all duration-500">
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[var(--accent)] to-purple-600 flex items-center justify-center overflow-hidden ring-1 ring-[var(--border)] group-hover:rotate-12 transition-all duration-500">
                 {user?.avatar ? (
                   <Image
                     src={user.avatar}
@@ -215,11 +215,11 @@ export default function Header() {
                     className="object-cover w-full h-full"
                   />
                 ) : (
-                  <FiShield className="text-white text-[10px]" />
+                  <FiShield className="text-[var(--background)] text-[10px]" />
                 )}
               </div>
               {user && (
-                <span className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-white/80 pr-1 max-w-[100px] truncate italic">
+                <span className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-[var(--foreground)]/80 pr-1 max-w-[100px] truncate italic">
                   {user.name}
                 </span>
               )}
@@ -233,14 +233,14 @@ export default function Header() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                  className="absolute right-0 top-full mt-3 w-80 max-h-[80vh] overflow-y-auto bg-[#0A0A0A]/95 backdrop-blur-3xl border border-white/10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 overflow-hidden"
+                  className="absolute right-0 top-full mt-3 w-80 max-h-[80vh] overflow-y-auto bg-[var(--card)]/95 backdrop-blur-3xl border border-[var(--border)] rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 overflow-hidden"
                 >
                   <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent" />
                   <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_4px] pointer-events-none opacity-20" />
                   {!user ? (
                     <>
                       {/* Navigation for non-logged users on mobile */}
-                      <div className="md:hidden p-4 border-b border-white/5">
+                      <div className="md:hidden p-4 border-b border-[var(--border)]">
                         <p className="px-3 py-2 text-[8px] font-black text-[var(--muted)] uppercase tracking-[0.3em] opacity-40 italic">
                           Quick Links
                         </p>
@@ -259,7 +259,7 @@ export default function Header() {
                               }}
                               className={`flex items-center justify-between px-4 py-4 rounded-2xl transition-all border border-transparent ${activeNav === item.href
                                 ? "bg-[var(--accent)]/10 text-[var(--accent)] border-[var(--accent)]/20 shadow-[0_0_15px_rgba(var(--accent-rgb),0.1)]"
-                                : "hover:bg-white/[0.03] text-white/60"
+                                : "hover:bg-[var(--foreground)]/5 text-[var(--foreground)]/60"
                                 }`}
                             >
                               <span className="text-[10px] font-black uppercase tracking-widest italic">{item.label}</span>
@@ -285,11 +285,11 @@ export default function Header() {
                         >
                           <div className="absolute inset-0 bg-[var(--accent)]/0 group-hover:bg-[var(--accent)]/5 transition-colors duration-500" />
                           <div className="relative z-10 flex flex-col items-center gap-3">
-                            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[var(--accent)] group-hover:scale-110 transition-transform duration-500">
+                            <div className="w-12 h-12 rounded-2xl bg-[var(--foreground)]/5 border border-[var(--border)] flex items-center justify-center text-[var(--accent)] group-hover:scale-110 transition-transform duration-500">
                               <FiZap size={20} />
                             </div>
                             <div>
-                              <h3 className="text-sm font-black uppercase italic tracking-wider text-white">Login / Register</h3>
+                              <h3 className="text-sm font-black uppercase italic tracking-wider text-[var(--foreground)]">Login / Register</h3>
                               <p className="text-[10px] font-medium text-[var(--muted)] uppercase tracking-widest mt-1">Access your account</p>
                             </div>
                           </div>
@@ -302,10 +302,10 @@ export default function Header() {
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="p-6 bg-gradient-to-br from-[var(--accent)]/10 to-transparent border-b border-white/5"
+                        className="p-6 bg-gradient-to-br from-[var(--accent)]/10 to-transparent border-b border-[var(--border)]"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-purple-600 flex items-center justify-center overflow-hidden flex-shrink-0 ring-1 ring-white/10 shadow-[0_0_20px_rgba(var(--accent-rgb),0.2)]">
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-purple-600 flex items-center justify-center overflow-hidden flex-shrink-0 ring-1 ring-[var(--border)] shadow-[0_0_20px_rgba(var(--accent-rgb),0.2)]">
                             {user?.avatar ? (
                               <Image
                                 src={user.avatar}
@@ -315,11 +315,11 @@ export default function Header() {
                                 className="object-cover w-full h-full"
                               />
                             ) : (
-                              <FiShield className="text-white text-xl" />
+                              <FiShield className="text-[var(--background)] text-xl" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-black text-sm uppercase italic tracking-wider text-white truncate">{user.name}</p>
+                            <p className="font-black text-sm uppercase italic tracking-wider text-[var(--foreground)] truncate">{user.name}</p>
                             <p className="text-[10px] font-medium text-[var(--muted)] uppercase tracking-widest truncate mt-0.5">
                               {user.email}
                             </p>
@@ -337,7 +337,7 @@ export default function Header() {
                       </motion.div>
 
                       {/* Navigation Items (Mobile Only) */}
-                      <div className="md:hidden p-4 border-b border-white/5">
+                      <div className="md:hidden p-4 border-b border-[var(--border)]">
                         <p className="px-3 py-2 text-[8px] font-black text-[var(--muted)] uppercase tracking-[0.3em] opacity-40 italic">
                           Quick Links
                         </p>
@@ -356,7 +356,7 @@ export default function Header() {
                               }}
                               className={`flex items-center justify-between px-4 py-4 rounded-2xl transition-all border border-transparent ${activeNav === item.href
                                 ? "bg-[var(--accent)]/10 text-[var(--accent)] border-[var(--accent)]/20 shadow-[0_0_15px_rgba(var(--accent-rgb),0.1)]"
-                                : "hover:bg-white/[0.03] text-white/60"
+                                : "hover:bg-[var(--foreground)]/5 text-[var(--foreground)]/60"
                                 }`}
                             >
                               <span className="text-[10px] font-black uppercase tracking-widest italic">{item.label}</span>
@@ -384,9 +384,9 @@ export default function Header() {
                             <Link
                               href={item.href}
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center justify-between px-4 py-4 rounded-2xl hover:bg-white/[0.03] border border-transparent hover:border-white/5 transition-all group"
+                              className="flex items-center justify-between px-4 py-4 rounded-2xl hover:bg-[var(--foreground)]/5 border border-transparent hover:border-[var(--border)] transition-all group"
                             >
-                              <span className="text-[10px] font-black uppercase tracking-widest text-white/70 group-hover:text-[var(--accent)] italic">{item.label}</span>
+                              <span className="text-[10px] font-black uppercase tracking-widest text-[var(--foreground)]/70 group-hover:text-[var(--accent)] italic">{item.label}</span>
                               <FiChevronRight className="text-[var(--muted)] group-hover:text-[var(--accent)] group-hover:translate-x-1 transition-all" />
                             </Link>
                           </motion.div>
@@ -434,13 +434,13 @@ export default function Header() {
             exit={{ opacity: 0, scale: 0.9 }}
             className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60]"
           >
-            <div className="px-6 py-4 rounded-[2rem] bg-[#0A0A0A]/90 backdrop-blur-2xl border border-green-500/30 flex items-center gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+            <div className="px-6 py-4 rounded-[2rem] bg-[var(--card)]/90 backdrop-blur-2xl border border-green-500/30 flex items-center gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
               <div className="w-10 h-10 rounded-full bg-green-500 text-black flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.3)]">
                 <FiCheckCircle size={20} />
               </div>
               <div className="flex flex-col">
                 <span className="text-xs font-black uppercase tracking-widest text-green-500 italic">Logged Out</span>
-                <span className="text-[10px] text-white/60 font-medium uppercase tracking-[0.1em]">Successfully logged out</span>
+                <span className="text-[10px] text-[var(--foreground)]/60 font-medium uppercase tracking-[0.1em]">Successfully logged out</span>
               </div>
             </div>
           </motion.div>
