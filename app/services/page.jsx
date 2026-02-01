@@ -1,130 +1,130 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FiUsers, FiGlobe, FiZap, FiCode, FiArrowRight } from "react-icons/fi";
+import { FiUsers, FiGlobe, FiZap, FiCode, FiArrowRight, FiMessageCircle } from "react-icons/fi";
 
 export default function ServicesPage() {
   const whatsappLink = "https://wa.me/916372305866";
 
   const services = [
     {
-      title: "Be a Reseller",
-      desc: "Become a reseller and start selling game topups instantly. Cheapest rates in the market with high profit margins.",
+      title: "Reseller Program",
+      desc: "Scale your business with the market's lowest rates. Bulk top-up solutions with instant delivery and high profit margins.",
       icon: FiUsers,
-      badge: "Available • Cheapest",
+      badge: "ELITE PRICING",
       active: true,
-      color: "from-blue-500 to-cyan-500",
     },
     {
-      title: "Website Whitelabel",
-      desc: "Launch your own branded topup website. Cheapest whitelabel solution with full control and support.",
+      title: "Whitelabel Solution",
+      desc: "Launch your own branded empire. Fully hosted, customizable platform with your own domain and integrated payments.",
       icon: FiGlobe,
-      badge: "Available • Cheapest",
+      badge: "FAST SETUP",
       active: true,
-      color: "from-purple-500 to-pink-500",
     },
     {
-      title: "Custom Topup Website",
-      desc: "Get a fully custom-built topup website tailored to your business needs.",
+      title: "Custom Development",
+      desc: "Tailor-made top-up portals designed for specific business needs. Advanced UI/UX and unique feature integrations.",
       icon: FiZap,
-      badge: "Available",
+      badge: "BESPOKE",
       active: true,
-      color: "from-orange-500 to-red-500",
     },
     {
-      title: "API Services",
-      desc: "Integrate topup services directly into your app or website using our APIs.",
+      title: "Advanced API",
+      desc: "Powerful endpoint connectivity for seamless service automation. Integrate our infrastructure directly into your ecosystem.",
       icon: FiCode,
-      badge: "Coming Soon",
+      badge: "DEVELOPMENT",
       active: false,
-      color: "from-green-500 to-emerald-500",
     },
   ];
 
   return (
-    <section className="min-h-screen px-4 py-7 bg-[var(--background)] text-[var(--foreground)]">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
+    <section className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-32 transition-colors duration-300 px-6">
+
+      <div className="max-w-4xl mx-auto pt-16 md:pt-24 relative z-10">
+
+        {/* HEADER SECTION - SIMPLER */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="mb-16"
         >
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            Our Services
+          <h1 className="text-4xl md:text-6xl font-[900] italic tracking-tighter uppercase leading-none mb-2">
+            OUR <span className="text-[#56CCF2]">SERVICES</span>
           </h1>
-          <p className="text-[var(--muted)] text-lg max-w-2xl mx-auto">
-            Cheapest & reliable solutions to grow your topup business
+          <p className="text-[var(--muted)] text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic font-sans">
+            Solutions for Every Scale
           </p>
         </motion.div>
 
-        {/* Services Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+        {/* SERVICES LIST - CLEANER CARDS */}
+        <div className="space-y-4">
           {services.map((service, i) => {
             const Icon = service.icon;
 
             return (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                whileHover={service.active ? { y: -4 } : {}}
+                transition={{ delay: i * 0.05 }}
+                whileHover={service.active ? { x: 3, backgroundColor: "var(--card)" } : {}}
                 onClick={() => service.active && window.open(whatsappLink, "_blank")}
-                className={`group relative p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] transition-all ${service.active
-                  ? "cursor-pointer hover:border-[var(--accent)] hover:shadow-xl"
-                  : "opacity-50 cursor-not-allowed"
+                className={`group relative p-8 rounded-3xl bg-[var(--card)]/40 border border-[var(--border)] transition-all duration-300 overflow-hidden flex flex-col md:flex-row items-start md:items-center gap-6 ${service.active
+                    ? "cursor-pointer hover:border-[#56CCF2]/30 hover:shadow-xl"
+                    : "opacity-30 grayscale cursor-not-allowed border-dashed"
                   }`}
               >
-                {/* Badge */}
-                <span
-                  className={`absolute top-4 right-4 text-xs px-3 py-1 rounded-full font-medium ${service.active
-                    ? "bg-[var(--accent)]/10 text-[var(--accent)]"
-                    : "bg-[var(--muted)]/10 text-[var(--muted)]"
-                    }`}
-                >
-                  {service.badge}
-                </span>
-
-                {/* Icon */}
-                <div
-                  className={`w-14 h-14 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-5 shadow-lg ${service.active && "group-hover:scale-110"
-                    } transition-transform`}
-                >
-                  <Icon size={24} className="text-white" />
+                {/* Icon Container */}
+                <div className="w-14 h-14 rounded-2xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-[#56CCF2]/60 group-hover:text-[#56CCF2] group-hover:bg-[#56CCF2]/10 transition-all shadow-lg flex-shrink-0">
+                  <Icon size={24} />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                <p className="text-sm text-[var(--muted)] leading-relaxed mb-4">
-                  {service.desc}
-                </p>
-
-                {service.active && (
-                  <div className="flex items-center gap-2 text-sm font-semibold text-[var(--accent)] group-hover:gap-3 transition-all">
-                    Contact on WhatsApp
-                    <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-xl md:text-2xl font-[900] uppercase tracking-tighter italic text-[var(--foreground)] group-hover:text-[#56CCF2] transition-colors leading-none">
+                      {service.title}
+                    </h3>
+                    <span className="text-[8px] font-black px-2 py-0.5 rounded bg-[#56CCF2]/5 text-[#56CCF2]/60 border border-[#56CCF2]/10 tracking-widest uppercase">
+                      {service.badge}
+                    </span>
                   </div>
-                )}
+                  <p className="text-[var(--muted)] text-xs md:text-sm leading-relaxed opacity-60">
+                    {service.desc}
+                  </p>
+                </div>
+
+                {/* Action Indicator */}
+                <div className="flex items-center gap-3 text-right flex-shrink-0 ml-auto md:ml-4">
+                  <div className="hidden md:flex flex-col items-end opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[9px] font-black uppercase text-[#56CCF2] tracking-widest">Connect Now</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] group-hover:text-[#56CCF2] group-hover:border-[#56CCF2]/40 transition-all group-hover:scale-105">
+                    <FiArrowRight size={18} />
+                  </div>
+                </div>
               </motion.div>
             );
           })}
         </div>
 
-        {/* CTA Section */}
+        {/* BOTTOM CTA - MINIMALIST */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="mt-16 text-center p-8 rounded-2xl bg-gradient-to-br from-[var(--accent)]/10 to-transparent border border-[var(--border)]"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="mt-16 p-8 rounded-3xl border border-[var(--border)] bg-[var(--card)]/20 text-center"
         >
-          <h2 className="text-2xl font-bold mb-3">Ready to Get Started?</h2>
-          <p className="text-[var(--muted)] mb-6 max-w-xl mx-auto">
-            Contact us on WhatsApp to discuss your requirements and get the best pricing
-          </p>
-
+          <h4 className="text-xl font-[900] italic uppercase tracking-tighter mb-2">Ready to expand?</h4>
+          <p className="text-[var(--muted)] text-xs opacity-60 mb-8 max-w-sm mx-auto">Discuss custom configurations and bulk rates with our enterprise team.</p>
+          <button
+            onClick={() => window.open(whatsappLink, "_blank")}
+            className="px-8 py-3.5 rounded-2xl bg-[#56CCF2] text-black font-black uppercase tracking-widest text-[10px] italic shadow-lg hover:bg-[#4ebde1] transition-all flex items-center gap-2 mx-auto"
+          >
+            <FiMessageCircle size={14} />
+            Connect on WhatsApp
+          </button>
         </motion.div>
+
       </div>
     </section>
   );

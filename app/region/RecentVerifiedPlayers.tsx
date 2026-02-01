@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Clock, History } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiShield, FiArrowRight, FiClock, FiRotateCcw } from "react-icons/fi";
 import { getVerifiedPlayers } from "@/utils/storage/verifiedPlayerStorage";
 
 function timeAgo(ts?: number) {
   if (!ts) return "";
   const diff = Date.now() - ts;
   const min = Math.floor(diff / 60000);
-  if (min < 1) return "just now";
-  if (min < 60) return `${min}m ago`;
+  if (min < 1) return "NOW";
+  if (min < 60) return `${min}M AGO`;
   const hr = Math.floor(min / 60);
-  if (hr < 24) return `${hr}h ago`;
+  if (hr < 24) return `${hr}H AGO`;
   const d = Math.floor(hr / 24);
-  return `${d}d ago`;
+  return `${d}D AGO`;
 }
 
 export default function RecentVerifiedPlayers({
@@ -33,77 +33,67 @@ export default function RecentVerifiedPlayers({
   if (!players.length) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-lg"
-    >
-      {/* ================= HEADER ================= */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2 text-sm font-semibold">
-          <History size={16} className="text-[var(--accent)]" />
-          Recent Verified IDs
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between px-1">
+        <div className="flex items-center gap-2">
+          <FiRotateCcw size={14} className="text-[#56CCF2]" />
+          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] opacity-60">
+            RECENT SCANS
+          </h3>
         </div>
-        <span className="text-xs text-[var(--muted)]">
-          {players.length} saved
-        </span>
       </div>
 
-      {/* ================= LIST ================= */}
-      <div className="space-y-2">
-        {players.map((p, index) => (
-          <motion.button
-            key={`${p.playerId}-${p.zoneId}-${index}`}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.05 }}
-            whileHover={{ x: 4 }}
-            onClick={() => onSelect(p)}
-            className="
-              w-full text-left
-              rounded-xl border border-[var(--border)]
-              bg-[var(--muted)]/5 hover:bg-[var(--muted)]/10
-              hover:border-[var(--accent)]
-              transition-all
-              p-3
-            "
-          >
-            <div className="flex items-start justify-between gap-3">
-              {/* LEFT */}
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold leading-tight truncate">
-                  {p.username || "Unknown Player"}
-                </p>
+      {/* List */}
+      <div className="grid grid-cols-1 gap-2">
+        <AnimatePresence>
+          {players.map((p, index) => (
+            <motion.button
+              key={`${p.playerId}-${p.zoneId}-${index}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ x: 3, backgroundColor: "var(--card)" }}
+              onClick={() => onSelect(p)}
+              className="
+                w-full text-left
+                rounded-2xl border border-[var(--border)]
+                bg-[var(--card)]/40 hover:border-[#56CCF2]/30
+                transition-all duration-200
+                p-4 group flex items-center justify-between gap-4
+              "
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-[#56CCF2]/60 group-hover:text-[#56CCF2] group-hover:bg-[#56CCF2]/10 transition-colors">
+                  <FiShield size={14} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-[900] uppercase tracking-tight italic truncate text-[var(--foreground)] group-hover:text-[#56CCF2] transition-colors leading-none mb-1.5">
+                    {p.username || "UNKNOWN PLAYER"}
+                  </p>
+                  <div className="flex items-center gap-2 text-[9px] font-bold text-[var(--muted)] opacity-40 uppercase tracking-tighter">
+                    <span>ID {p.playerId}</span>
+                    <span>·</span>
+                    <span>SERVER {p.zoneId}</span>
+                  </div>
+                </div>
+              </div>
 
-                <p className="text-xs text-[var(--muted)] mt-0.5">
-                  ID {p.playerId} · Zone {p.zoneId}
-                </p>
-
+              <div className="text-right flex-shrink-0">
+                <span className="block text-[9px] font-black text-[#56CCF2] tracking-widest uppercase italic mb-1">
+                  {p.region || "N/A"}
+                </span>
                 {p.savedAt && (
-                  <div className="flex items-center gap-1 mt-1 text-[10px] text-[var(--muted)]">
-                    <Clock size={12} />
+                  <div className="flex items-center justify-end gap-1 text-[8px] font-bold text-[var(--muted)] opacity-30 uppercase">
+                    <FiClock size={8} />
                     {timeAgo(p.savedAt)}
                   </div>
                 )}
               </div>
-
-              {/* RIGHT */}
-              <span
-                className="
-                  text-[10px] font-medium
-                  px-2 py-1 rounded-full
-                  bg-[var(--accent)]/10
-                  text-[var(--accent)]
-                  whitespace-nowrap
-                  flex-shrink-0
-                "
-              >
-                {p.region}
-              </span>
-            </div>
-          </motion.button>
-        ))}
+            </motion.button>
+          ))}
+        </AnimatePresence>
       </div>
-    </motion.div>
+    </div>
   );
 }

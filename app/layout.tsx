@@ -72,8 +72,8 @@ export default function RootLayout({
           {/* <ChristmasPopup />  */}
           {/* <ValentineEffect />
 
-          <ValentinePopup /> */}
-
+           */}
+          <ValentinePopup />
           <main className="pt-20">{children}</main>
           <Footer />
           <SocialFloat />

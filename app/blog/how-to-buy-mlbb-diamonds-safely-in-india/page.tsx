@@ -1,202 +1,79 @@
 import type { Metadata } from "next";
+import BlogPostLayout from "@/components/Blog/BlogPostLayout";
 import Link from "next/link";
-import Image from "next/image";
 
-/* ================= SEO METADATA ================= */
 export const metadata: Metadata = {
   title: "How to Buy MLBB Diamonds Safely in India (2025 Guide)",
-  description:
-    "Learn how to buy MLBB diamonds safely in India. Avoid scams, use trusted platforms, and recharge Mobile Legends diamonds securely with instant delivery.",
-  keywords: [
-    "buy mlbb diamonds safely india",
-    "mlbb diamond recharge india",
-    "safe mlbb top up india",
-    "mobile legends recharge india",
-    "mlbbtopup.in",
-  ],
-  alternates: {
-    canonical:
-      "https://mlbbtopup.in/blog/how-to-buy-mlbb-diamonds-safely-in-india",
-  },
-  openGraph: {
-    title: "How to Buy MLBB Diamonds Safely in India (2025)",
-    description:
-      "Complete 2025 guide to safely buying MLBB diamonds in India without scams or account risks.",
-    url: "https://mlbbtopup.in/blog/how-to-buy-mlbb-diamonds-safely-in-india",
-    type: "article",
-  },
+  description: "Learn how to buy MLBB diamonds safely in India. Avoid scams, use trusted platforms, and recharge safely.",
+  alternates: { canonical: "https://mlbbtopup.in/blog/how-to-buy-mlbb-diamonds-safely-in-india" },
 };
 
-/* ================= BLOG PAGE ================= */
 export default function BlogPage() {
   return (
-    <>
-      {/* JSON-LD Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            headline: "How to Buy MLBB Diamonds Safely in India (2025 Guide)",
-            description:
-              "Step-by-step guide to buying MLBB diamonds safely in India.",
-            author: {
-              "@type": "Organization",
-              name: "MLBBTopUp",
-            },
-            publisher: {
-              "@type": "Organization",
-              name: "MLBBTopUp",
-            },
-            datePublished: "2025-01-12",
-            mainEntityOfPage:
-              "https://mlbbtopup.in/blog/how-to-buy-mlbb-diamonds-safely-in-india",
-          }),
-        }}
-      />
+    <BlogPostLayout
+      title="HOW TO BUY MLBB DIAMONDS SAFELY IN INDIA"
+      category="Safety Guide"
+      readTime="5 min read"
+      date="Jan 12, 2025"
+      image="https://res.cloudinary.com/dk0sslz1q/image/upload/v1765619191/ideogram-v3.0_A_high-quality_horizontal_rectangular_website_banner_for_a_gaming_top-up_website-0_2_rgpuck.png"
+    >
+      <p className="text-lg md:text-xl font-medium !opacity-100 italic border-l-4 border-[#56CCF2] pl-6 py-2 bg-[#56CCF2]/5 rounded-r-2xl">
+        Buying <strong>MLBB diamonds online in India</strong> is convenient — but only when done through trusted platforms. Fake sellers and social media scams are on the rise.
+      </p>
 
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 py-10 leading-relaxed">
+      <h2>Why Safety Matters</h2>
+      <p>
+        MLBB diamonds are premium currency used for skins and heroes. Unsafe purchases from unverified sources can lead to account suspension, payment fraud, or loss of access to your personal Moonton credentials.
+      </p>
 
-        {/* FEATURED IMAGE */}
-        <div className="mb-8">
-          <Image
-            src="https://res.cloudinary.com/dk0sslz1q/image/upload/v1765619191/ideogram-v3.0_A_high-quality_horizontal_rectangular_website_banner_for_a_gaming_top-up_website-0_2_rgpuck.png"
-            alt="Buy MLBB Diamonds Safely in India"
-            width={1200}
-            height={675}
-            className="rounded-2xl border shadow-sm"
-            priority
-          />
-        </div>
+      <ul>
+        <li>Account suspension or bans</li>
+        <li>Payment fraud or money loss</li>
+        <li>Stolen credentials</li>
+      </ul>
 
-        {/* TITLE */}
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-          How to Buy MLBB Diamonds Safely in India (2025)
-        </h1>
+      <h2>Player ID Only</h2>
+      <p>
+        The first rule of safety: <strong>Never share your password.</strong> Legitimate platforms like ours only require your <strong>Player ID</strong> and <strong>Server ID</strong>. If a service asks for your Moonton login or OTP, walk away immediately.
+      </p>
 
-        <p className="text-sm text-gray-500 mb-6">
-          Updated January 2025 · 5 min read
+      <div className="bg-[var(--card)] border border-[var(--border)] p-10 rounded-[40px] my-16 shadow-xl relative overflow-hidden group">
+        <div className="absolute top-0 left-0 w-1 h-full bg-[#56CCF2]" />
+        <h3 className="italic font-black uppercase text-[#56CCF2] mb-4">Pro Tip 💡</h3>
+        <p className="text-sm italic opacity-70 m-0">
+          Trusted platforms use secure Indian payment gateways like Razorpay or PhonePe, supporting UPI, Debit Cards, and Wallets. Avoid direct transfers to personal bank accounts.
         </p>
+      </div>
 
-        {/* INTRO */}
-        <p className="mb-6 text-gray-700 dark:text-gray-300">
-          Buying <strong>MLBB diamonds online in India</strong> is convenient —
-          but only when done through trusted platforms. Many players lose money
-          due to fake sellers, social media scams, or unsafe recharge methods.
-          This guide explains how to safely recharge MLBB diamonds and avoid
-          common risks.
-        </p>
+      <h2>Avoid Social Media Sellers</h2>
+      <p>
+        Instagram, Telegram, and WhatsApp sellers offering extreme discounts are often scams. Unrealistically cheap diamond prices usually indicate stolen credit cards or exploit usage.
+      </p>
 
-        {/* SECTION */}
-        <h2 className="text-2xl font-semibold mt-10 mb-4">
-          Why Safety Matters
-        </h2>
-        <p className="mb-6">
-          MLBB diamonds are premium currency used for skins and heroes.
-          Unsafe purchases may result in:
-        </p>
+      <h2>Choose a Trusted Store</h2>
+      <p>
+        Platforms like <Link href="/games/mobile-legends988" className="text-[#56CCF2] underline transition-opacity">mlbbtopup.in</Link> offer:
+      </p>
+      <ul>
+        <li>Instant delivery to your game account</li>
+        <li>Secure payment processing</li>
+        <li>No account password required</li>
+        <li>Verified customer support</li>
+      </ul>
 
-        <ul className="list-disc pl-6 space-y-2 mb-6">
-          <li>Account suspension or bans</li>
-          <li>Payment fraud or money loss</li>
-          <li>Stolen credentials</li>
-        </ul>
-
-        {/* SECTION */}
-        <h2 className="text-2xl font-semibold mt-10 mb-4">
-          Use Player ID Only (Never Share Password)
-        </h2>
-        <p className="mb-6">
-          Always recharge through websites that only require your{" "}
-          <strong>Player ID</strong> and <strong>Server ID</strong>.
-          Legitimate platforms will never ask for your password, OTP,
-          or Moonton login details.
-        </p>
-
-        {/* SECTION */}
-        <h2 className="text-2xl font-semibold mt-10 mb-4">
-          Avoid Social Media Sellers
-        </h2>
-        <p className="mb-6">
-          Instagram, Telegram, and WhatsApp sellers offering extreme discounts
-          are often scams. Unrealistically cheap diamond prices usually indicate
-          fraud risk.
-        </p>
-
-        {/* SECTION */}
-        <h2 className="text-2xl font-semibold mt-10 mb-4">
-          Use Secure Indian Payment Methods
-        </h2>
-        <p className="mb-6">
-          Trusted platforms support{" "}
-          <strong>UPI, debit cards, wallets, and net banking</strong>.
-          Avoid personal QR codes or direct transfers to individuals.
-        </p>
-
-        {/* SECTION */}
-        <h2 className="text-2xl font-semibold mt-10 mb-4">
-          Choose a Trusted MLBB Top-Up Website
-        </h2>
-        <p className="mb-6">
-          Platforms like{" "}
-          <Link
-            href="/games/mobile-legends988"
-            className="text-blue-600 font-medium underline"
-          >
-            mlbbtopup.in
-          </Link>{" "}
-          offer:
-        </p>
-
-        <ul className="list-disc pl-6 space-y-2 mb-6">
-          <li>Instant delivery</li>
-          <li>Transparent pricing</li>
-          <li>Secure payment systems</li>
-          <li>No password required</li>
-        </ul>
-
-        {/* STEPS */}
-        <h2 className="text-2xl font-semibold mt-10 mb-4">
-          Step-by-Step Safe Recharge Process
-        </h2>
-
-        <ol className="list-decimal pl-6 space-y-2 mb-6">
-          <li>Visit a trusted MLBB recharge website</li>
-          <li>Select your diamond package</li>
-          <li>Enter Player ID & Server ID</li>
-          <li>Complete payment securely</li>
-          <li>Receive diamonds instantly</li>
-        </ol>
-
-        {/* FAQ */}
-        <h2 className="text-2xl font-semibold mt-10 mb-4">
-          Frequently Asked Questions
-        </h2>
-
-        <div className="space-y-4">
-          <div>
-            <p className="font-medium">
-              Is MLBB diamond recharge legal in India?
-            </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              Yes, when done through legitimate platforms.
-            </p>
+      <div className="mt-20 pt-10 border-t border-[var(--border)]">
+        <h4 className="text-xl font-black italic uppercase tracking-widest mb-8 opacity-40 transition-colors">Frequently Asked</h4>
+        <div className="space-y-8">
+          <div className="group">
+            <h5 className="text-[#56CCF2] font-black uppercase tracking-tight text-base mb-2 group-hover:translate-x-1 transition-transform italic">Is it legal in India?</h5>
+            <p className="text-sm opacity-60">Yes, as long as you're purchasing from legitimate third-party top-up services authorized for such transactions.</p>
           </div>
-
-          <div>
-            <p className="font-medium">
-              How fast is delivery?
-            </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              Usually within minutes after payment confirmation.
-            </p>
+          <div className="group">
+            <h5 className="text-[#56CCF2] font-black uppercase tracking-tight text-base mb-2 group-hover:translate-x-1 transition-transform italic">How fast is delivery?</h5>
+            <p className="text-sm opacity-60">On trusted automated platforms, diamonds are credited to your account within minutes of payment confirmation.</p>
           </div>
         </div>
-
-        {/* CTA */}
-       
-      </article>
-    </>
+      </div>
+    </BlogPostLayout>
   );
 }

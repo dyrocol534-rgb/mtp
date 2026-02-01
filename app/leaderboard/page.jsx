@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import AuthGuard from "@/components/AuthGuard";
 
 export default function LeaderboardPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [range, setRange] = useState("weekly"); // default weekly
+  const [range, setRange] = useState("weekly");
 
   const limit = 10;
 
@@ -28,122 +29,115 @@ export default function LeaderboardPage() {
       .finally(() => setLoading(false));
   }, [range]);
 
-  const rankBadge = (rank) => {
-    if (rank === 1)
-      return "bg-yellow-400/20 text-yellow-300 border-yellow-400";
-    if (rank === 2)
-      return "bg-slate-400/20 text-slate-200 border-slate-400";
-    if (rank === 3)
-      return "bg-orange-400/20 text-orange-300 border-orange-400";
-    return "bg-gray-800 text-gray-400 border-gray-700";
-  };
-
   return (
     <AuthGuard>
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">
-            🏆 Top Spenders
-          </h1>
-          <p className="text-gray-400 mt-2">
-            Ranked by total purchase value
-          </p>
-        </div>
+      <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] selection:bg-[#56CCF2]/30 pb-32 transition-colors duration-300">
+        <div className="max-w-2xl mx-auto px-6 pt-12 md:pt-24 relative z-10">
 
-        {/* Range Toggle */}
-        <div className="flex justify-center gap-3 mb-8">
-          {/* ALL TIME – DISABLED */}
-          <button
-            disabled
-            title="All-time leaderboard coming soon"
-            className="px-4 py-2 rounded-md text-sm font-semibold bg-gray-900 text-gray-600 cursor-not-allowed border border-gray-800"
+          {/* 🏆 HEADER SECTION - SIMPLER */}
+          <motion.div
+            className="mb-12"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
           >
-            All Time
-          </button>
+            <h1 className="text-4xl md:text-6xl font-[900] italic tracking-tighter uppercase leading-none mb-2 transition-colors text-center md:text-left">
+              ELITE <span className="text-[#56CCF2]">SPENDORS</span>
+            </h1>
+            <p className="text-[var(--muted)] text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic text-center md:text-left">
+              The Legend Board
+            </p>
+          </motion.div>
 
-          {["weekly", "monthly"].map((r) => (
-            <button
-              key={r}
-              onClick={() => setRange(r)}
-              className={`px-5 py-2 rounded-md text-sm font-semibold transition ${
-                range === r
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
-                  : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-              }`}
-            >
-              {r === "weekly" ? "This Week" : "This Month"}
-            </button>
-          ))}
-        </div>
+          {/* 📅 TOGGLE SECTION - SLIMMER */}
+          <motion.div
+            className="flex justify-start mb-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="bg-[var(--card)] p-1 rounded-2xl flex w-full max-w-[320px] border border-[var(--border)] transition-colors">
+              {["weekly", "monthly"].map((r) => (
+                <button
+                  key={r}
+                  onClick={() => setRange(r)}
+                  className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${range === r
+                    ? "bg-[#56CCF2] text-black shadow-lg"
+                    : "text-[var(--muted)] hover:text-[var(--foreground)]"
+                    }`}
+                >
+                  {r === "weekly" ? "This Week" : "This Month"}
+                </button>
+              ))}
+            </div>
+          </motion.div>
 
-        {/* Content */}
-        {loading ? (
-          <div className="text-center py-20 text-gray-400 animate-pulse">
-            Loading leaderboard…
-          </div>
-        ) : data.length === 0 ? (
-          /* Empty State */
-          <div className="text-center py-20 border border-dashed border-gray-700 rounded-xl bg-gray-900/40">
-            <p className="text-2xl font-semibold mb-2">
-              🚀 No entries yet
-            </p>
-            <p className="text-gray-400 mb-3">
-              The leaderboard is waiting for its first champion.
-            </p>
-            <p className="text-sm text-gray-500">
-              Make a purchase and claim the #1 spot 🥇
-            </p>
-          </div>
-        ) : (
-          /* Table Card */
-          <div className="overflow-x-auto rounded-xl border border-gray-800 bg-gray-900/60 backdrop-blur">
-            <table className="w-full">
-              <thead className="bg-gray-950/70">
-                <tr className="text-gray-400 text-sm">
-                  <th className="p-4 text-left">Rank</th>
-                  <th className="p-4 text-left">User ID</th>
-                  <th className="p-4 text-left">Name</th>
-                  {/* <th className="p-4 text-left">Orders</th> */}
-                  <th className="p-4 text-left">Total Spent</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((item, index) => {
-                  const rank = index + 1;
-                  return (
-                    <tr
-                      key={index}
-                      className="border-t border-gray-800 hover:bg-gray-800/60 transition"
-                    >
-                      <td className="p-4">
-                        <span
-                          className={`inline-flex min-w-[48px] justify-center px-3 py-1 rounded-full border text-sm font-bold ${rankBadge(
-                            rank
-                          )}`}
-                        >
-                          #{rank}
+          <AnimatePresence mode="wait">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-24">
+                <div className="w-8 h-8 border-2 border-[var(--border)] border-t-[#56CCF2] rounded-full animate-spin mb-4" />
+                <span className="text-[9px] font-black tracking-widest text-[var(--muted)] uppercase opacity-40 italic">Syncing Data...</span>
+              </div>
+            ) : data.length === 0 ? (
+              <div className="text-center py-24 text-[var(--muted)] font-black uppercase tracking-[0.3em] text-[11px] italic opacity-20 transition-opacity">
+                The Throne is Empty
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {data.map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    whileHover={{ x: 3, backgroundColor: "var(--card)" }}
+                    className={`
+                      relative group flex items-center p-5 rounded-2xl border transition-all duration-300
+                      ${index === 0
+                        ? "bg-[var(--card)] border-[#56CCF2]/20 shadow-xl"
+                        : "bg-[var(--card)]/40 border-[var(--border)] hover:border-[#56CCF2]/30"
+                      }
+                    `}
+                  >
+                    {/* Rank Indicator */}
+                    <div className="flex items-center justify-center w-10">
+                      {index === 0 ? (
+                        <span className="text-2xl drop-shadow-lg">🥇</span>
+                      ) : (
+                        <span className={`text-xl font-black italic ${index < 3 ? "text-[var(--foreground)]" : "text-[var(--muted)] opacity-20"} group-hover:opacity-100 transition-opacity`}>
+                          {index + 1}
                         </span>
-                      </td>
-                      <td className="p-4 text-gray-300">
-                        {item.user?.userId || "—"}
-                      </td>
-                      <td className="p-4">
-                        {item.user?.name || "Anonymous"}
-                      </td>
-                      {/* <td className="p-4">
-                        {item.totalOrders}
-                      </td> */}
-                      <td className="p-4 font-semibold text-green-400">
-                        ₹{item.totalSpent}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+                      )}
+                    </div>
+
+                    {/* User Profile */}
+                    <div className="flex-1 min-w-0 ml-4">
+                      <p className={`font-[900] uppercase italic tracking-tight truncate leading-none mb-1.5 transition-colors ${index === 0 ? "text-[var(--foreground)] text-lg" : "text-[var(--foreground)] text-base group-hover:text-[#56CCF2]"}`}>
+                        {item.user?.name || "ANONYMOUS"}
+                      </p>
+                      <div className="flex items-center gap-2 text-[9px] font-bold text-[var(--muted)] opacity-40 uppercase tracking-tighter">
+                        <span>UID {item.user?.userId || "—"}</span>
+                        {index === 0 && <span className="text-[#56CCF2] opacity-100 font-black tracking-widest ml-1">#1 CHAMPION</span>}
+                      </div>
+                    </div>
+
+                    {/* Spending Detail */}
+                    <div className="text-right ml-4">
+                      <div className={`font-black italic tracking-tighter transition-all origin-right ${index === 0 ? "text-3xl text-[var(--foreground)]" : "text-xl text-[var(--foreground)] group-hover:scale-110"}`}>
+                        <span className="text-[#56CCF2] mr-0.5">₹</span>
+                        {item.totalSpent?.toLocaleString()}
+                      </div>
+                    </div>
+
+                    {/* Subtle Side Glow for Rank #1 */}
+                    {index === 0 && (
+                      <div className="absolute inset-y-0 left-0 w-1 bg-[#56CCF2] rounded-l-2xl shadow-[0_0_15px_rgba(86,204,242,0.4)]" />
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </AuthGuard>
   );
