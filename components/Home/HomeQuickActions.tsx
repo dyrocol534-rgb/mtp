@@ -10,140 +10,133 @@ import {
   Trophy,
   Image as ImageIcon,
   BadgePercent,
+  Zap,
+  Crown,
+  LayoutGrid,
+  Flower2
 } from "lucide-react";
 
 /* ===================== CONFIG ===================== */
 
 const topRow = [
-  { title: "Region", href: "/region", icon: Globe },
+  { title: "Scanner", href: "/region", icon: Globe },
   { title: "Games", href: "/games", icon: Gamepad2 },
   { title: "Services", href: "/services", icon: Layers },
   { title: "Blogs", href: "/blog", icon: BookOpen },
-  { title: "Leaderboard", href: "/leaderboard", icon: Trophy },
+  { title: "Leader", href: "/leaderboard", icon: Trophy },
 ];
 
 const bottomRow = [
+  { title: "Silver", href: "/games/membership/silver-membership", icon: Crown },
+  { title: "Reseller", href: "/games/membership/reseller-membership", icon: Zap },
   {
-    title: "Image Grid",
-    icon: ImageIcon,
-    comingSoon: true,
+    title: "Valentine",
+    icon: Flower2,
+    href: "/special-leaderboard",
+    isColorful: true,
+    accent: "from-rose-400 to-pink-600"
   },
-  {
-    title: "Membership",
-    icon: Trophy,
-    href: "/games/membership/silver-membership",
-  },
-  {
-    title: "Reseller",
-    icon: Layers,
-    href: "/games/membership/reseller-membership",
-  },
-  {
-    title: "IDs on Sell",
-    icon: BadgePercent,
-    comingSoon: true,
-  },
+  { title: "Skins Grid", icon: LayoutGrid, comingSoon: true },
+  { title: "Market", icon: BadgePercent, comingSoon: true },
 ];
 
 /* ===================== COMPONENT ===================== */
 
 export default function HomeQuickActions() {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-      className="max-w-7xl mx-auto px-4 mt-6 space-y-4"
-    >
-      {/* ================= TOP ROW ================= */}
-      <div className="grid grid-cols-5 gap-3">
-        {topRow.map((item, index) => {
-          const Icon = item.icon;
+    <section className="relative max-w-7xl mx-auto px-4 mt-8 pb-4 overflow-hidden">
+      {/* Background Decorative Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-tr from-[var(--accent)]/5 via-transparent to-purple-500/5 blur-[100px] pointer-events-none" />
 
-          return (
+      <div className="relative z-10 space-y-2">
+        {/* ================= TOP ROW ================= */}
+        <div className="grid grid-cols-5 gap-2">
+          {topRow.map((item, index) => (
             <motion.div
               key={item.title}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 + index * 0.05 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
             >
               <Link
                 href={item.href}
                 className="
-                  group flex flex-col items-center justify-center gap-2 py-2
-                  rounded-xl
-                  transition-all duration-200
-                  hover:bg-[var(--muted)]/10
+                  group flex flex-col items-center justify-center py-2 px-1
+                  transition-all duration-300
                   active:scale-95
                 "
               >
-                <div className="w-10 h-10 rounded-full bg-[var(--accent)]/10 flex items-center justify-center transition-all group-hover:bg-[var(--accent)]/20 group-hover:scale-110">
-                  <Icon
+                <div className="w-12 h-12 rounded-2xl bg-[var(--accent)]/5 flex items-center justify-center transition-all group-hover:bg-[var(--accent)]/15 group-hover:scale-110 group-hover:-rotate-3">
+                  <item.icon
                     size={20}
-                    className="text-[var(--accent)] transition-transform"
+                    className="text-[var(--accent)] transition-all group-hover:drop-shadow-[0_0_8px_var(--accent)]"
                   />
                 </div>
 
-                <span className="text-[11px] font-medium text-[var(--foreground)] text-center">
+                <span className="mt-2 text-[10px] font-black uppercase tracking-widest text-[var(--muted)] group-hover:text-[var(--foreground)] transition-colors">
                   {item.title}
                 </span>
               </Link>
             </motion.div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
 
-      {/* ================= BOTTOM ROW ================= */}
-      <div className="grid grid-cols-4 gap-3">
-        {bottomRow.map((item, index) => {
-          const Icon = item.icon;
+        {/* ================= BOTTOM ROW ================= */}
+        <div className="grid grid-cols-5 gap-2">
+          {bottomRow.map((item, index) => {
+            const isColorful = item.isColorful;
 
-          const Content = (
-            <div
-              className={`
-                flex flex-col items-center justify-center gap-2 py-2 text-center
-                rounded-xl
-                transition-all duration-200
-                ${item.comingSoon
-                  ? "opacity-40 cursor-not-allowed"
-                  : "hover:bg-[var(--muted)]/10 active:scale-95"
-                }
-              `}
-            >
-              <div className={`w-10 h-10 rounded-full bg-[var(--accent)]/10 flex items-center justify-center transition-all ${!item.comingSoon && "group-hover:bg-[var(--accent)]/20 group-hover:scale-110"}`}>
-                <Icon size={20} className="text-[var(--accent)]" />
-              </div>
+            const Content = (
+              <div
+                className={`
+                  group flex flex-col items-center justify-center py-2 px-1
+                  transition-all duration-300
+                  ${item.comingSoon ? "opacity-30 grayscale cursor-not-allowed" : "active:scale-95"}
+                `}
+              >
+                <div className={`
+                  w-12 h-12 rounded-2xl flex items-center justify-center transition-all
+                  ${item.comingSoon
+                    ? "bg-[var(--muted)]/5 text-[var(--muted)]"
+                    : isColorful
+                      ? `bg-gradient-to-br ${item.accent} text-white shadow-lg shadow-rose-500/20 group-hover:scale-110 group-hover:rotate-6`
+                      : "bg-[var(--accent)]/5 text-[var(--accent)] group-hover:bg-[var(--accent)]/15 group-hover:scale-110 group-hover:-rotate-3"
+                  }
+                `}>
+                  <item.icon size={20} className={isColorful ? "drop-shadow-sm" : ""} />
+                </div>
 
-              <span className="text-[11px] font-medium text-[var(--foreground)]">
-                {item.title}
-              </span>
-
-              {item.comingSoon && (
-                <span className="text-[9px] text-[var(--muted)]">
-                  Coming soon
+                <span className={`
+                  mt-2 text-[10px] font-black uppercase tracking-widest transition-colors
+                  ${isColorful ? "text-rose-500" : "text-[var(--muted)] group-hover:text-[var(--foreground)]"}
+                `}>
+                  {item.title}
                 </span>
-              )}
-            </div>
-          );
+                {item.comingSoon && (
+                  <span className="text-[7px] font-bold text-[var(--muted)] uppercase tracking-tighter mt-0.5">Soon</span>
+                )}
+              </div>
+            );
 
-          return (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.55 + index * 0.05 }}
-            >
-              {item.href ? (
-                <Link href={item.href} className="group">
-                  {Content}
-                </Link>
-              ) : (
-                <div>{Content}</div>
-              )}
-            </motion.div>
-          );
-        })}
+            return (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + index * 0.05 }}
+              >
+                {item.href ? (
+                  <Link href={item.href} className="block group">
+                    {Content}
+                  </Link>
+                ) : (
+                  <div>{Content}</div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

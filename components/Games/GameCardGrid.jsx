@@ -4,95 +4,108 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/public/logo.png";
+import { FiChevronRight, FiEye } from "react-icons/fi";
 
 export default function GameCardGrid({ game, isOutOfStock, index = 0 }) {
   const disabled = isOutOfStock(game.gameName);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.3 }}
+      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{
+        delay: index * 0.03,
+        type: "spring",
+        stiffness: 260,
+        damping: 20
+      }}
+      whileHover={{ y: -5 }}
     >
       <Link
         href={disabled ? "#" : `/games/${game.gameSlug}`}
-        className={`group relative overflow-hidden rounded-xl border
-        bg-[var(--card)] transition-all duration-300
+        className={`group relative block rounded-3xl overflow-hidden border transition-all duration-500
         ${disabled
-            ? "opacity-90 pointer-events-none border-[var(--border)]"
-            : "hover:-translate-y-1 hover:shadow-xl hover:border-[var(--accent)] border-[var(--border)]"
+            ? "opacity-60 cursor-not-allowed border-[var(--border)] bg-[var(--background)]"
+            : "border-[var(--border)] bg-[var(--card)]/40 hover:border-[var(--accent)]/50 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.4)]"
           }`}
       >
-        {/* IMAGE */}
-        <div className="relative w-full aspect-[4/3] overflow-hidden bg-[var(--muted)]/10">
+        {/* IMAGE CONTAINER */}
+        <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden">
           <Image
             src={game.gameImageId?.image || logo}
             alt={game.gameName}
             fill
-            priority={false}
-            className={`object-cover transition-all duration-500
+            sizes="(max-width: 768px) 33vw, 25vw"
+            className={`object-cover transition-all duration-700
               ${disabled
-                ? "grayscale blur-[1px] scale-105"
-                : "group-hover:scale-110"
+                ? "grayscale blur-[2px]"
+                : "group-hover:scale-110 group-hover:rotate-1"
               }`}
           />
 
-          {/* SOFT GLOW */}
+          {/* OVERLAYS */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+
+          {/* HOVER GLOW */}
           {!disabled && (
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-tr from-[var(--accent)]/20 via-transparent to-transparent" />
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-radial-gradient from-[var(--accent)]/20 via-transparent to-transparent pointer-events-none" />
           )}
 
-          {/* TAG */}
+          {/* TAG / BADGE */}
           {!disabled && game.tagId && (
-            <span
-              className="absolute top-2 left-2 text-[9px] px-2 py-0.5 rounded-full font-semibold shadow-lg"
-              style={{
-                background: game.tagId.tagBackground,
-                color: game.tagId.tagColor,
-              }}
-            >
-              {game.tagId.tagName}
-            </span>
+            <div className="absolute top-3 left-3 z-20">
+              <span
+                className="text-[8px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-lg shadow-2xl backdrop-blur-md border border-white/10"
+                style={{
+                  background: `${game.tagId.tagBackground}cc`,
+                  color: game.tagId.tagColor,
+                }}
+              >
+                {game.tagId.tagName}
+              </span>
+            </div>
           )}
 
-          {/* GRADIENT */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-          {/* CTA */}
+          {/* VIEW BUTTON (HOVER ONLY) */}
           {!disabled && (
-            <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 translate-x-2">
-              <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[var(--accent)] text-white shadow-lg">
-                View →
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 scale-75 group-hover:scale-100">
+              <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-2xl">
+                <FiEye size={20} />
+              </div>
+            </div>
+          )}
+
+          {/* OUT OF STOCK OVERLAY */}
+          {disabled && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
+              <span className="px-4 py-2 rounded-xl bg-red-500/90 text-white text-[10px] font-black uppercase tracking-widest italic shadow-2xl">
+                SOLD OUT
               </span>
             </div>
           )}
         </div>
 
         {/* CONTENT */}
-        <div className="p-3">
-          <h3
-            className={`text-sm font-semibold leading-tight line-clamp-1 transition-colors
-            ${disabled
-                ? "text-[var(--muted)]"
-                : "group-hover:text-[var(--accent)]"
-              }`}
-          >
-            {game.gameName}
-          </h3>
-
-          <p className="mt-0.5 text-xs text-[var(--muted)]">
-            {game.gameFrom}
-          </p>
-        </div>
-
-        {/* OUT OF STOCK */}
-        {disabled && (
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center">
-            <span className="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-lg">
-              Out of Stock
-            </span>
+        <div className="p-4 relative">
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <h3
+              className={`text-[11px] sm:text-xs font-black uppercase tracking-widest italic leading-tight line-clamp-1 transition-colors
+              ${disabled ? "text-[var(--muted)]" : "text-[var(--foreground)] group-hover:text-[var(--accent)]"}`}
+            >
+              {game.gameName}
+            </h3>
+            {!disabled && (
+              <FiChevronRight className="text-[var(--muted)] group-hover:text-[var(--accent)] transition-all group-hover:translate-x-1" size={14} />
+            )}
           </div>
-        )}
+
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]/40 group-hover:bg-[var(--accent)] transition-colors shadow-[0_0_8px_var(--accent)]" />
+            <p className="text-[9px] font-bold uppercase tracking-tight text-[var(--muted)]">
+              {game.gameFrom}
+            </p>
+          </div>
+        </div>
       </Link>
     </motion.div>
   );
