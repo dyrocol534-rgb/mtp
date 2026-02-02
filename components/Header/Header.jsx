@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
-import { FiChevronRight, FiLogOut, FiCheckCircle, FiShield, FiZap, FiMenu, FiX, FiLayers } from "react-icons/fi";
+import { FiChevronRight, FiLogOut, FiCheckCircle, FiShield, FiZap, FiMenu, FiX, FiLayers, FiCompass, FiGrid, FiShoppingBag, FiMessageSquare, FiUser } from "react-icons/fi";
 import { FaUser } from "react-icons/fa";
 
 /* ================= CONFIG ================= */
@@ -18,22 +18,18 @@ const HEADER_CONFIG = {
   },
 
   nav: [
-    // { label: "Orders", href: "/dashboard/orders" },
-    // { label: "Support", href: "/dashboard/support" },
-    { label: "Region Check", href: "/region" },
-    { label: "Services", href: "/services" },
+    { label: "Region Check", href: "/region", icon: <FiCompass size={14} /> },
+    { label: "Services", href: "/services", icon: <FiGrid size={14} /> },
   ],
 
   userMenu: {
     common: [
-      { label: "My Orders", href: "/dashboard/orders" },
-      { label: "Customer Support", href: "/dashboard/support" },
-      // { label: "My Wallet", href: "/dashboard/wallet" },
-      // { label: "Account Matrix", href: "/dashboard/account" },
-      { label: "Membership", href: "/admin-panal" },
+      { label: "My Orders", href: "/dashboard/orders", icon: <FiShoppingBag size={14} /> },
+      { label: "Customer Support", href: "/dashboard/support", icon: <FiMessageSquare size={14} /> },
+      { label: "Membership", href: "/admin-panal", icon: <FiShield size={14} /> },
     ],
     roles: {
-      owner: { label: "Admin Panel", href: "/owner-panal" },
+      owner: { label: "Admin Panel", href: "/owner-panal", icon: <FiZap size={14} /> },
     },
   },
 };
@@ -179,8 +175,9 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setActiveNav(item.href)}
-                className="relative px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] italic text-[var(--muted)] hover:text-[var(--accent)] transition-all group overflow-hidden"
+                className="relative px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] italic text-[var(--muted)] hover:text-[var(--accent)] transition-all group overflow-hidden flex items-center gap-2"
               >
+                <span className="relative z-10 opacity-70 group-hover:opacity-100 transition-all">{item.icon}</span>
                 <span className="relative z-10">{item.label}</span>
                 <motion.span
                   initial={false}
@@ -200,29 +197,24 @@ export default function Header() {
 
             {/* USER BUTTON */}
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setUserMenuOpen((p) => !p)}
-              className="relative flex items-center gap-2 h-10 px-4 rounded-full bg-[var(--foreground)]/5 border border-[var(--border)] hover:border-[var(--accent)]/40 hover:bg-[var(--foreground)]/10 transition-all duration-500 group shadow-2xl"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => user ? setUserMenuOpen((p) => !p) : window.location.href = "/login"}
+              className="relative w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group"
             >
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[var(--accent)] to-purple-600 flex items-center justify-center overflow-hidden ring-1 ring-[var(--border)] group-hover:rotate-12 transition-all duration-500">
+              <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-[var(--foreground)]/5 group-hover:bg-[var(--foreground)]/10 transition-colors">
                 {user?.avatar ? (
                   <Image
                     src={user.avatar}
                     alt="Avatar"
-                    width={24}
-                    height={24}
+                    width={36}
+                    height={36}
                     className="object-cover w-full h-full"
                   />
                 ) : (
-                  <FiShield className="text-[var(--background)] text-[10px]" />
+                  <FiUser className="text-[var(--foreground)]/60 text-lg" />
                 )}
               </div>
-              {user && (
-                <span className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-[var(--foreground)]/80 pr-1 max-w-[100px] truncate italic">
-                  {user.name}
-                </span>
-              )}
             </motion.button>
 
             {/* USER DROPDOWN */}
@@ -262,7 +254,10 @@ export default function Header() {
                                 : "hover:bg-[var(--foreground)]/5 text-[var(--foreground)]/60"
                                 }`}
                             >
-                              <span className="text-[10px] font-black uppercase tracking-widest italic">{item.label}</span>
+                              <div className="flex items-center gap-3">
+                                <span className={activeNav === item.href ? "text-[var(--accent)]" : "opacity-40"}>{item.icon}</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest italic">{item.label}</span>
+                              </div>
                               <FiChevronRight
                                 className={
                                   activeNav === item.href ? "text-[var(--accent)]" : "opacity-40"
@@ -305,17 +300,17 @@ export default function Header() {
                         className="p-6 bg-gradient-to-br from-[var(--accent)]/10 to-transparent border-b border-[var(--border)]"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-purple-600 flex items-center justify-center overflow-hidden flex-shrink-0 ring-1 ring-[var(--border)] shadow-[0_0_20px_rgba(var(--accent-rgb),0.2)]">
+                          <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-[var(--foreground)]/5 flex-shrink-0">
                             {user?.avatar ? (
                               <Image
                                 src={user.avatar}
                                 alt="Avatar"
-                                width={56}
-                                height={56}
+                                width={48}
+                                height={48}
                                 className="object-cover w-full h-full"
                               />
                             ) : (
-                              <FiShield className="text-[var(--background)] text-xl" />
+                              <FiUser className="text-[var(--foreground)]/40 text-xl" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -386,7 +381,10 @@ export default function Header() {
                               onClick={() => setUserMenuOpen(false)}
                               className="flex items-center justify-between px-4 py-4 rounded-2xl hover:bg-[var(--foreground)]/5 border border-transparent hover:border-[var(--border)] transition-all group"
                             >
-                              <span className="text-[10px] font-black uppercase tracking-widest text-[var(--foreground)]/70 group-hover:text-[var(--accent)] italic">{item.label}</span>
+                              <div className="flex items-center gap-3">
+                                <span className="text-[var(--muted)] group-hover:text-[var(--accent)] transition-colors">{item.icon}</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-[var(--foreground)]/70 group-hover:text-[var(--accent)] italic">{item.label}</span>
+                              </div>
                               <FiChevronRight className="text-[var(--muted)] group-hover:text-[var(--accent)] group-hover:translate-x-1 transition-all" />
                             </Link>
                           </motion.div>
@@ -405,12 +403,17 @@ export default function Header() {
                                 }
                                 className="flex items-center justify-between px-4 py-4 rounded-2xl bg-[var(--accent)]/5 border border-[var(--accent)]/20 hover:bg-[var(--accent)]/10 transition-all group"
                               >
-                                <span className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)] italic">
-                                  {
-                                    HEADER_CONFIG.userMenu.roles[user.userType]
-                                      .label
-                                  }
-                                </span>
+                                <div className="flex items-center gap-3">
+                                  <span className="text-[var(--accent)] group-hover:scale-110 transition-transform">
+                                    {HEADER_CONFIG.userMenu.roles[user.userType].icon}
+                                  </span>
+                                  <span className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)] italic">
+                                    {
+                                      HEADER_CONFIG.userMenu.roles[user.userType]
+                                        .label
+                                    }
+                                  </span>
+                                </div>
                                 <FiChevronRight className="text-[var(--accent)] group-hover:translate-x-1 transition-all" />
                               </Link>
                             </motion.div>
