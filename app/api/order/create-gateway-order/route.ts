@@ -197,7 +197,7 @@ export async function POST(req: Request) {
     if (!email) {
       return NextResponse.json({
         success: false,
-        message: "Provide email or phone",
+        message: "Email is required for order confirmation",
       });
     }
 
