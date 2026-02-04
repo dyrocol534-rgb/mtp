@@ -53,12 +53,24 @@ export default function ValentinePopup() {
     return () => clearInterval(timer);
   }, []);
 
+  const triggerOneSignal = () => {
+    if (typeof window !== "undefined") {
+      // @ts-ignore
+      const OneSignalDeferred = window.OneSignalDeferred || [];
+      // @ts-ignore
+      OneSignalDeferred.push(async (OneSignal) => {
+        await OneSignal.Notifications.requestPermission();
+      });
+    }
+  };
+
   const handleClose = () => {
     setShow(false);
     sessionStorage.setItem("valentine_popup_seen", "true");
   };
 
   const handleRedirect = () => {
+    triggerOneSignal();
     setShow(false);
     sessionStorage.setItem("valentine_popup_seen", "true");
     router.push("/special-leaderboard");
