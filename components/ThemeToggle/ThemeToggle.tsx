@@ -88,139 +88,166 @@ export default function ThemeToggle() {
   const currentTheme = themes.find((t) => t.id === theme) || themes[1];
 
   return (
-    <div ref={containerRef} className="relative inline-block text-left">
+    <div ref={containerRef} className="relative z-50">
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setOpen(!open)}
-        className={`relative flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 group ${open ? "bg-[var(--accent)]/20 shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)]" : "bg-[var(--foreground)]/5"
-          }`}
+        className={`relative flex items-center gap-2 px-1.5 py-1.5 rounded-full transition-all duration-300 group border ${open
+          ? "bg-[var(--accent)]/10 border-[var(--accent)]/50 shadow-[0_0_20px_rgba(var(--accent-rgb),0.3)]"
+          : "bg-[var(--background)]/50 border-white/10 hover:border-white/20 hover:bg-[var(--background)]/80"
+          } backdrop-blur-md`}
         title="Change Interface Theme"
       >
-        {/* INNER GLOW */}
-        <div className={`absolute inset-0 rounded-full transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"} bg-gradient-to-tr from-[var(--accent)]/20 to-transparent blur-[4px]`}></div>
+        {/* ICON CONTAINER */}
+        <div className={`relative flex items-center justify-center w-8 h-8 rounded-full overflow-hidden transition-all duration-300 ${open ? "bg-[var(--accent)] text-white" : "bg-[var(--foreground)]/5 text-[var(--foreground)]"}`}>
+          <motion.div
+            key={theme}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            className="text-sm"
+          >
+            {currentTheme.icon}
+          </motion.div>
 
-        {/* ICON */}
-        <motion.div
-          animate={{ rotate: open ? 45 : 0 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          className="relative z-10"
-        >
-          <Palette size={18} className={`${open ? "text-[var(--accent)]" : "text-[var(--foreground)]/60"} transition-colors duration-300`} />
-        </motion.div>
+          {/* SPINNING RING */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            className={`absolute inset-0 rounded-full border border-dashed ${open ? "border-white/30" : "border-[var(--foreground)]/20"}`}
+          />
+        </div>
 
-        {/* STATUS DOT */}
-        <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-[var(--accent)] border-2 border-[var(--background)] shadow-[0_0_8px_var(--accent)] scale-75"></div>
+        {/* EXPANDABLE LABEL (Only on Desktop/Large) */}
+        <AnimatePresence>
+          <div className="hidden md:block overflow-hidden">
+            <motion.span
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: "auto", opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              className={`text-[10px] font-black uppercase tracking-widest italic pr-3 whitespace-nowrap ${open ? "text-[var(--accent)]" : "text-[var(--foreground)]/60"}`}
+            >
+              {currentTheme.label}
+            </motion.span>
+          </div>
+        </AnimatePresence>
+
+        {/* INDICATOR */}
+        <div className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-[var(--background)] transition-colors duration-300 ${open ? "bg-[var(--accent)] animate-pulse" : "bg-emerald-500"}`} />
       </motion.button>
 
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.9, rotateX: -15 }}
-            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95, rotateX: -10 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="absolute right-0 mt-4 w-72 bg-[var(--card)]/80 backdrop-blur-2xl rounded-3xl border border-[var(--border)] shadow-[0_30px_60px_rgba(0,0,0,0.5)] z-[1001] origin-top-right overflow-hidden perspective-1000"
-          >
-            {/* HUD OVERLAYS */}
-            <div className="absolute inset-0 pointer-events-none">
-              {/* SCANLINES */}
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_3px] opacity-30"></div>
-              {/* CORNER BRACKETS */}
-              <div className="absolute top-4 left-4 w-2 h-2 border-t-2 border-l-2 border-[var(--accent)]/30"></div>
-              <div className="absolute top-4 right-4 w-2 h-2 border-t-2 border-r-2 border-[var(--accent)]/30"></div>
-              <div className="absolute bottom-4 left-4 w-2 h-2 border-b-2 border-l-2 border-[var(--accent)]/30"></div>
-              <div className="absolute bottom-4 right-4 w-2 h-2 border-b-2 border-r-2 border-[var(--accent)]/30"></div>
-            </div>
+          <>
+            {/* MOBILE BACKDROP */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[99] md:hidden"
+            />
 
-            {/* HEADER */}
-            <div className="relative p-4 border-b border-[var(--border)] bg-[var(--accent)]/5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Cpu size={12} className="text-[var(--accent)] animate-pulse" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.2em] italic text-[var(--accent)]">
-                    Theme Selector
-                  </span>
-                </div>
-                <div className="flex gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]/40"></div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]/20"></div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.95, y: 10, filter: "blur(10px)" }}
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              className="fixed top-24 left-1/2 -translate-x-1/2 w-[90vw] max-w-[340px] md:absolute md:top-full md:left-auto md:right-0 md:translate-x-0 md:mt-3 md:w-80 bg-[#0f0f11]/95 backdrop-blur-xl rounded-[24px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden z-[100]"
+            >
+              {/* DECORATIVE ELEMENTS */}
+              <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-50" />
+              <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] pointer-events-none" />
+
+              {/* HEADER */}
+              <div className="relative p-5 pb-2">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2 text-[var(--foreground)]">
+                    <Layers size={14} className="text-[var(--accent)]" />
+                    <span className="text-xs font-[800] tracking-[0.2em] uppercase opacity-80">System Theme</span>
+                  </div>
+                  <div className="px-2 py-0.5 rounded text-[9px] font-bold bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20 uppercase tracking-widest">
+                    Select
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* GRID CONTAINER */}
-            <div className="relative max-h-[400px] overflow-y-auto custom-scrollbar p-3 pt-4">
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={{
-                  visible: { transition: { staggerChildren: 0.02 } }
-                }}
-                className="grid grid-cols-2 gap-2"
-              >
-                {themes.map((t) => (
-                  <motion.button
-                    key={t.id}
-                    variants={{
-                      hidden: { opacity: 0, y: 10 },
-                      visible: { opacity: 1, y: 0 }
-                    }}
-                    whileHover={{ scale: 1.02, x: 2 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => changeTheme(t.id)}
-                    className={`flex items-center gap-3 px-3 py-3 rounded-2xl text-[10px] transition-all duration-300 border group ${theme === t.id
-                        ? "bg-[var(--accent)]/15 border-[var(--accent)]/30 text-[var(--accent)] shadow-[inset_0_0_15px_rgba(var(--accent-rgb),0.1)]"
-                        : "bg-[var(--foreground)]/5 border-transparent hover:border-[var(--border)] text-[var(--foreground)]/60 hover:text-[var(--foreground)]"
-                      }`}
-                  >
-                    <div className={`flex items-center justify-center p-1 rounded-lg transition-colors ${theme === t.id ? "bg-[var(--accent)]/20" : "bg-[var(--background)]/40"
-                      }`}>
-                      <span className="text-sm group-hover:scale-125 transition-transform duration-500">
-                        {t.icon}
-                      </span>
-                    </div>
-                    <span className="flex-1 text-left font-black uppercase tracking-widest italic truncate transition-all group-hover:tracking-[0.1em]">
-                      {t.label}
-                    </span>
-                    {theme === t.id && (
-                      <motion.div
-                        layoutId="active-check"
-                        className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]"
-                      />
-                    )}
-                  </motion.button>
-                ))}
-              </motion.div>
-            </div>
+              {/* SCROLLABLE GRID */}
+              <div className="px-3 pb-3 max-h-[320px] overflow-y-auto custom-scrollbar">
+                <motion.div
+                  className="grid grid-cols-2 gap-2"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    visible: { transition: { staggerChildren: 0.03 } }
+                  }}
+                >
+                  {themes.map((t) => (
+                    <motion.button
+                      key={t.id}
+                      variants={{
+                        hidden: { opacity: 0, y: 10 },
+                        visible: { opacity: 1, y: 0 }
+                      }}
+                      onClick={() => changeTheme(t.id)}
+                      className={`relative group overflow-hidden flex items-center gap-3 p-3 rounded-xl transition-all duration-300 border ${theme === t.id
+                        ? "bg-[var(--accent)] text-white border-[var(--accent)] shadow-[0_4px_12px_rgba(var(--accent-rgb),0.3)]"
+                        : "bg-white/5 text-[var(--foreground)] border-white/5 hover:bg-white/10 hover:border-white/10"
+                        }`}
+                    >
+                      {/* HOVER GLOW */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-            {/* FOOTER */}
-            <div className="p-3 border-t border-[var(--border)] bg-[var(--foreground)]/5 flex justify-center">
-              <p className="text-[7px] font-medium text-[var(--muted)] uppercase tracking-[0.3em] opacity-40">
-                Interface Uplink Active
-              </p>
-            </div>
-          </motion.div>
+                      <span className="text-lg relative z-10 group-hover:scale-110 transition-transform duration-300">{t.icon}</span>
+                      <div className="flex flex-col items-start relative z-10">
+                        <span className={`text-[10px] font-[800] uppercase tracking-wider leading-none ${theme === t.id ? "text-white" : "text-[var(--foreground)]/90"}`}>
+                          {t.label}
+                        </span>
+                        {theme === t.id && (
+                          <span className="text-[8px] font-medium opacity-80 mt-1 flex items-center gap-1">
+                            Active
+                          </span>
+                        )}
+                      </div>
+
+                      {theme === t.id && (
+                        <motion.div
+                          layoutId="active-dot"
+                          className="absolute right-3 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_5px_white]"
+                        />
+                      )}
+                    </motion.button>
+                  ))}
+                </motion.div>
+              </div>
+
+              {/* STATUS FOOTER */}
+              <div className="p-3 bg-white/5 border-t border-white/5 flex items-center justify-between text-[9px] text-[var(--foreground)]/40 font-mono">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  UI.VS.{themes.length}
+                </span>
+                <span className="opacity-50 tracking-widest text-right">OPTICAL SYSTEMS</span>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
       <style jsx global>{`
-        .perspective-1000 {
-          perspective: 1000px;
-        }
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
+          background: rgba(255,255,255,0.02);
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: var(--accent);
+          background: rgba(255,255,255,0.1);
           border-radius: 20px;
-          opacity: 0.3;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: var(--accent);
+          background: rgba(255,255,255,0.2);
         }
       `}</style>
     </div>
