@@ -89,22 +89,23 @@ export default function RootLayout({
         {/* OneSignal SDK */}
         <Script
           src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
-          defer
+          strategy="afterInteractive"
         />
 
         <Script id="onesignal-init" strategy="afterInteractive">
           {`
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-      appId: "b7844eac-b557-40e4-ad01-11546347a279",
-              safari_web_id: "web.onesignal.auto.5ccade99-0f35-4775-9ae0-5e2c3bfd110b",
-        notifyButton: {
-          enable: true,
-        },
-      });
-    });
-  `}
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(async function(OneSignal) {
+              await OneSignal.init({
+                appId: "b7844eac-b557-40e4-ad01-11546347a279",
+                safari_web_id: "web.onesignal.auto.5ccade99-0f35-4775-9ae0-5e2c3bfd110b",
+                allowLocalhostAsSecureOrigin: true,
+                notifyButton: {
+                  enable: true,
+                },
+              });
+            });
+          `}
         </Script>
 
       </body>
