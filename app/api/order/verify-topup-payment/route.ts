@@ -91,27 +91,102 @@ export async function POST(req: Request) {
     }
 
     // Final Confirmation
-    order.paymentStatus = "success";
-    order.gatewayResponse = data;
-    await order.save();
+    // BLACKLIST CHECK (After payment, before delivery)
+    const BLACKLIST_EMAILS = [
+      "hacker@gmail.com",
+      "scammer@gmail.com",
+      "anyemchi@gmail.com",
+      "knishan777@gmail.com"
+    ];
 
-    // Topup Logic
-    if (order.topupStatus === "success") {
+    const BLACKLIST_PLAYER_IDS = [
+      "12345678",
+      "87654321",
+      "1478544003",
+      "1703098323"
+    ];
+
+    if (
+      (order.email && BLACKLIST_EMAILS.includes(order.email)) ||
+      BLACKLIST_PLAYER_IDS.includes(String(order.playerId))
+    ) {
+      order.status = "failed";
+      order.paymentStatus = "success";
+      order.topupStatus = "failed";
+      order.gatewayResponse = data;
+      await order.save();
+
       return NextResponse.json({
-        success: true,
-        message: "Topup already completed",
-        paymentStatus: order.paymentStatus,
-        topupStatus: order.topupStatus
+        success: false,
+        message: "Order blocked by security policy",
+        paymentStatus: "success",
+        topupStatus: "failed"
       });
     }
 
-    order.topupStatus = "processing";
-    await order.save();
+    // Check if it's a multiplier/combo order (e.g., weekly-2x)
+    const comboMatch = order.itemSlug.match(/(.+)-(\d+)x$/i);
+    const isMultiplierOrder = !!comboMatch;
+
+    let finalOrder = order; // Default to the current order object
+
+    if (isMultiplierOrder) {
+      // isMultiplierOrder -> USE ATOMIC LOCKING (Fix for double fulfillment)
+      const lockedOrder = await Order.findOneAndUpdate(
+        {
+          orderId,
+          topupStatus: { $nin: ["success", "processing"] },
+        },
+        {
+          $set: {
+            paymentStatus: "success",
+            topupStatus: "processing",
+            gatewayResponse: data,
+          },
+        },
+        { new: true }
+      );
+
+      if (!lockedOrder) {
+        const currentOrder = await Order.findOne({ orderId });
+        return NextResponse.json({
+          success: true,
+          message: "Topup already processed",
+          paymentStatus: currentOrder?.paymentStatus || "success",
+          topupStatus: currentOrder?.topupStatus || "processing",
+        });
+      }
+      finalOrder = lockedOrder;
+
+    } else {
+      // Normal Order -> Use ORIGINAL LOGIC (No atomic lock)
+      order.paymentStatus = "success";
+      order.gatewayResponse = data;
+      await order.save();
+
+      // Topup Logic
+      if (order.topupStatus === "success") {
+        return NextResponse.json({
+          success: true,
+          message: "Topup already completed",
+          paymentStatus: order.paymentStatus,
+          topupStatus: order.topupStatus
+        });
+      }
+
+      order.topupStatus = "processing";
+      await order.save();
+      finalOrder = order;
+    }
+
+    /* ---------------------------------------------------
+       FULFILLMENT LOGIC (Shared or Specific)
+       Now we use 'finalOrder' which is either the locked one or the standard one
+    --------------------------------------------------- */
 
     let multiplier = 1;
-    let baseItemSlug = order.itemSlug;
+    let baseItemSlug = finalOrder.itemSlug;
 
-    const comboMatch = order.itemSlug.match(/(.+)-(\d+)x$/i);
     if (comboMatch) {
       baseItemSlug = comboMatch[1];
       multiplier = parseInt(comboMatch[2]);
@@ -122,7 +197,7 @@ export async function POST(req: Request) {
 
     for (let i = 0; i < multiplier; i++) {
       try {
-        console.log(`[fulfillment] Attempt ${i + 1}/${multiplier} | Order: ${orderId} | ID: ${order.gameSlug}_${baseItemSlug}`);
+        console.log(`[fulfillment] Attempt ${i + 1}/${multiplier} | Order: ${orderId} | ID: ${finalOrder.gameSlug}_${baseItemSlug}`);
 
         const gameResp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api-service/order`, {
           method: "POST",
@@ -131,9 +206,9 @@ export async function POST(req: Request) {
             "x-api-key": process.env.API_SECRET_KEY!,
           },
           body: JSON.stringify({
-            playerId: String(order.playerId),
-            zoneId: String(order.zoneId),
-            productId: `${order.gameSlug}_${baseItemSlug}`,
+            playerId: String(finalOrder.playerId),
+            zoneId: String(finalOrder.zoneId),
+            productId: `${finalOrder.gameSlug}_${baseItemSlug}`,
             currency: "USD",
           }),
         });
@@ -154,26 +229,26 @@ export async function POST(req: Request) {
       }
     }
 
-    order.externalResponse = responses;
+    finalOrder.externalResponse = responses;
     if (successCount === multiplier) {
-      order.status = "success";
-      order.topupStatus = "success";
+      finalOrder.status = "success";
+      finalOrder.topupStatus = "success";
     } else if (successCount > 0) {
-      order.status = "success";
-      order.topupStatus = "success";
-      order.itemName = `${order.itemName} (${successCount}/${multiplier} delivered)`;
+      finalOrder.status = "success";
+      finalOrder.topupStatus = "success";
+      finalOrder.itemName = `${finalOrder.itemName} (${successCount}/${multiplier} delivered)`;
     } else {
-      order.status = "failed";
-      order.topupStatus = "failed";
+      finalOrder.status = "failed";
+      finalOrder.topupStatus = "failed";
     }
 
-    await order.save();
+    await finalOrder.save();
 
     return NextResponse.json({
-      success: order.status === "success",
-      message: order.status === "success" ? "Topup successful" : "Topup failed",
-      paymentStatus: order.paymentStatus,
-      topupStatus: order.topupStatus,
+      success: finalOrder.status === "success",
+      message: finalOrder.status === "success" ? "Topup successful" : "Topup failed",
+      paymentStatus: finalOrder.paymentStatus,
+      topupStatus: finalOrder.topupStatus,
       topupResponse: responses,
     });
   } catch (error: any) {
