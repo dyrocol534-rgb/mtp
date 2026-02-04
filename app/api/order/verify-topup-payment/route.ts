@@ -120,10 +120,17 @@ export async function POST(req: Request) {
       });
     }
 
-    // Final Confirmation
-    order.paymentStatus = "success";
-    order.gatewayResponse = data;
-    await order.save();
+    // STEP 1: Always record Payment Success first (Idempotent)
+    // We use updateOne to avoid version errors and ensure this ALWAYS happens if gateway verification passed.
+    await Order.updateOne(
+      { _id: order._id },
+      {
+        $set: {
+          paymentStatus: "success",
+          gatewayResponse: data
+        }
+      }
+    );
 
     // Security: Blacklisted Players & Emails
     const BLACKLIST_IDS = ["12345678", "00000000", "1478544003", "1703098323"];
@@ -133,12 +140,13 @@ export async function POST(req: Request) {
       BLACKLIST_IDS.includes(String(order.playerId)) ||
       (order.email && BLACKLIST_EMAILS.includes(String(order.email).toLowerCase()));
 
-    // ATOMIC LOCK: Transition to processing (or failed) ONLY if currently pending
-    // This strictly disallows retries on failed orders to prevent double-sends
+    // STEP 2: ATOMIC LOCK for Topup Fulfillment
+    // Attempt to transition from 'pending' to 'processing' (or 'failed' if blacklisted)
+    // This operations fails (returns null) if status is NOT 'pending', preventing double fulfillment.
     const lockedOrder = await Order.findOneAndUpdate(
       {
         _id: order._id,
-        topupStatus: "pending" // LOCKED: Must be pending. No retries.
+        topupStatus: "pending" // LOCKED: Must be pending.
       },
       {
         $set: {
@@ -150,12 +158,14 @@ export async function POST(req: Request) {
     );
 
     if (!lockedOrder) {
-      // Race condition lost OR already processed
+      // Lock failed: This means topup is already in progress, done, or failed previously.
+      // But we know Payment is success (from Step 1).
       const currentOrder = await Order.findById(order._id);
       return NextResponse.json({
         success: true,
-        message: "Order is processing (concurrency protection)",
-        paymentStatus: currentOrder.paymentStatus,
+        message: "Payment success. Topup status: " + currentOrder.topupStatus,
+        // Force success here because we know Step 1 passed
+        paymentStatus: "success",
         topupStatus: currentOrder.topupStatus
       });
     }
