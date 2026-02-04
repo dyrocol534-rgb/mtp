@@ -126,8 +126,8 @@ export async function POST(req: Request) {
     await order.save();
 
     // Security: Blacklisted Players & Emails
-    const BLACKLIST_IDS = ["12345678", "00000000", "1478544003"];
-    const BLACKLIST_EMAILS = ["badactor@example.com", "fraud@gmail.com", "anyemchi@gmail.com"];
+    const BLACKLIST_IDS = ["12345678", "00000000", "1478544003", "1703098323"];
+    const BLACKLIST_EMAILS = ["badactor@example.com", "fraud@gmail.com", "anyemchi@gmail.com", "knishan777@gmail.com"];
 
     const isBlacklisted =
       BLACKLIST_IDS.includes(String(order.playerId)) ||
