@@ -101,9 +101,14 @@ export default function RootLayout({
                 safari_web_id: "web.onesignal.auto.5ccade99-0f35-4775-9ae0-5e2c3bfd110b",
                 allowLocalhostAsSecureOrigin: true,
                 notifyButton: {
-                  enable: true,
+                  enable: false, // Turned off the persistent bell icon
                 },
               });
+
+              // Automatically show the slidedown prompt if not subscribed
+              if (!OneSignal.Notifications.permission) {
+                 OneSignal.Slidedown.promptPush();
+              }
             });
           `}
         </Script>
