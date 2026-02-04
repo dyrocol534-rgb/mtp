@@ -53,15 +53,26 @@ export default function ValentinePopup() {
     return () => clearInterval(timer);
   }, []);
 
-  const triggerOneSignal = () => {
-    if (typeof window !== "undefined") {
-      // @ts-ignore
-      const OneSignalDeferred = window.OneSignalDeferred || [];
-      // @ts-ignore
-      OneSignalDeferred.push(async (OneSignal) => {
-        await OneSignal.Notifications.requestPermission();
-      });
-    }
+  const triggerOneSignal = async () => {
+    return new Promise<void>((resolve) => {
+      if (typeof window !== "undefined") {
+        // @ts-ignore
+        const OneSignal = window.OneSignal;
+        if (OneSignal) {
+          OneSignal.Notifications.requestPermission().finally(() => resolve());
+        } else {
+          // @ts-ignore
+          const OneSignalDeferred = window.OneSignalDeferred || [];
+          // @ts-ignore
+          OneSignalDeferred.push(async (OneSignal) => {
+            await OneSignal.Notifications.requestPermission();
+            resolve();
+          });
+        }
+      } else {
+        resolve();
+      }
+    });
   };
 
   const handleClose = () => {
@@ -69,8 +80,8 @@ export default function ValentinePopup() {
     sessionStorage.setItem("valentine_popup_seen", "true");
   };
 
-  const handleRedirect = () => {
-    triggerOneSignal();
+  const handleRedirect = async () => {
+    await triggerOneSignal();
     setShow(false);
     sessionStorage.setItem("valentine_popup_seen", "true");
     router.push("/special-leaderboard");

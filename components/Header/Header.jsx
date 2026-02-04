@@ -46,28 +46,44 @@ export default function Header() {
 
   /* ================= PUSH NOTIFICATIONS ================= */
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [showSubscribeToast, setShowSubscribeToast] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // @ts-ignore
       window.OneSignalDeferred = window.OneSignalDeferred || [];
+      // @ts-ignore
       window.OneSignalDeferred.push(async (OneSignal) => {
         // Initial check
         setIsSubscribed(OneSignal.Notifications.permission === "granted");
 
         // Listen for permission changes
         OneSignal.Notifications.addEventListener("permissionChange", (permission) => {
-          setIsSubscribed(permission === "granted");
+          const granted = permission === "granted";
+          setIsSubscribed(granted);
+          if (granted) {
+            setShowSubscribeToast(true);
+            setTimeout(() => setShowSubscribeToast(false), 3000);
+          }
         });
       });
     }
   }, []);
 
   const handlePushToggle = () => {
-    if (window.OneSignalDeferred) {
-      window.OneSignalDeferred.push(async (OneSignal) => {
-        // Force the slidedown to show, even if previously dismissed
-        await OneSignal.Slidedown.promptPush({ force: true });
-      });
+    if (typeof window !== "undefined") {
+      // @ts-ignore
+      const OneSignal = window.OneSignal;
+      if (OneSignal) {
+        OneSignal.Notifications.requestPermission();
+      } else {
+        // @ts-ignore
+        const OneSignalDeferred = window.OneSignalDeferred || [];
+        // @ts-ignore
+        OneSignalDeferred.push(async (OneSignal) => {
+          await OneSignal.Notifications.requestPermission();
+        });
+      }
     }
   };
 
@@ -487,6 +503,28 @@ export default function Header() {
               <div className="flex flex-col">
                 <span className="text-xs font-black uppercase tracking-widest text-green-500 italic">Logged Out</span>
                 <span className="text-[10px] text-[var(--foreground)]/60 font-medium uppercase tracking-[0.1em]">Successfully logged out</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SUBSCRIBE SUCCESS TOAST */}
+      <AnimatePresence>
+        {showSubscribeToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60]"
+          >
+            <div className="px-6 py-4 rounded-[2rem] bg-[var(--card)]/90 backdrop-blur-2xl border border-sky-500/30 flex items-center gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+              <div className="w-10 h-10 rounded-full bg-sky-500 text-black flex items-center justify-center shadow-[0_0_20px_rgba(14,165,233,0.3)]">
+                <FiBell size={20} />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs font-black uppercase tracking-widest text-sky-500 italic">Subscribed</span>
+                <span className="text-[10px] text-[var(--foreground)]/60 font-medium uppercase tracking-[0.1em]">Successfully subscribed to notifications</span>
               </div>
             </div>
           </motion.div>
