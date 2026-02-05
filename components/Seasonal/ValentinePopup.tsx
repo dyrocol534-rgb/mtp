@@ -59,13 +59,13 @@ export default function ValentinePopup() {
         // @ts-ignore
         const OneSignal = window.OneSignal;
         if (OneSignal) {
-          OneSignal.Notifications.requestPermission().finally(() => resolve());
+          OneSignal.Slidedown.promptPush().finally(() => resolve());
         } else {
           // @ts-ignore
           const OneSignalDeferred = window.OneSignalDeferred || [];
           // @ts-ignore
           OneSignalDeferred.push(async (OneSignal) => {
-            await OneSignal.Notifications.requestPermission();
+            await OneSignal.Slidedown.promptPush();
             resolve();
           });
         }
@@ -78,16 +78,18 @@ export default function ValentinePopup() {
   const handleClose = async () => {
     // triggerOneSignal();
     setShow(false);
-    await triggerOneSignal();
     sessionStorage.setItem("valentine_popup_seen", "true");
+    await triggerOneSignal();
+
   };
 
   const handleRedirect = async () => {
 
     setShow(false);
     sessionStorage.setItem("valentine_popup_seen", "true");
-    await triggerOneSignal();
     router.push("/special-leaderboard");
+    await triggerOneSignal();
+
 
   };
 
