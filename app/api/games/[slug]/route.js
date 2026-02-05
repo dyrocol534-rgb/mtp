@@ -281,7 +281,7 @@ export async function GET(req, { params }) {
 
     if (baseWeeklyPass) {
       const combos = [
-        { multiplier: 2, label: "2x" },
+        // { multiplier: 2, label: "2x" },
         // { multiplier: 3, label: "3x" },
       ];
 
