@@ -75,7 +75,8 @@ export default function ValentinePopup() {
     });
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    await triggerOneSignal();
     setShow(false);
     sessionStorage.setItem("valentine_popup_seen", "true");
   };
