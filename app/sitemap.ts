@@ -93,6 +93,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.6,
     },
+    {
+      url: `${baseUrl}/blog/how-to-gift-mlbb-diamonds`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+
   ];
 
   /* ================= OTT & MEMBERSHIP STATIC DATA ================= */

@@ -47,6 +47,17 @@ const BLOGS_DATA = [
     publishedAt: "2025-01-05",
     readingTime: "3 min read",
   },
+  {
+    id: "4",
+    title: "How to Gift MLBB Diamonds to Friends (2025)",
+    slug: "how-to-gift-mlbb-diamonds",
+    type: "Guide",
+    excerpt:
+      "A complete guide on how to safely gift Mobile Legends diamonds to your friends using their Player ID.",
+    publishedAt: "2025-02-07",
+    readingTime: "3 min read",
+    featured: true,
+  },
 ];
 
 /* ================= SETTINGS ================= */

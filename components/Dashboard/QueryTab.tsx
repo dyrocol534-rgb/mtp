@@ -21,7 +21,7 @@ const SUPPORT_CONFIG = {
   contacts: {
     title: "Contact Methods",
     items: [
-      { id: "phone", title: "Phone", value: "+91 6372305866", href: "tel:+916372305866", icon: <FaPhoneAlt /> },
+      { id: "phone", title: "Phone", value: "+91 9178521537", href: "tel:+919178521537", icon: <FaPhoneAlt /> },
       { id: "instagram", title: "Instagram", value: "@mlbbtopup.in", href: "https://www.instagram.com/mlbbtopup.in", icon: <FaInstagram /> },
       { id: "youtube", title: "YouTube", value: "Subscribe Now", href: "https://whatsapp.com/channel/0029Vb87jgR17En1n5PKy129", icon: <FaYoutube /> },
       { id: "whatsapp", title: "WhatsApp", value: "Chat with us", href: "https://whatsapp.com/channel/0029Vb87jgR17En1n5PKy129", icon: <FaWhatsapp /> },

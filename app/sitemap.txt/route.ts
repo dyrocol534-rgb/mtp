@@ -21,6 +21,8 @@ export async function GET() {
         `${baseUrl}/blog/is-mlbb-top-up-legal-in-india`,
         `${baseUrl}/blog/how-to-buy-mlbb-diamonds-safely-in-india`,
         `${baseUrl}/blog/mlbb-weekly-pass-price-in-india`,
+        `${baseUrl}/blog/how-to-gift-mlbb-diamonds`,
+
     ];
 
     /* ================= OTT & MEMBERSHIP STATIC DATA ================= */

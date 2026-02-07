@@ -195,13 +195,13 @@ export default function TopupComplete() {
                 </p>
 
                 <a
-                  href="https://wa.me/916372305866"
+                  href="https://wa.me/919178521537"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 justify-center w-full py-2 px-4 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition"
                 >
                   <FaWhatsapp className="text-xl" />
-                  Contact Support: 6372305866
+                  Contact Support: 9178521537
                 </a>
               </div>
 
