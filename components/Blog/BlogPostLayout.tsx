@@ -51,7 +51,7 @@ export default function BlogPostLayout({
                     </Link>
                 </motion.div>
 
-                {/* HEADER */}
+
                 <header className="mb-12 md:mb-20">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
