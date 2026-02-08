@@ -57,7 +57,7 @@ const storyData = [
 export default function StorySlider() {
   return (
     <section className="relative py-6 px-4">
-      <div className="flex gap-3 md:gap-7 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory relative z-10">
+      <div className="flex md:justify-center gap-3 md:gap-7 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory relative z-10">
         {storyData.map((item, index) => (
           <motion.div
             key={item.id}
