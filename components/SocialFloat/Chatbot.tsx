@@ -13,6 +13,7 @@ import {
   FiLifeBuoy,
   FiZap,
 } from "react-icons/fi";
+import { usePathname } from "next/navigation";
 
 /* ================= CONFIG ================= */
 
@@ -47,6 +48,8 @@ const random = (arr: string[]) =>
 /* ================= COMPONENT ================= */
 
 export default function ChatBot() {
+  const pathname = usePathname();
+
   /* ---------- STATE ---------- */
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -220,6 +223,8 @@ export default function ChatBot() {
   };
 
   /* ================= UI ================= */
+
+  if (pathname?.startsWith("/login")) return null;
 
   return (
     <motion.div

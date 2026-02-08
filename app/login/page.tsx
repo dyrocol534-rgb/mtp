@@ -66,155 +66,158 @@ function AuthContent() {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } },
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-[var(--background)]">
-      {/* TACTICAL BACKGROUND ASSETS */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(var(--accent-rgb),0.08),transparent_70%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)] opacity-20" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[var(--accent)]/5 blur-[120px] rounded-full" />
+    <section className="relative min-h-screen flex flex-col items-center pt-12 sm:pt-20 px-4 overflow-hidden bg-[var(--background)]">
+      {/* AMBIENT BACKGROUND */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(var(--accent-rgb),0.15),transparent_70%)]"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)] opacity-20" />
       </div>
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="relative z-10 w-full max-w-md"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="relative z-10 w-full max-w-[400px]"
       >
-        <div className="rounded-[2.5rem] bg-[var(--card)]/80 backdrop-blur-3xl border border-[var(--border)] shadow-2xl overflow-hidden relative group">
-          {/* Subtle top edge glow */}
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent" />
+        <div className="w-full relative">
 
-          <div className="px-8 pt-12 pb-10">
-            {/* TERMINAL HEADER */}
-            <div className="flex flex-col items-center text-center mb-10">
+
+
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="px-6 pt-0 pb-4 sm:px-8 sm:pt-0 sm:pb-4"
+          >
+            {/* HEADER */}
+            <div className="flex flex-col items-center text-center mb-6">
               <motion.div
-                whileHover={{ scale: 1.05, rotate: 5 }}
-                className="inline-flex h-20 w-20 items-center justify-center rounded-[2.5rem] bg-[var(--accent)]/10 border border-[var(--accent)]/20 shadow-[0_0_30px_rgba(var(--accent-rgb),0.1)] mb-6 relative group"
+                variants={itemVariants}
+                animate={{ y: [0, -8, 0] }}
+                transition={{
+                  y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                }}
+                className="relative mb-4"
               >
+                <div className="absolute inset-0 bg-[var(--accent)] blur-2xl opacity-20 animate-pulse" />
                 <Image
                   src="/logoBB.png"
                   alt="Logo"
-                  width={48}
-                  height={48}
-                  className="z-10 group-hover:scale-110 transition-transform duration-500"
+                  width={64}
+                  height={64}
+                  className="relative z-10"
                 />
-                <div className="absolute inset-0 bg-[var(--accent)]/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </motion.div>
 
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--foreground)]/5 border border-[var(--border)] uppercase tracking-[0.2em] text-[8px] font-black text-[var(--accent)] italic">
-                  <FiTerminal className="animate-pulse" />
-                  Identity Verification
-                </div>
-                <h1 className="text-3xl font-black uppercase italic tracking-tighter leading-none text-[var(--foreground)]">
-                  SECURE <span className="text-[var(--accent)]">LOGIN</span>
+              <motion.div variants={itemVariants} className="space-y-4">
+                <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-[var(--foreground)] to-[var(--foreground)]/60 drop-shadow-sm">
+                  Access Account
                 </h1>
-
-              </div>
+                <p className="text-sm font-medium text-[var(--muted)]/80 tracking-wide mt-2">
+                  Sign in to continue
+                </p>
+              </motion.div>
             </div>
 
             <AnimatePresence mode="wait">
               {/* STATUS MESSAGES */}
               {success && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0, y: -10 }}
-                  animate={{ opacity: 1, height: "auto", y: 0 }}
-                  className="mb-8 p-5 rounded-3xl bg-green-500/10 border border-green-500/20 flex flex-col items-center gap-3 text-center overflow-hidden"
+                  initial={{ opacity: 0, height: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, height: "auto", scale: 1 }}
+                  exit={{ opacity: 0, height: 0, scale: 0.9 }}
+                  className="mb-8 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center gap-3 text-center"
                 >
-                  <div className="w-10 h-10 rounded-full bg-green-500 text-black flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.3)]">
-                    <FiCheckCircle size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black uppercase tracking-tight text-green-500 mb-0.5">Access Granted</h3>
-                    <p className="text-[10px] font-bold text-green-500/60 uppercase tracking-widest leading-none">Redirecting to Operative Dashboard</p>
-                  </div>
+                  <FiCheckCircle className="text-emerald-500" size={18} />
+                  <span className="text-xs font-bold text-emerald-500 uppercase tracking-wider">Login Successful</span>
                 </motion.div>
               )}
 
               {error && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0, y: -10 }}
-                  animate={{ opacity: 1, height: "auto", y: 0 }}
-                  className="mb-8 p-5 rounded-3xl bg-red-500/10 border border-red-500/20 flex flex-col items-center gap-3 text-center overflow-hidden"
+                  initial={{ opacity: 0, height: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, height: "auto", scale: 1 }}
+                  exit={{ opacity: 0, height: 0, scale: 0.9 }}
+                  className="mb-8 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center gap-3 text-center"
                 >
-                  <div className="w-10 h-10 rounded-full bg-red-500 text-black flex items-center justify-center shadow-[0_0_20px_rgba(239,44,44,0.3)]">
-                    <FiAlertCircle size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black uppercase tracking-tight text-red-500 mb-0.5">Critical Error</h3>
-                    <p className="text-[10px] font-bold text-red-500/60 uppercase tracking-widest leading-none">{error}</p>
-                  </div>
+                  <FiAlertCircle className="text-red-500" size={18} />
+                  <span className="text-xs font-bold text-red-500 uppercase tracking-wider">{error}</span>
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* ACTION AREA */}
             {!success && (
-              <div className="space-y-10">
-                <div className={`flex justify-center transition-all duration-500 hover:scale-[1.02] active:scale-95 ${loading ? "opacity-40 grayscale pointer-events-none" : ""
-                  }`}>
-                  <div className="p-[2px] rounded-full bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent shadow-[0_0_30px_rgba(var(--accent-rgb),0.1)]">
-                    <div className="bg-[var(--background)] rounded-full p-1 border border-[var(--border)]">
-                      <GoogleLogin
-                        onSuccess={(res) => res.credential && handleGoogleLogin(res.credential)}
-                        onError={() => setError("Handshake Terminated by User")}
-                        theme="filled_black"
-                        size="large"
-                        shape="pill"
-                        text="continue_with"
-                      />
+              <motion.div variants={containerVariants} className="space-y-6">
+                <motion.div variants={itemVariants} className={`relative group ${loading ? "opacity-50 pointer-events-none" : ""}`}>
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--accent)] to-purple-600 rounded-full opacity-20 blur transition duration-500 group-hover:opacity-40" />
+                  <div className="relative flex justify-center transition-transform duration-200 active:scale-[0.98] scale-110 origin-center my-0">
+                    <GoogleLogin
+                      onSuccess={(res) => res.credential && handleGoogleLogin(res.credential)}
+                      onError={() => setError("Connection Failed")}
+                      theme="filled_black"
+                      size="large"
+                      shape="pill"
+                      text="continue_with"
+                    />
+                  </div>
+                </motion.div>
+
+                <motion.div variants={itemVariants} className="space-y-6">
+                  <div className="grid grid-cols-3 gap-3">
+                    <Feature icon={FiShield} label="Encrypted" />
+                    <Feature icon={FiZap} label="Instant" />
+                    <Feature icon={FiActivity} label="Dynamic" />
+                  </div>
+
+                  <div className="text-center space-y-4">
+                    <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-widest leading-relaxed max-w-[280px] mx-auto">
+                      Authorized use only. By proceeding you sync with our <a href="/terms" className="text-[var(--muted)] hover:text-[var(--accent)] transition-colors underline decoration-dotted">Terms</a> • <a href="/privacy" className="text-[var(--muted)] hover:text-[var(--accent)] transition-colors underline decoration-dotted">Privacy</a>
+                    </p>
+
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--foreground)]/[0.02] border border-[var(--border)]/50">
+                      <FiLock size={10} className="text-emerald-500" />
+                      <span className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)]">
+                        Hardware Secured <span className="text-emerald-500">•</span> <span className="text-emerald-500">Google OAuth 2.0</span>
+                      </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
-                {/* TACTICAL DIVIDER */}
-                <div className="flex items-center gap-4">
-                  <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-[var(--border)]" />
-                  <span className="text-[8px] font-black uppercase tracking-[0.3em] text-[var(--muted)] opacity-30 italic">Nexus Link</span>
-                  <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-[var(--border)]" />
-                </div>
 
-                {/* FEATURES - TACTICAL GRID */}
-                <div className="grid grid-cols-3 gap-4">
-                  <Feature icon={FiShield} label="Encrypted" />
-                  <Feature icon={FiZap} label="Instant" />
-                  <Feature icon={FiActivity} label="Dynamic" />
-                </div>
-              </div>
+              </motion.div>
             )}
-          </div>
 
-          {/* FOOTER */}
-          {!success && (
-            <div className="px-8 py-6 bg-[var(--card)]/50 border-t border-[var(--border)] backdrop-blur-md">
-              <p className="text-[9px] text-center text-[var(--muted)] font-bold uppercase tracking-[0.15em] leading-relaxed opacity-40">
-                Authorized Use Only. By proceeding you sync with our{" "}
-                <a href="/terms" className="text-[var(--accent)] hover:text-[var(--foreground)] transition-colors underline decoration-[var(--accent)]/40 underline-offset-4">Terms</a>
-                {" • "}
-                <a href="/privacy" className="text-[var(--accent)] hover:text-[var(--foreground)] transition-colors underline decoration-[var(--accent)]/40 underline-offset-4">Privacy</a>
-              </p>
-            </div>
-          )}
+
+
+          </motion.div>
         </div>
 
-        {/* SECURITY STATUS */}
-        {!success && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-6 flex items-center justify-center gap-2"
-          >
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--foreground)]/5 border border-[var(--border)] select-none">
-              <FiLock className="text-green-500" size={12} />
-              <span className="text-[8px] font-black uppercase tracking-[0.1em] text-[var(--muted)]/60">
-                Hardware Secured • <span className="text-green-500">Google OAuth 2.0</span>
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </motion.div>
-    </section>
+
+      </motion.div >
+    </section >
   );
 }
 
