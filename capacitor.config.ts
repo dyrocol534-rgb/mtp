@@ -19,7 +19,9 @@ const config: CapacitorConfig = {
       "1gamestopup.com",
       "*.1gamestopup.com",
       "xtragateway.site",
-      "*.xtragateway.site"
+      "*.xtragateway.site",
+      "xyzpay.site",
+      "*.xyzpay.site"
     ]
   },
   android: {
