@@ -19,10 +19,15 @@ export default function PaymentComplete() {
 
     async function checkPayment() {
       try {
+        const token = localStorage.getItem("token");
+
         const res = await fetch("/api/wallet/check-status", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId, userId }),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ orderId }),
         });
 
         const data = await res.json();
@@ -35,6 +40,9 @@ export default function PaymentComplete() {
           const oldBal = Number(localStorage.getItem("walletBalance") || "0");
           const newBal = oldBal + Number(data.amount || 0);
           localStorage.setItem("walletBalance", String(newBal));
+
+          // Notify other components (Header, etc.)
+          window.dispatchEvent(new Event("walletUpdated"));
 
           // Optional cleanup
           localStorage.removeItem("pending_order");
@@ -83,10 +91,10 @@ export default function PaymentComplete() {
 
         {/* ACTION */}
         <button
-          onClick={() => window.close()}
+          onClick={() => window.location.href = "/"}
           className="mt-6 w-full rounded-xl bg-[var(--accent)] py-3 font-semibold text-black hover:opacity-90 transition"
         >
-          Close Page
+          Back to Home
         </button>
       </div>
     </div>

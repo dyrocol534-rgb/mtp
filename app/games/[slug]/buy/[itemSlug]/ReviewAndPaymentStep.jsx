@@ -79,9 +79,24 @@ export default function ReviewAndPaymentStep({
         return;
       }
 
+      // Handle wallet payment
+      if (data.walletPayment) {
+        // Update local wallet balance
+        localStorage.setItem("walletBalance", String(data.newWalletBalance));
+        window.dispatchEvent(new Event("walletUpdated"));
+
+        // Store order for tracking
+        localStorage.setItem("pending_topup_order", data.orderId);
+
+        // Redirect to success page
+        window.location.href = `/payment/topup-complete?orderId=${data.orderId}&wallet=true`;
+        return;
+      }
+
+      // Handle gateway payment
       localStorage.setItem("pending_topup_order", data.orderId);
 
-      // 🚀 redirect
+      // 🚀 redirect to payment gateway
       window.location.href = data.paymentUrl;
     } catch (err) {
       alert("Something went wrong. Please try again.");

@@ -47,19 +47,40 @@ export default function DashboardLayout({
     useEffect(() => {
         if (!token) return;
 
-        fetch("/api/auth/me", {
-            headers: { Authorization: `Bearer ${token}` },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (!data.success) return;
-                setUserDetails({
-                    name: data.user.name,
-                    email: data.user.email,
-                    phone: data.user.phone,
+        const refreshData = () => {
+            fetch("/api/auth/me", {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (!data.success) return;
+                    setUserDetails({
+                        name: data.user.name,
+                        email: data.user.email,
+                        phone: data.user.phone,
+                    });
+                    setWalletBalance(data.user.wallet || 0);
+                    localStorage.setItem("walletBalance", String(data.user.wallet || 0));
                 });
-                setWalletBalance(data.user.wallet || 0);
-            });
+        };
+
+        refreshData();
+
+        // Listen for wallet updates to refresh balance
+        const handleSync = () => {
+            const balance = localStorage.getItem("walletBalance");
+            if (balance !== null) setWalletBalance(Number(balance));
+            // Also refresh from API to be sure
+            refreshData();
+        };
+
+        window.addEventListener("walletUpdated", handleSync);
+        window.addEventListener("storage", handleSync);
+
+        return () => {
+            window.removeEventListener("walletUpdated", handleSync);
+            window.removeEventListener("storage", handleSync);
+        };
     }, [token]);
 
     const activeTab = pathname.split("/").pop() || "orders";
@@ -67,7 +88,7 @@ export default function DashboardLayout({
     const tabCards = [
         { key: "orders", label: "Operations", value: "Orders", icon: FiInbox, href: "/dashboard/orders" },
         { key: "support", label: "Protocol", value: "Support", icon: FiHelpCircle, href: "/dashboard/support" },
-        // { key: "wallet", label: "Credits", value: "Wallet", icon: FiCreditCard, href: "/dashboard/wallet" },
+        { key: "wallet", label: "Credits", value: "Wallet", icon: FiCreditCard, href: "/dashboard/wallet" },
         // { key: "account", label: "Identity", value: "Profile", icon: FiUser, href: "/dashboard/account" },
     ];
 

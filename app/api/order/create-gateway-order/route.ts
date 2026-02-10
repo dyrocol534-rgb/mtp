@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
+import User from "@/models/User";
 import PricingConfig from "@/models/PricingConfig";
 import crypto from "crypto";
 
@@ -231,6 +232,52 @@ export async function POST(req: Request) {
       topupStatus: "pending",
       expiresAt,
     });
+
+    /* ---------- WALLET PAYMENT ---------- */
+    if (paymentMethod === "wallet") {
+      // Find user - Try by MongoDB _id first, then by custom userId
+      let user = await User.findById(userId);
+      if (!user) {
+        user = await User.findOne({ userId });
+      }
+
+      if (!user) {
+        return NextResponse.json({
+          success: false,
+          message: `User not found for ID: ${userId}`,
+        }, { status: 404 });
+      }
+
+      // Check wallet balance
+      const walletBalance = user.wallet || 0;
+
+      if (walletBalance < price) {
+        return NextResponse.json({
+          success: false,
+          message: `Insufficient wallet balance. You have ₹${walletBalance}, but need ₹${price}`,
+        }, { status: 400 });
+      }
+
+      // Deduct from wallet
+      user.wallet = walletBalance - price;
+      user.order = (user.order || 0) + 1;
+      await user.save();
+
+      // Update order status
+      newOrder.status = "pending";
+      newOrder.paymentStatus = "success";
+      newOrder.topupStatus = "pending"; // Must be pending so fulfillment system can lock and process it
+      await newOrder.save();
+
+      return NextResponse.json({
+        success: true,
+        orderId,
+        paymentMethod: "wallet",
+        walletPayment: true,
+        newWalletBalance: user.wallet,
+        message: "Order placed successfully using wallet balance",
+      });
+    }
 
     /* ---------- PAYMENT GATEWAY ---------- */
     const formData = new URLSearchParams();

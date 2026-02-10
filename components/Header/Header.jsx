@@ -25,6 +25,8 @@ const HEADER_CONFIG = {
   userMenu: {
     common: [
       { label: "My Orders", href: "/dashboard/orders", icon: <FiShoppingBag size={14} /> },
+      { label: "My Wallet", href: "/dashboard/wallet", icon: <FiShoppingBag size={14} /> },
+
       { label: "Customer Support", href: "/dashboard/support", icon: <FiMessageSquare size={14} /> },
       { label: "Membership", href: "/admin-panal", icon: <FiShield size={14} /> },
     ],
@@ -40,6 +42,7 @@ export default function Header() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [activeNav, setActiveNav] = useState("/");
+  const [walletBalance, setWalletBalance] = useState(0);
 
   const dropdownRef = useRef(null);
   const logoRef = useRef(null);
@@ -104,6 +107,10 @@ export default function Header() {
     };
     if (savedUser.name) setUser(savedUser);
 
+    // Load wallet balance from localStorage
+    const savedBalance = localStorage.getItem("walletBalance");
+    if (savedBalance) setWalletBalance(Number(savedBalance));
+
     fetch("/api/auth/me", {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -117,26 +124,48 @@ export default function Header() {
           localStorage.setItem("userId", d.user.id || d.user.userId);
           localStorage.setItem("avatar", d.user.avatar || "");
           if (d.user.phone) localStorage.setItem("phone", d.user.phone);
+
+          // Update wallet balance from API
+          if (d.user.wallet !== undefined) {
+            setWalletBalance(d.user.wallet);
+            localStorage.setItem("walletBalance", String(d.user.wallet));
+          }
         } else {
-          const keysToRemove = ["token", "userName", "email", "userId", "phone", "avatar"];
+          const keysToRemove = ["token", "userName", "email", "userId", "phone", "avatar", "walletBalance"];
           keysToRemove.forEach(key => localStorage.removeItem(key));
           setUser(null);
+          setWalletBalance(0);
         }
       })
       .finally(() => setLoading(false));
+
+    // Listen for custom wallet update event and storage changes
+    const handleWalletSync = () => {
+      const balance = localStorage.getItem("walletBalance");
+      if (balance !== null) setWalletBalance(Number(balance));
+    };
+
+    window.addEventListener("walletUpdated", handleWalletSync);
+    window.addEventListener("storage", handleWalletSync);
+
+    return () => {
+      window.removeEventListener("walletUpdated", handleWalletSync);
+      window.removeEventListener("storage", handleWalletSync);
+    };
   }, []);
 
   const [showLogoutToast, setShowLogoutToast] = useState(false);
 
   const handleLogout = () => {
     // Clear all auth and local related data
-    const keysToRemove = ["token", "userName", "email", "userId", "phone", "pending_topup_order"];
+    const keysToRemove = ["token", "userName", "email", "userId", "phone", "pending_topup_order", "walletBalance"];
     keysToRemove.forEach(key => localStorage.removeItem(key));
 
     // Clear form-related persistent data
     localStorage.removeItem("mlbb_verified_players");
 
     setUser(null);
+    setWalletBalance(0);
     setShowLogoutToast(true);
 
     // Redirect after a short delay to show the message
@@ -236,6 +265,25 @@ export default function Header() {
 
           {/* ================= ACTIONS ================= */}
           <div className="flex items-center gap-2 sm:gap-3" ref={dropdownRef}>
+            {/* WALLET BALANCE - Show for logged-in users */}
+            {user && (
+              <Link href="/dashboard/wallet">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative w-auto h-9 px-3 rounded-full flex items-center justify-center gap-1.5 transition-all duration-300 group bg-[var(--foreground)]/5 hover:bg-[var(--foreground)]/10"
+                  title="Add Balance"
+                >
+                  <span className="text-xs font-black text-[var(--accent)]">
+                    ₹{walletBalance}
+                  </span>
+                  <span className="text-lg text-[var(--accent)] group-hover:scale-110 transition-transform">
+                    +
+                  </span>
+                </motion.button>
+              </Link>
+            )}
+
             <ThemeToggle />
 
             {/* PUSH NOTIFICATION TOGGLE */}

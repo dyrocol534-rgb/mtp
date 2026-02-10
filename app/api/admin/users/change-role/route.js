@@ -42,7 +42,11 @@ export async function PATCH(req) {
     }
 
     // ---------------- FETCH USER ----------------
-    const user = await User.findOne({ userId });
+    // Try finding by MongoDB _id first, then by custom userId
+    let user = await User.findById(userId);
+    if (!user) {
+      user = await User.findOne({ userId });
+    }
 
     if (!user) {
       return Response.json({ message: "User not found" }, { status: 404 });

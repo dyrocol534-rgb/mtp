@@ -25,6 +25,16 @@ export default function TopupComplete() {
       return;
     }
 
+    // Check if this is a wallet payment
+    const urlParams = new URLSearchParams(window.location.search);
+    const isWalletPayment = urlParams.get("wallet") === "true";
+
+    if (isWalletPayment) {
+      // For wallet payments, we can start the verification immediately
+      // without waiting 3 seconds for the first poll.
+      setMessage("Finalizing top-up...");
+    }
+
     const verify = async () => {
       try {
         const token = localStorage.getItem("token");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   FiPlusCircle,
@@ -24,39 +24,51 @@ export default function WalletTab({
   const [amountError, setAmountError] = useState("");
   const [method, setMethod] = useState("");
   const [loading, setLoading] = useState(false);
-  const [storedPhone, setStoredPhone] = useState("");
-
-  useEffect(() => {
-    const phone = localStorage.getItem("phone");
-    if (phone) setStoredPhone(phone);
-  }, []);
 
   const presetAmounts = [50, 100, 250, 500];
 
   const handleProceed = async () => {
-    if (!amount || Number(amount) < 1) {
-      setAmountError("Minimum amount is ₹1");
+    const numAmount = Number(amount);
+
+    if (!amount || numAmount < 15) {
+      setAmountError("Minimum amount is ₹15");
       return;
     }
+
+    if (numAmount > 5000) {
+      setAmountError("Maximum amount is ₹5,000");
+      return;
+    }
+
+    if (!Number.isInteger(numAmount)) {
+      setAmountError("Amount must be a whole number");
+      return;
+    }
+
     if (!method) {
       alert("Please select a payment method");
       return;
     }
-    if (!storedPhone) {
-      alert("Phone number not found. Please log in again.");
+
+    setLoading(true);
+
+    // Get JWT token from localStorage
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in again to continue");
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
-    const userId = localStorage.getItem("userId");
-
     const res = await fetch("/api/wallet/create-order", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify({
         amount: Number(amount),
-        mobile: storedPhone,
-        userId,
       }),
     });
 
@@ -115,9 +127,22 @@ export default function WalletTab({
                 type="number"
                 value={amount}
                 placeholder="0.00"
+                step="1"
+                min="15"
+                max="5000"
+                onKeyDown={(e) => {
+                  // Prevent decimal point and comma
+                  if (e.key === '.' || e.key === ',') {
+                    e.preventDefault();
+                  }
+                }}
                 onChange={(e) => {
-                  setAmount(e.target.value);
-                  setAmountError("");
+                  // Only allow whole numbers
+                  const value = e.target.value;
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setAmount(value);
+                    setAmountError("");
+                  }
                 }}
                 className="w-full p-4 rounded-2xl border border-white/10 bg-white/5 focus:bg-white/10 focus:border-[var(--accent)]/40 text-2xl font-black italic tracking-tight placeholder:text-white/5 outline-none transition-all"
               />
@@ -188,7 +213,7 @@ export default function WalletTab({
 
           <button
             onClick={handleProceed}
-            disabled={true}
+            disabled={loading}
             className="w-full p-4 rounded-2xl bg-[var(--accent)] text-black font-black uppercase tracking-[0.2em] italic text-xs shadow-[0_20px_40px_-10px_rgba(var(--accent-rgb),0.3)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:grayscale transition-all flex items-center justify-center gap-3"
           >
             {loading ? <FiLoader className="animate-spin" size={18} /> : "Initialize Transfer"}

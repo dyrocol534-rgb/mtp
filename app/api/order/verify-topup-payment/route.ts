@@ -40,54 +40,90 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Order expired" });
     }
 
-    // Check Payment Gateway Status
-    const formData = new URLSearchParams();
-    formData.append("user_token", process.env.XTRA_USER_TOKEN!);
-    formData.append("order_id", orderId);
+    /* ========================================
+       WALLET PAYMENT HANDLING
+       Wallet payments don't go through gateway,
+       so we skip gateway verification
+    ======================================== */
+    if (order.paymentMethod === "wallet") {
+      // Wallet payments are already verified and paid
+      // Just check if already processed
+      if (order.paymentStatus === "success" && order.topupStatus === "success") {
+        return NextResponse.json({
+          success: true,
+          message: "Already processed",
+          topupResponse: order.externalResponse
+        });
+      }
 
-    const resp = await fetch("https://xyzpay.site/api/check-order-status", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData.toString(),
-    });
+      // If payment is success but topup is pending/processing, continue to fulfillment
+      if (order.paymentStatus === "success") {
+        // Skip to fulfillment section (after line 125)
+        // We'll handle this in the fulfillment logic below
+      } else {
+        // Wallet payment should have been marked as success during order creation
+        return NextResponse.json({
+          success: false,
+          message: "Wallet payment not completed",
+        });
+      }
+    } else {
+      /* ========================================
+         GATEWAY PAYMENT VERIFICATION
+         For UPI/gateway payments, verify with gateway
+      ======================================== */
+      // Check Payment Gateway Status
+      const formData = new URLSearchParams();
+      formData.append("user_token", process.env.XTRA_USER_TOKEN!);
+      formData.append("order_id", orderId);
 
-    const data = await resp.json();
-    const txnStatus = data?.result?.txnStatus;
-
-    if (txnStatus === "PENDING") {
-      return NextResponse.json({
-        success: false,
-        message: "Payment pending",
-        paymentStatus: "pending",
-        topupStatus: "pending"
+      const resp = await fetch("https://xyzpay.site/api/check-order-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
       });
-    }
 
-    if (txnStatus !== "SUCCESS" && txnStatus !== "COMPLETED") {
-      order.status = "failed";
-      order.paymentStatus = "failed";
+      const data = await resp.json();
+      const txnStatus = data?.result?.txnStatus;
+
+      if (txnStatus === "PENDING") {
+        return NextResponse.json({
+          success: false,
+          message: "Payment pending",
+          paymentStatus: "pending",
+          topupStatus: "pending"
+        });
+      }
+
+      if (txnStatus !== "SUCCESS" && txnStatus !== "COMPLETED") {
+        order.status = "failed";
+        order.paymentStatus = "failed";
+        order.gatewayResponse = data;
+        await order.save();
+        return NextResponse.json({
+          success: false,
+          message: "Payment failed",
+          paymentStatus: "failed",
+          topupStatus: "pending"
+        });
+      }
+
+      // Price Check
+      const paidAmount = Number(data?.result?.amount || data?.result?.txnAmount || data?.result?.orderAmount);
+      if (!paidAmount || paidAmount !== Number(order.price)) {
+        order.status = "fraud";
+        order.paymentStatus = "failed";
+        await order.save();
+        return NextResponse.json({
+          success: false,
+          message: "Amount mismatch detected",
+          paymentStatus: "failed",
+          topupStatus: "pending"
+        });
+      }
+
+      // Store gateway response
       order.gatewayResponse = data;
-      await order.save();
-      return NextResponse.json({
-        success: false,
-        message: "Payment failed",
-        paymentStatus: "failed",
-        topupStatus: "pending"
-      });
-    }
-
-    // Price Check
-    const paidAmount = Number(data?.result?.amount || data?.result?.txnAmount || data?.result?.orderAmount);
-    if (!paidAmount || paidAmount !== Number(order.price)) {
-      order.status = "fraud";
-      order.paymentStatus = "failed";
-      await order.save();
-      return NextResponse.json({
-        success: false,
-        message: "Amount mismatch detected",
-        paymentStatus: "failed",
-        topupStatus: "pending"
-      });
     }
 
     // Final Confirmation
@@ -113,7 +149,6 @@ export async function POST(req: Request) {
       order.status = "failed";
       order.paymentStatus = "success";
       order.topupStatus = "failed";
-      order.gatewayResponse = data;
       await order.save();
 
       return NextResponse.json({
@@ -130,17 +165,23 @@ export async function POST(req: Request) {
 
     // Unified Atomic Locking for ALL orders
     // This prevents double-execution if the user refreshes or parallel requests come in.
+    const updateFields: any = {
+      paymentStatus: "success",
+      topupStatus: "processing",
+    };
+
+    // Only set gatewayResponse for gateway payments
+    if (order.paymentMethod !== "wallet" && order.gatewayResponse) {
+      updateFields.gatewayResponse = order.gatewayResponse;
+    }
+
     const lockedOrder = await Order.findOneAndUpdate(
       {
         orderId,
         topupStatus: { $nin: ["success", "processing"] },
       },
       {
-        $set: {
-          paymentStatus: "success",
-          topupStatus: "processing",
-          gatewayResponse: data,
-        },
+        $set: updateFields,
       },
       { new: true }
     );

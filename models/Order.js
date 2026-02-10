@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const OrderSchema = new mongoose.Schema(
   {
     orderId: { type: String, required: true, unique: true },
+    userId: String, // ✅ Links order to user
     gameSlug: String,
     itemSlug: String,
     itemName: String,
@@ -10,6 +11,7 @@ const OrderSchema = new mongoose.Schema(
     zoneId: String,
     paymentMethod: String,
     price: Number,
+    currency: { type: String, default: "INR" },
     email: String,
     phone: String,
     status: {
@@ -33,6 +35,12 @@ const OrderSchema = new mongoose.Schema(
       enum: ["pending", "success", "failed", "processing"],
       default: "pending",
     },
+
+    /* ================= GATEWAY DATA ================= */
+    gatewayOrderId: String, // Order ID from payment gateway
+    gatewayResponse: mongoose.Schema.Types.Mixed, // Full gateway response
+    externalResponse: mongoose.Schema.Types.Mixed, // Game API fulfillment response
+
     expiresAt: Date,
   },
   { timestamps: true }

@@ -1,16 +1,31 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";   // ✅ Your correct path
-import User from "@/models/User";            // Make sure this path is correct
+import { connectDB } from "@/lib/mongodb";
+import User from "@/models/User";
+import jwt from "jsonwebtoken";
 
 export async function POST(req: Request) {
   try {
-    await connectDB(); // 🔥 required for DB operations
+    await connectDB();
 
-    const { orderId, userId } = await req.json();
+    // ============ AUTHENTICATION ============
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
 
-    if (!orderId || !userId) {
+    let decoded: any;
+    try {
+      decoded = jwt.verify(authHeader.split(" ")[1], process.env.JWT_SECRET!);
+    } catch {
+      return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
+    }
+
+    const { orderId } = await req.json();
+    const tokenUserId = decoded.userId;
+
+    if (!orderId) {
       return NextResponse.json(
-        { success: false, message: "Missing orderId or userId" },
+        { success: false, message: "Missing orderId" },
         { status: 400 }
       );
     }
@@ -19,7 +34,7 @@ export async function POST(req: Request) {
     formData.append("user_token", process.env.XTRA_USER_TOKEN!);
     formData.append("order_id", orderId);
 
-    const resp = await fetch("https://xtragateway.site/api/check-order-status", {
+    const resp = await fetch("https://xyzpay.site/api/check-order-status", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),
@@ -51,7 +66,11 @@ export async function POST(req: Request) {
     }
 
     // 💰 Update User Wallet
-    const user = await User.findOne({ userId });
+    // Try finding by MongoDB _id first, then by custom userId
+    let user = await User.findById(tokenUserId);
+    if (!user) {
+      user = await User.findOne({ userId: tokenUserId });
+    }
 
     if (!user) {
       return NextResponse.json(
