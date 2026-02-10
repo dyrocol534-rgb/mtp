@@ -338,9 +338,20 @@ function AuthContent() {
                     <p className="text-[9px] font-bold text-[var(--muted)]/50 uppercase tracking-widest leading-relaxed">
                       By continuing you agree to our <a href="/terms" className="text-[var(--accent)] hover:underline">Terms</a>
                     </p>
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--foreground)]/[0.02] border border-[var(--border)]/50">
-                      <FiLock size={10} className="text-emerald-500" />
-                      <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)]/70">SECURE SHELL v2.0</span>
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--foreground)]/[0.02] border border-[var(--border)]/50">
+                        <FiLock size={10} className="text-emerald-500" />
+                        <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)]/70">SECURE SHELL v2.0</span>
+                      </div>
+                      <a
+                        href="tel:+919178521537"
+                        className="text-[10px] font-black text-[var(--accent)] uppercase tracking-widest hover:brightness-125 transition-all"
+                      >
+                        Help-Desk: +91 9178521537
+                      </a>
+                      <p className="text-[7px] text-[var(--muted)]/30 uppercase tracking-[0.2em] animate-pulse">
+                        System Monitoring Active • Session ID: RT-77
+                      </p>
                     </div>
                   </div>
                 </motion.div>
