@@ -34,7 +34,7 @@ export default function SpecialLeaderboard() {
 
     setEventStatus("active");
 
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     fetch(

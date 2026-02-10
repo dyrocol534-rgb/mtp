@@ -89,18 +89,18 @@ export default function Header() {
 
   /* ================= AUTH ================= */
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       setLoading(false);
       return;
     }
 
-    // Load initial data from session storage for instant UI update
+    // Load initial data from local storage for instant UI update
     const savedUser = {
-      name: sessionStorage.getItem("userName"),
-      email: sessionStorage.getItem("email"),
-      userId: sessionStorage.getItem("userId"),
-      avatar: sessionStorage.getItem("avatar"),
+      name: localStorage.getItem("userName"),
+      email: localStorage.getItem("email"),
+      userId: localStorage.getItem("userId"),
+      avatar: localStorage.getItem("avatar"),
     };
     if (savedUser.name) setUser(savedUser);
 
@@ -111,15 +111,15 @@ export default function Header() {
       .then((d) => {
         if (d.success) {
           setUser(d.user);
-          // Keep session storage in sync
-          sessionStorage.setItem("userName", d.user.name);
-          sessionStorage.setItem("email", d.user.email);
-          sessionStorage.setItem("userId", d.user.id || d.user.userId);
-          sessionStorage.setItem("avatar", d.user.avatar || "");
-          if (d.user.phone) sessionStorage.setItem("phone", d.user.phone);
+          // Keep local storage in sync
+          localStorage.setItem("userName", d.user.name);
+          localStorage.setItem("email", d.user.email);
+          localStorage.setItem("userId", d.user.id || d.user.userId);
+          localStorage.setItem("avatar", d.user.avatar || "");
+          if (d.user.phone) localStorage.setItem("phone", d.user.phone);
         } else {
           const keysToRemove = ["token", "userName", "email", "userId", "phone", "avatar"];
-          keysToRemove.forEach(key => sessionStorage.removeItem(key));
+          keysToRemove.forEach(key => localStorage.removeItem(key));
           setUser(null);
         }
       })
@@ -129,9 +129,9 @@ export default function Header() {
   const [showLogoutToast, setShowLogoutToast] = useState(false);
 
   const handleLogout = () => {
-    // Clear all auth and session related data
+    // Clear all auth and local related data
     const keysToRemove = ["token", "userName", "email", "userId", "phone", "pending_topup_order"];
-    keysToRemove.forEach(key => sessionStorage.removeItem(key));
+    keysToRemove.forEach(key => localStorage.removeItem(key));
 
     // Clear form-related persistent data
     localStorage.removeItem("mlbb_verified_players");

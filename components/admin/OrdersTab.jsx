@@ -55,7 +55,7 @@ export default function OrdersTab() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const params = new URLSearchParams({
         page,
@@ -90,7 +90,7 @@ export default function OrdersTab() {
   const updateOrderStatus = async (orderId, status) => {
     try {
       setUpdating(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const res = await fetch("/api/admin/orders", {
         method: "PATCH",

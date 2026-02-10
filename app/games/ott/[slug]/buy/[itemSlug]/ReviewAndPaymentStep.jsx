@@ -48,7 +48,7 @@ export default function ReviewAndPaymentStep({
     setIsRedirecting(true);
 
     try {
-      const storedPhone = userPhone || sessionStorage.getItem("phone");
+      const storedPhone = userPhone || localStorage.getItem("phone");
       const orderPayload = {
         gameSlug: slug,
         itemSlug,
@@ -61,7 +61,7 @@ export default function ReviewAndPaymentStep({
         currency: "INR",
       };
 
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const res = await fetch("/api/order/create-gateway-order", {
         method: "POST",
@@ -79,7 +79,7 @@ export default function ReviewAndPaymentStep({
         return;
       }
 
-      sessionStorage.setItem("pending_topup_order", data.orderId);
+      localStorage.setItem("pending_topup_order", data.orderId);
 
       // 🚀 redirect
       window.location.href = data.paymentUrl;

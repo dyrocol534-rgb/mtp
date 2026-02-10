@@ -39,8 +39,8 @@ export default function QueryTab() {
   const handleSubmit = async () => {
     if (!queryType || !queryMessage.trim()) return;
     setIsSubmitting(true);
-    const storedEmail = sessionStorage.getItem("email");
-    const storedPhone = sessionStorage.getItem("phone");
+    const storedEmail = localStorage.getItem("email");
+    const storedPhone = localStorage.getItem("phone");
     try {
       const res = await fetch("/api/support/query", {
         method: "POST",

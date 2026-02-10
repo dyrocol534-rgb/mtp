@@ -8,11 +8,11 @@ export default function WhatsAppCommunityPopup() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const shown = sessionStorage.getItem("wa_qr_theme_popup");
+    const shown = localStorage.getItem("wa_qr_theme_popup");
     if (!shown) {
       const t = setTimeout(() => {
         setOpen(true);
-        sessionStorage.setItem("wa_qr_theme_popup", "1");
+        localStorage.setItem("wa_qr_theme_popup", "1");
       }, 700);
 
       return () => clearTimeout(t);

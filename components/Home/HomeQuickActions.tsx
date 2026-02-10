@@ -47,7 +47,7 @@ export default function HomeQuickActions() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     setIsLoggedIn(!!token);
   }, []);
 

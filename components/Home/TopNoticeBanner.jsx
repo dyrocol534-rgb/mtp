@@ -45,7 +45,7 @@ export default function TopNoticeBanner() {
 
   /* ================= INITIAL VISIBILITY ================= */
   useEffect(() => {
-    const hidden = sessionStorage.getItem(STORAGE_KEY);
+    const hidden = localStorage.getItem(STORAGE_KEY);
     if (!hidden) setVisible(true);
   }, []);
 
@@ -174,7 +174,7 @@ export default function TopNoticeBanner() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                sessionStorage.setItem(STORAGE_KEY, "true");
+                localStorage.setItem(STORAGE_KEY, "true");
                 setVisible(false);
               }}
               className="

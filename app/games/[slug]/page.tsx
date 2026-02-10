@@ -53,7 +53,7 @@ function GameDetailContent() {
 
   /* ================= FETCH GAME ================= */
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     setLoading(true);
     setError(null);
 

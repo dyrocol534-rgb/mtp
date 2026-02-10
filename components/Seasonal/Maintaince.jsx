@@ -17,9 +17,9 @@ export default function Maintaince() {
     const handleLoggingOff = () => {
         setIsLoggingOut(true);
 
-        // Clear session storage as seen in Header.jsx
+        // Clear storage as seen in Header.jsx
         const keysToRemove = ["token", "userName", "email", "userId", "phone", "pending_topup_order", "avatar"];
-        keysToRemove.forEach(key => sessionStorage.removeItem(key));
+        keysToRemove.forEach(key => localStorage.removeItem(key));
         localStorage.removeItem("mlbb_verified_players");
 
         // Redirect after a short delay to show the "Logging out" animation

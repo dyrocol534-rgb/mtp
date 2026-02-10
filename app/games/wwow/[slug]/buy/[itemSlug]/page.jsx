@@ -28,9 +28,9 @@ function BuyFlowContent() {
   /* ================= LOAD USER DATA ================= */
   useEffect(() => {
     window.scrollTo(0, 0);
-    setUserEmail(sessionStorage.getItem("email") || "");
-    setUserPhone(sessionStorage.getItem("phone") || "");
-    setWalletBalance(Number(sessionStorage.getItem("walletBalance") || 0));
+    setUserEmail(localStorage.getItem("email") || "");
+    setUserPhone(localStorage.getItem("phone") || "");
+    setWalletBalance(Number(localStorage.getItem("walletBalance") || 0));
   }, []);
 
   /* ================= ITEM DATA ================= */

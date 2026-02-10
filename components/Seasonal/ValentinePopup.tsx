@@ -16,7 +16,7 @@ export default function ValentinePopup() {
   });
 
   useEffect(() => {
-    const seen = sessionStorage.getItem("valentine_popup_seen");
+    const seen = localStorage.getItem("valentine_popup_seen");
     if (!seen) {
       const timerId = setTimeout(() => setShow(true), 2000);
       return () => clearTimeout(timerId);
@@ -78,7 +78,7 @@ export default function ValentinePopup() {
   const handleClose = async () => {
     // triggerOneSignal();
     setShow(false);
-    sessionStorage.setItem("valentine_popup_seen", "true");
+    localStorage.setItem("valentine_popup_seen", "true");
     await triggerOneSignal();
 
   };
@@ -86,7 +86,7 @@ export default function ValentinePopup() {
   const handleRedirect = async () => {
 
     setShow(false);
-    sessionStorage.setItem("valentine_popup_seen", "true");
+    localStorage.setItem("valentine_popup_seen", "true");
     router.push("/special-leaderboard");
     await triggerOneSignal();
 

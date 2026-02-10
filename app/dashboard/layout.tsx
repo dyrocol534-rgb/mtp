@@ -41,7 +41,7 @@ export default function DashboardLayout({
 
     const token =
         typeof window !== "undefined"
-            ? sessionStorage.getItem("token")
+            ? localStorage.getItem("token")
             : null;
 
     useEffect(() => {

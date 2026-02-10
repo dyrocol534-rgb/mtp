@@ -15,7 +15,7 @@ export default function TopupComplete() {
   const [message, setMessage] = useState("Verifying payment...");
 
   useEffect(() => {
-    const orderId = sessionStorage.getItem("pending_topup_order");
+    const orderId = localStorage.getItem("pending_topup_order");
     const startTime = Date.now();
     let isMounted = true;
 
@@ -27,7 +27,7 @@ export default function TopupComplete() {
 
     const verify = async () => {
       try {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
         const res = await fetch("/api/order/verify-topup-payment", {
           method: "POST",
@@ -54,7 +54,7 @@ export default function TopupComplete() {
         if (isMounted) {
           setStatus("success");
           setMessage("Payment successful!");
-          sessionStorage.removeItem("pending_topup_order");
+          localStorage.removeItem("pending_topup_order");
         }
         return;
       }
