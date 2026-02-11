@@ -123,9 +123,11 @@ export async function POST(req: Request) {
       });
     }
 
-    // ============ CREATE PENDING TRANSACTION ============
+    /* ================= CREATE PENDING TRANSACTION ================= */
+    const transactionId = `WALLET${Date.now()}${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+
     await WalletTransaction.create({
-      transactionId: `PENDING_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+      transactionId: transactionId,
       userId: user.userId,
       userObjectId: user._id,
       type: "credit",
@@ -143,6 +145,7 @@ export async function POST(req: Request) {
       paymentUrl: data.result.payment_url,
       orderId: orderId,
       amount: numAmount, // Return validated amount
+      transactionId: transactionId,
     });
   } catch (error) {
     console.error("Wallet create-order error:", error);

@@ -113,16 +113,13 @@ export async function POST(req: Request) {
         existingTxn.amount = amount; // Ensure amount matches actual payment
         existingTxn.balanceAfter = balanceAfter;
         existingTxn.description = "Wallet Top-up Successful";
-        // Update transactionId to indicate success (optional, but good for clarity)
-        // existingTxn.transactionId = `TOPUP_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`; 
-        // Better to keep original ID or update? Let's update to match consistent format for successful topups
-        existingTxn.transactionId = `TOPUP_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+        // Do NOT change transactionId, keep the original WALLET... ID
         await existingTxn.save();
       } else {
         // Should theoretically exist if created via create-order app flow
         // But handle case where it doesn't (legacy or direct API call)
         await WalletTransaction.create({
-          transactionId: `TOPUP_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+          transactionId: `WALLET${Date.now()}${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
           userId: user.userId,
           userObjectId: user._id,
           type: "credit",
@@ -157,7 +154,7 @@ export async function POST(req: Request) {
 
         if (user) {
           await WalletTransaction.create({
-            transactionId: `FAIL_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+            transactionId: `WALLET${Date.now()}${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
             userId: user.userId,
             userObjectId: user._id,
             type: "credit", // Intended type
