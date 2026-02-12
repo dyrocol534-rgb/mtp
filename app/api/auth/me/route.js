@@ -48,6 +48,7 @@ export async function GET(req) {
         userId: user.userId,
         referralUsed: user.referralUsed || false,
         referralCount: user.referralCount || 0,
+        createdAt: user.createdAt,
       },
     });
 

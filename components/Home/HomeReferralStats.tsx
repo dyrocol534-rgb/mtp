@@ -99,9 +99,11 @@ export default function HomeReferralStats() {
                                         {user.referredBy ? (
                                             <span className="text-[10px] font-mono opacity-50">Invited by {user.referredBy}</span>
                                         ) : (
-                                            <Link href="/dashboard/referral" className="flex items-center gap-1 text-[var(--accent)] hover:text-[var(--foreground)] transition-colors text-[10px] font-bold tracking-widest">
-                                                ADD REFERRER <FiArrowRight size={10} />
-                                            </Link>
+                                            (Date.now() - new Date(user.createdAt).getTime() < 24 * 60 * 60 * 1000) && (
+                                                <Link href="/dashboard/referral" className="flex items-center gap-1 text-[var(--accent)] hover:text-[var(--foreground)] transition-colors text-[10px] font-bold tracking-widest">
+                                                    ADD REFERRER <FiArrowRight size={10} />
+                                                </Link>
+                                            )
                                         )}
                                     </div>
                                 </div>

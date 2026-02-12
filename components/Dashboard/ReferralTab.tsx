@@ -184,9 +184,12 @@ export default function ReferralTab({
                 {/* REDEEM CODE */}
                 <div className="space-y-6">
                     <div>
-                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] flex items-center gap-2 mb-4">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] flex items-center gap-2 mb-1">
                             <FiDownload className="text-[var(--accent)]" /> Redeem Code
                         </label>
+                        <p className="text-[9px] font-bold text-[var(--muted)]/50 uppercase tracking-widest pl-7 mb-4">
+                            Available only within 24h of account creation
+                        </p>
 
                         {!userReferral?.referralUsed ? (
                             <div className="space-y-4">

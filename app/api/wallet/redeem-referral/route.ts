@@ -42,10 +42,20 @@ export async function POST(req: Request) {
             );
         }
 
-        // ============ CHECK IF ALREADY REDEEMED ============
         if (user.referralUsed) {
             return NextResponse.json(
                 { success: false, message: "You have already redeemed a referral code." },
+                { status: 400 }
+            );
+        }
+
+        // ============ CHECK 24 HOUR LIMIT ============
+        const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+        const accountAge = Date.now() - new Date(user.createdAt).getTime();
+
+        if (accountAge > ONE_DAY_MS) {
+            return NextResponse.json(
+                { success: false, message: "Referral codes can only be added within 24 hours of account creation." },
                 { status: 400 }
             );
         }
