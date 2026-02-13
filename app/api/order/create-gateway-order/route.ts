@@ -249,19 +249,45 @@ export async function POST(req: Request) {
       }
 
       // Check wallet balance
-      const walletBalance = user.wallet || 0;
+      // 🔒 ATOMIC TRANSACTION: Prevent race conditions (Double Spend)
+      // Use findOneAndUpdate with $inc to atomically check balance and deduct
+      const updatedUser = await User.findOneAndUpdate(
+        {
+          _id: user._id,
+          wallet: { $gte: price } // Condition: Wallet must be >= price
+        },
+        {
+          $inc: {
+            wallet: -price,
+            order: 1
+          }
+        },
+        { new: true } // Return the updated document
+      );
 
-      if (walletBalance < price) {
+      if (!updatedUser) {
         return NextResponse.json({
           success: false,
-          message: `Insufficient wallet balance. You have ₹${walletBalance}, but need ₹${price}`,
+          message: "Insufficient wallet balance or transaction failed.",
         }, { status: 400 });
       }
 
-      // Deduct from wallet
-      user.wallet = walletBalance - price;
-      user.order = (user.order || 0) + 1;
-      await user.save();
+      // 📝 LOG TRANSACTION (Debit)
+      // Now we have a record of money leaving the wallet
+      const WalletTransaction = require("@/models/WalletTransaction").default;
+      await WalletTransaction.create({
+        transactionId: `DEBIT${Date.now()}${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+        userId: user.userId,
+        userObjectId: user._id,
+        type: "debit",
+        amount: price,
+        balanceBefore: updatedUser.wallet + price, // Calculate roughly
+        balanceAfter: updatedUser.wallet,
+        description: `Purchase: ${itemName} (${gameSlug})`,
+        status: "success",
+        referenceId: orderId,
+        performedBy: "user",
+      });
 
       // Update order status
       newOrder.status = "pending";
@@ -274,7 +300,7 @@ export async function POST(req: Request) {
         orderId,
         paymentMethod: "wallet",
         walletPayment: true,
-        newWalletBalance: user.wallet,
+        newWalletBalance: updatedUser.wallet,
         message: "Order placed successfully using wallet balance",
       });
     }

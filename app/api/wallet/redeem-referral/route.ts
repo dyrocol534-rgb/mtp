@@ -92,55 +92,78 @@ export async function POST(req: Request) {
         // 1 Coin Reward
         const REWARD_AMOUNT = 1;
 
-        // Update User (Referee)
-        const userBalanceBefore = user.wallet || 0;
-        const userBalanceAfter = userBalanceBefore + REWARD_AMOUNT;
+        // 🔒 ATOMIC UPDATE: Prevent Race Conditions
+        // Only update if referralUsed is FALSE
+        const updatedUser = await User.findOneAndUpdate(
+            {
+                _id: user._id,
+                referralUsed: false
+            },
+            {
+                $set: {
+                    referralUsed: true,
+                    referredBy: referrer.userId
+                },
+                $inc: { wallet: REWARD_AMOUNT }
+            },
+            { new: true }
+        );
 
-        user.wallet = userBalanceAfter;
-        user.referralUsed = true;
-        user.referredBy = referrer.userId;
-        await user.save();
+        if (!updatedUser) {
+            return NextResponse.json(
+                { success: false, message: "Referral already redeemed or request failed." },
+                { status: 400 }
+            );
+        }
 
         // Create Transaction for User
         await WalletTransaction.create({
             transactionId: `REF-${Date.now()}-${Math.random().toString(36).substring(7)}`,
-            userId: user.userId,
-            userObjectId: user._id,
+            userId: updatedUser.userId,
+            userObjectId: updatedUser._id,
             type: "credit",
             amount: REWARD_AMOUNT,
-            balanceBefore: userBalanceBefore,
-            balanceAfter: userBalanceAfter,
+            balanceBefore: updatedUser.wallet - REWARD_AMOUNT,
+            balanceAfter: updatedUser.wallet,
             description: `Referral Bonus (Used code: ${referralCode})`,
             status: "success",
             performedBy: "system"
         });
 
-        // Update Referrer
-        const referrerBalanceBefore = referrer.wallet || 0;
-        const referrerBalanceAfter = referrerBalanceBefore + REWARD_AMOUNT;
-
-        referrer.wallet = referrerBalanceAfter;
-        referrer.referralCount = (referrer.referralCount || 0) + 1;
-        await referrer.save();
+        // Update Referrer (Atomic $inc)
+        // We don't worry as much about race conditions here since counting multiple is "okay" 
+        // but we still use $inc for safety.
+        const updatedReferrer = await User.findOneAndUpdate(
+            { _id: referrer._id },
+            {
+                $inc: {
+                    wallet: REWARD_AMOUNT,
+                    referralCount: 1
+                }
+            },
+            { new: true }
+        );
 
         // Create Transaction for Referrer
-        await WalletTransaction.create({
-            transactionId: `REF-${Date.now()}-${Math.random().toString(36).substring(7)}-R`,
-            userId: referrer.userId,
-            userObjectId: referrer._id,
-            type: "credit",
-            amount: REWARD_AMOUNT,
-            balanceBefore: referrerBalanceBefore,
-            balanceAfter: referrerBalanceAfter,
-            description: `Referral Bonus (Referred user: ${user.userId})`,
-            status: "success",
-            performedBy: "system"
-        });
+        if (updatedReferrer) {
+            await WalletTransaction.create({
+                transactionId: `REF-${Date.now()}-${Math.random().toString(36).substring(7)}-R`,
+                userId: updatedReferrer.userId,
+                userObjectId: updatedReferrer._id,
+                type: "credit",
+                amount: REWARD_AMOUNT,
+                balanceBefore: updatedReferrer.wallet - REWARD_AMOUNT,
+                balanceAfter: updatedReferrer.wallet,
+                description: `Referral Bonus (Referred user: ${updatedUser.userId})`,
+                status: "success",
+                performedBy: "system"
+            });
+        }
 
         return NextResponse.json({
             success: true,
             message: "Referral code redeemed! 1 coin added to your wallet.",
-            newBalance: userBalanceAfter
+            newBalance: updatedUser.wallet
         });
 
     } catch (error) {

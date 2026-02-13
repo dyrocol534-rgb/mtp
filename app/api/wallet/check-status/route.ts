@@ -35,13 +35,23 @@ export async function POST(req: Request) {
     // Look for existing transaction by referenceId (orderId)
     let existingTxn = await WalletTransaction.findOne({ referenceId: orderId });
 
-    if (existingTxn && existingTxn.status === "success") {
-      return NextResponse.json({
-        success: true,
-        message: "Payment already processed",
-        amount: existingTxn.amount,
-        newWallet: existingTxn.balanceAfter,
-      });
+    if (existingTxn) {
+      // 🔒 SECURITY CHECK: Ensure the transaction belongs to the requesting user
+      if (existingTxn.userId !== tokenUserId) {
+        return NextResponse.json(
+          { success: false, message: "Forbidden: Transaction does not belong to you" },
+          { status: 403 }
+        );
+      }
+
+      if (existingTxn.status === "success") {
+        return NextResponse.json({
+          success: true,
+          message: "Payment already processed",
+          amount: existingTxn.amount,
+          newWallet: existingTxn.balanceAfter,
+        });
+      }
     }
 
     // ============ GATEWAY CHECK ============
@@ -99,33 +109,48 @@ export async function POST(req: Request) {
         );
       }
 
-      const balanceBefore = user.wallet || 0;
-      const balanceAfter = balanceBefore + amount;
+      // 🔒 ATOMIC PROCESSING: Prevent Double Credit
+      // Step 1: Try to lock the transaction (pending -> success)
+      let transactionLock = null;
+      let finalTxn = existingTxn;
 
-      user.wallet = balanceAfter;
-      user.order = (user.order || 0) + 1; // Increment order count log
-      await user.save();
-
-      // 📝 Update or Create Transaction Log
       if (existingTxn) {
-        // Update existing pending/failed transaction to success
-        existingTxn.status = "success";
-        existingTxn.amount = amount; // Ensure amount matches actual payment
-        existingTxn.balanceAfter = balanceAfter;
-        existingTxn.description = "Wallet Top-up Successful";
-        // Do NOT change transactionId, keep the original WALLET... ID
-        await existingTxn.save();
+        transactionLock = await WalletTransaction.findOneAndUpdate(
+          {
+            _id: existingTxn._id,
+            status: { $ne: "success" } // Update only if NOT already success
+          },
+          {
+            $set: {
+              status: "success",
+              amount: amount,
+              description: "Wallet Top-up Successful",
+              balanceAfter: (user.wallet || 0) + amount // Estimate, will be wrong if race, but display only
+            }
+          },
+          { new: true }
+        );
+
+        if (!transactionLock) {
+          // If lock failed, it means it's already success
+          return NextResponse.json({
+            success: true,
+            message: "Payment already processed",
+            amount,
+            newWallet: user.wallet,
+          });
+        }
+        finalTxn = transactionLock;
       } else {
-        // Should theoretically exist if created via create-order app flow
-        // But handle case where it doesn't (legacy or direct API call)
-        await WalletTransaction.create({
+        // Create new success transaction (Atomic creation serves as lock)
+        finalTxn = await WalletTransaction.create({
           transactionId: `WALLET${Date.now()}${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
           userId: user.userId,
           userObjectId: user._id,
           type: "credit",
           amount: amount,
-          balanceBefore: balanceBefore,
-          balanceAfter: balanceAfter,
+          balanceBefore: user.wallet || 0,
+          balanceAfter: (user.wallet || 0) + amount,
           description: "Wallet Top-up Successful",
           status: "success",
           referenceId: orderId,
@@ -133,11 +158,30 @@ export async function POST(req: Request) {
         });
       }
 
+      // Step 2: Credit User Wallet (Atomic $inc)
+      // Only runs if we successfully locked/created the transaction
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: user._id },
+        {
+          $inc: {
+            wallet: amount,
+            order: 1
+          }
+        },
+        { new: true }
+      );
+
+      // Update balanceAfter in txn to be accurate
+      if (finalTxn && updatedUser) {
+        finalTxn.balanceAfter = updatedUser.wallet;
+        await finalTxn.save();
+      }
+
       return NextResponse.json({
         success: true,
         message: "Payment Successful",
         amount,
-        newWallet: user.wallet,
+        newWallet: updatedUser?.wallet || user.wallet,
       });
     }
 
