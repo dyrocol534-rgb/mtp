@@ -42,10 +42,15 @@ export async function PATCH(req) {
     }
 
     // ---------------- FETCH USER ----------------
-    // Try finding by MongoDB _id first, then by custom userId
-    let user = await User.findById(userId);
+    // 1. Try to find by custom userId (string)
+    let user = await User.findOne({ userId });
+
+    // 2. If not found, check if it's a valid ObjectId and try _id
     if (!user) {
-      user = await User.findOne({ userId });
+      const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(userId);
+      if (isValidObjectId) {
+        user = await User.findById(userId);
+      }
     }
 
     if (!user) {

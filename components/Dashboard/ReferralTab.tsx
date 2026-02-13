@@ -153,12 +153,33 @@ export default function ReferralTab({
                                 <code className="text-xl font-black italic tracking-widest text-[var(--foreground)]">
                                     {userReferral?.userId || "Loading..."}
                                 </code>
-                                <button
-                                    onClick={handleCopyCode}
-                                    className="p-3 rounded-xl bg-[var(--foreground)]/[0.05] text-[var(--foreground)] hover:bg-[var(--accent)] hover:text-black transition-all"
-                                >
-                                    {copied ? <FiCheckCircle size={18} /> : <FiCopy size={18} />}
-                                </button>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={handleCopyCode}
+                                        className="p-3 rounded-xl bg-[var(--foreground)]/[0.05] text-[var(--foreground)] hover:bg-[var(--accent)] hover:text-black transition-all"
+                                        title="Copy Code"
+                                    >
+                                        {copied ? <FiCheckCircle size={18} /> : <FiCopy size={18} />}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            const shareText = `Join mlbbtopup.in\nmlbbtopup.in\nCode: ${userReferral?.userId}`;
+                                            if (navigator.share) {
+                                                navigator.share({
+                                                    title: 'Join mlbbtopup.in',
+                                                    text: shareText
+                                                });
+                                            } else {
+                                                navigator.clipboard.writeText(shareText);
+                                                alert("Referral info copied to clipboard!");
+                                            }
+                                        }}
+                                        className="p-3 rounded-xl bg-[var(--foreground)]/[0.05] text-[var(--foreground)] hover:bg-[var(--accent)] hover:text-black transition-all"
+                                        title="Share"
+                                    >
+                                        <FiShare2 size={18} />
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
