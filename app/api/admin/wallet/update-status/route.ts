@@ -49,14 +49,27 @@ export async function POST(req: Request) {
             );
         }
 
-        /* ================= UPDATE TRANSACTION ONLY ================= */
-        // We are NOT updating the user's wallet balance. Just the record status.
+        /* ================= UPDATE TRANSACTION & WALLET ================= */
+        // If changing to SUCCESS and type is CREDIT, add to user wallet
+        if (status === "success" && transaction.type === "credit") {
+            const user = await User.findOneAndUpdate(
+                { _id: transaction.userObjectId },
+                { $inc: { wallet: transaction.amount } },
+                { new: true }
+            );
+
+            if (user) {
+                // Update balanceAfter in transaction record
+                transaction.balanceAfter = user.wallet;
+            }
+        }
+
         transaction.status = status;
         await transaction.save();
 
         return Response.json({
             success: true,
-            message: `Transaction status updated to ${status}`,
+            message: `Transaction verified & updated to ${status}`,
             data: transaction
         });
 

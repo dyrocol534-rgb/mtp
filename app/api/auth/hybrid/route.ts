@@ -42,10 +42,15 @@ export async function POST(request: Request) {
         } else {
             // 3. Login check if user exists
             if (foundUser.provider === "google" && !foundUser.password) {
-                // 2.1 Allow Google users to "attach" a password for the first time
-                const hashedPassword = await bcrypt.hash(password, 10);
-                foundUser.password = hashedPassword;
-                await foundUser.save();
+                // 🔒 SECURITY FIX: Prevent ATO (Account Takeover)
+                // Do NOT allow setting password here blindly.
+                return Response.json(
+                    {
+                        success: false,
+                        message: "Please login with Google or use 'Forgot Password' to set a password."
+                    },
+                    { status: 400 }
+                );
             } else {
                 const isMatch = await bcrypt.compare(password, foundUser.password);
                 if (!isMatch) {
