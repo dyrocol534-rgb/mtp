@@ -229,15 +229,32 @@ export default function WalletTab({
             </div>
           </div>
 
-          <button
-            onClick={handleProceed}
-            disabled={loading}
-            className="w-full p-4 rounded-2xl bg-[var(--accent)] text-black font-black uppercase tracking-[0.2em] italic text-xs shadow-[0_20px_40px_-10px_rgba(var(--accent-rgb),0.3)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:grayscale transition-all flex items-center justify-center gap-3"
-          >
-            {loading ? <FiLoader className="animate-spin" size={18} /> : "Add Funds"}
-          </button>
+          {/* PENDING NOTICE */}
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex gap-3 items-start">
+            <div className="p-1 rounded-full bg-amber-500/20 text-amber-500 mt-0.5">
+              <FiLoader size={12} className="animate-spin-slow" />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-amber-500 uppercase tracking-wider mb-1">
+                Important Note
+              </p>
+              <p className="text-[10px] font-medium text-[var(--muted)] leading-relaxed">
+                Pending orders are usually cleared automatically within <strong>30 minutes</strong>.
+                If your transaction is still pending after this time, please <a href="/support" className="text-[var(--accent)] underline hover:text-[var(--foreground)] transition-colors">contact support</a> with your order ID.
+              </p>
+            </div>
+          </div>
         </div>
+
+        <button
+          onClick={handleProceed}
+          disabled={loading}
+          className="w-full p-4 rounded-2xl bg-[var(--accent)] text-black font-black uppercase tracking-[0.2em] italic text-xs shadow-[0_20px_40px_-10px_rgba(var(--accent-rgb),0.3)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:grayscale transition-all flex items-center justify-center gap-3"
+        >
+          {loading ? <FiLoader className="animate-spin" size={18} /> : "Add Funds"}
+        </button>
       </div>
+
 
       {/* TRANSACTION HISTORY SECTION */}
       <div className="pt-8 border-t border-[var(--border)]/20">
@@ -251,7 +268,7 @@ export default function WalletTab({
 
         <TransactionHistoryWrapper />
       </div>
-    </div>
+    </div >
   );
 }
 

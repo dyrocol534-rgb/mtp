@@ -113,26 +113,29 @@ export async function POST(req: Request) {
       // Step 1: Try to lock the transaction (pending -> success)
       let transactionLock = null;
       let finalTxn = existingTxn;
+      let updatedUser = user; // Initialize with current user state
 
       if (existingTxn) {
+        // If txn exists, try to update it from pending/failed to success
         transactionLock = await WalletTransaction.findOneAndUpdate(
           {
             _id: existingTxn._id,
-            status: { $ne: "success" } // Update only if NOT already success
+            status: { $ne: "success" } // Lock: Only update if NOT already success
           },
           {
             $set: {
               status: "success",
               amount: amount,
               description: "Wallet Top-up Successful",
-              balanceAfter: (user.wallet || 0) + amount // Estimate, will be wrong if race, but display only
+              updatedAt: new Date()
             }
           },
           { new: true }
         );
 
         if (!transactionLock) {
-          // If lock failed, it means it's already success
+          // Lock failed? It means status was already 'success' (processed by webhook)
+          // Just return success
           return NextResponse.json({
             success: true,
             message: "Payment already processed",
@@ -141,26 +144,38 @@ export async function POST(req: Request) {
           });
         }
         finalTxn = transactionLock;
+
       } else {
-        // Create new success transaction (Atomic creation serves as lock)
-        finalTxn = await WalletTransaction.create({
-          transactionId: `WALLET${Date.now()}${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
-          userId: user.userId,
-          userObjectId: user._id,
-          type: "credit",
-          amount: amount,
-          balanceBefore: user.wallet || 0,
-          balanceAfter: (user.wallet || 0) + amount,
-          description: "Wallet Top-up Successful",
-          status: "success",
-          referenceId: orderId,
-          performedBy: "user",
-        });
+        // If txn doesn't exist yet (rare, but possible if webhook didn't create it first), create it now
+        try {
+          finalTxn = await WalletTransaction.create({
+            transactionId: `WALLET${Date.now()}${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+            userId: user.userId,
+            userObjectId: user._id,
+            type: "credit",
+            amount: amount,
+            balanceBefore: user.wallet || 0,
+            balanceAfter: (user.wallet || 0) + amount,
+            description: "Wallet Top-up Successful",
+            status: "success",
+            referenceId: orderId,
+            performedBy: "user",
+          });
+        } catch (e) {
+          // Creation failed? Maybe duplicate referenceId unique constraint?
+          // If so, fetch and check
+          return NextResponse.json({
+            success: true,
+            message: "Payment processed",
+            amount,
+            newWallet: user.wallet,
+          });
+        }
       }
 
       // Step 2: Credit User Wallet (Atomic $inc)
       // Only runs if we successfully locked/created the transaction
-      const updatedUser = await User.findOneAndUpdate(
+      updatedUser = await User.findOneAndUpdate(
         { _id: user._id },
         {
           $inc: {

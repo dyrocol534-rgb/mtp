@@ -107,6 +107,8 @@ export async function POST(req: Request) {
     formData.append("redirect_url", `${process.env.NEXT_PUBLIC_BASE_URLU}/wallet/payment-complete`);
     formData.append("remark1", `wallet-topup-${userId}`); // Include userId for tracking
     formData.append("remark2", "upi");
+    // Explicitly tell gateway where to send webhook for wallet top-ups
+    formData.append("webhook_url", `${process.env.NEXT_PUBLIC_BASE_URLU}/api/webhook`);
 
     const resp = await fetch("https://xyzpay.site/api/create-order", {
       method: "POST",

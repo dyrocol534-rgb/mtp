@@ -395,24 +395,50 @@ export default function StatsTab() {
                                                     {txn.type === 'credit' ? '+' : '-'}{txn.amount.toLocaleString()}
                                                 </div>
                                                 <div className="mt-2 flex justify-end gap-2">
-                                                    {txn.status !== 'success' && (
-                                                        <button
-                                                            onClick={() => handleStatusUpdate(txn._id, 'success')}
-                                                            className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-colors"
-                                                            title="Mark Success"
-                                                        >
-                                                            <FiCheckCircle size={14} />
-                                                        </button>
-                                                    )}
-                                                    {txn.status !== 'failed' && (
-                                                        <button
-                                                            onClick={() => handleStatusUpdate(txn._id, 'failed')}
-                                                            className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors"
-                                                            title="Mark Failed"
-                                                        >
-                                                            <FiXCircle size={14} />
-                                                        </button>
-                                                    )}
+                                                    <div className="mt-2 flex justify-end gap-2">
+                                                        {txn.status === 'pending' && (
+                                                            <button
+                                                                onClick={async () => {
+                                                                    if (!confirm("Verify with Gateway?")) return;
+                                                                    try {
+                                                                        const token = localStorage.getItem("token");
+                                                                        const res = await fetch("/api/admin/wallet/verify", {
+                                                                            method: "POST",
+                                                                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                                                                            body: JSON.stringify({ transactionId: txn._id })
+                                                                        });
+                                                                        const json = await res.json();
+                                                                        alert(json.message);
+                                                                        if (json.success) fetchHistory();
+                                                                    } catch (e) {
+                                                                        alert("Verification Failed");
+                                                                    }
+                                                                }}
+                                                                className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition-colors"
+                                                                title="Check & Auto Approve"
+                                                            >
+                                                                <FiRefreshCw size={14} />
+                                                            </button>
+                                                        )}
+                                                        {txn.status !== 'success' && (
+                                                            <button
+                                                                onClick={() => handleStatusUpdate(txn._id, 'success')}
+                                                                className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-colors"
+                                                                title="Manually Mark Success"
+                                                            >
+                                                                <FiCheckCircle size={14} />
+                                                            </button>
+                                                        )}
+                                                        {txn.status !== 'failed' && (
+                                                            <button
+                                                                onClick={() => handleStatusUpdate(txn._id, 'failed')}
+                                                                className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors"
+                                                                title="Mark Failed & Deduct"
+                                                            >
+                                                                <FiXCircle size={14} />
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -502,11 +528,36 @@ export default function StatsTab() {
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
                                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            {txn.status === 'pending' && (
+                                                                <button
+                                                                    onClick={async () => {
+                                                                        if (!confirm("Verify this Pending Transaction with Gateway?")) return;
+                                                                        try {
+                                                                            const token = localStorage.getItem("token");
+                                                                            const res = await fetch("/api/admin/wallet/verify", {
+                                                                                method: "POST",
+                                                                                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                                                                                body: JSON.stringify({ transactionId: txn._id })
+                                                                            });
+                                                                            const json = await res.json();
+                                                                            alert(json.message);
+                                                                            if (json.success) fetchHistory();
+                                                                        } catch (e) {
+                                                                            console.error(e);
+                                                                            alert("Verification API Failed");
+                                                                        }
+                                                                    }}
+                                                                    className="p-1.5 rounded-lg hover:bg-blue-500/10 text-blue-500 transition-colors"
+                                                                    title="Check Gateway & Auto Approve"
+                                                                >
+                                                                    <FiRefreshCw size={14} />
+                                                                </button>
+                                                            )}
                                                             {txn.status !== 'success' && (
                                                                 <button
                                                                     onClick={() => handleStatusUpdate(txn._id, 'success')}
                                                                     className="p-1.5 rounded-lg hover:bg-emerald-500/10 text-emerald-500 transition-colors"
-                                                                    title="Mark as Success"
+                                                                    title="Manually Mark as Success"
                                                                 >
                                                                     <FiCheckCircle size={14} />
                                                                 </button>
@@ -515,7 +566,7 @@ export default function StatsTab() {
                                                                 <button
                                                                     onClick={() => handleStatusUpdate(txn._id, 'failed')}
                                                                     className="p-1.5 rounded-lg hover:bg-red-500/10 text-red-500 transition-colors"
-                                                                    title="Mark as Failed"
+                                                                    title="Mark as Failed & Deduct Funds"
                                                                 >
                                                                     <FiXCircle size={14} />
                                                                 </button>

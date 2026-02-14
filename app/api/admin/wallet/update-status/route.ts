@@ -62,6 +62,17 @@ export async function POST(req: Request) {
                 // Update balanceAfter in transaction record
                 transaction.balanceAfter = user.wallet;
             }
+        } else if (transaction.status === "success" && status !== "success" && transaction.type === "credit") {
+            // If reverting a successful transaction (e.g. refund/void), deduct from user wallet
+            const user = await User.findOneAndUpdate(
+                { _id: transaction.userObjectId },
+                { $inc: { wallet: -transaction.amount } },
+                { new: true }
+            );
+
+            if (user) {
+                transaction.balanceAfter = user.wallet;
+            }
         }
 
         transaction.status = status;
