@@ -315,11 +315,61 @@ function TransactionHistory() {
         if (json.pagination) {
           setTotalPages(json.pagination.totalPages);
         }
+
+        // AUTO-VERIFY PENDING TRANSACTIONS
+        // If we find any 'pending' transaction in the list, let's proactively check it
+        const pendingTxns = json.data.filter((t: any) => t.status === 'pending');
+        if (pendingTxns.length > 0) {
+          checkPendingStatuses(pendingTxns);
+        }
       }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkPendingStatuses = async (txns: any[]) => {
+    const token = localStorage.getItem("token");
+    let updated = false;
+
+    // Check each pending txn (limit to first 3 to avoid spamming)
+    const toCheck = txns.slice(0, 3);
+    for (let i = 0; i < toCheck.length; i++) {
+      const txn = toCheck[i];
+      if (!txn.referenceId) continue;
+      try {
+        // We reuse the existing check-status API usually meant for payment-complete page
+        // This API calls gateway and updates DB if success
+        const res = await fetch("/api/wallet/check-status", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ orderId: txn.referenceId })
+        });
+        const data = await res.json();
+        if (data.success) updated = true;
+      } catch (e) {
+        console.error("Auto-check failed for", txn._id);
+      }
+    }
+
+    if (updated) {
+      // If any status changed to success effectively, reload history to show green
+      // prevent infinite loop by not calling fetchHistory directly here if possible, 
+      // but since we updated state, a re-fetch is needed.
+      // Let's just create a new fetch to update UI
+      const res = await fetch(`/api/wallet/history?page=${page}&limit=5`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (json.success) setHistory(json.data);
+
+      // Also update wallet balance
+      window.dispatchEvent(new Event("walletUpdated"));
     }
   };
 

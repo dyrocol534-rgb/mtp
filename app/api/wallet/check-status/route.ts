@@ -37,11 +37,27 @@ export async function POST(req: Request) {
 
     if (existingTxn) {
       // 🔒 SECURITY CHECK: Ensure the transaction belongs to the requesting user
-      if (existingTxn.userId !== tokenUserId) {
-        return NextResponse.json(
-          { success: false, message: "Forbidden: Transaction does not belong to you" },
-          { status: 403 }
-        );
+      // We check both userId (string) and userObjectId (mongo ID) to be safe
+      const isOwner =
+        existingTxn.userId === tokenUserId ||
+        existingTxn.userObjectId?.toString() === decoded.userId || // if token has mongo ID
+        existingTxn.userId === decoded.userId; // if token has user ID string
+
+      // If we can't verify ownership via direct ID, fetch user to be sure (optional but safer)
+      // For now, let's just relax strict string equality if needed or log for debug
+
+      // FIX: The issue might be that tokenUserId is sometimes the mongo _id and sometimes the custom userId
+      // We should check if the transaction is linked to the user's account in any way.
+
+      if (!isOwner) {
+        // Double check via DB user lookup if IDs don't match strings directly
+        const user = await User.findById(decoded.userId) || await User.findOne({ userId: decoded.userId });
+        if (!user || (existingTxn.userObjectId?.toString() !== user._id.toString() && existingTxn.userId !== user.userId)) {
+          return NextResponse.json(
+            { success: false, message: "Forbidden: Transaction does not belong to you" },
+            { status: 403 }
+          );
+        }
       }
 
       if (existingTxn.status === "success") {
