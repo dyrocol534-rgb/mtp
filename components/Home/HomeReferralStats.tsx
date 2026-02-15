@@ -48,80 +48,81 @@ export default function HomeReferralStats() {
     if (loading) return null;
 
     return (
-        <section className="relative max-w-7xl mx-auto px-4 mt-8 mb-4">
-            <div className="max-w-2xl mx-auto">
+        <section className="relative max-w-7xl mx-auto px-4 mt-4 mb-2">
+            <div className="max-w-xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="relative group rounded-3xl p-[1px] overflow-hidden"
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="group relative"
                 >
-                    {/* Animated Gradient Border */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent)]/0 via-[var(--accent)]/50 to-[var(--accent)]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-sm" />
-                    <div className="absolute inset-0 bg-[var(--border)] rounded-3xl" />
+                    {/* Subtle Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent)]/10 via-transparent to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-                    <div className="relative rounded-3xl bg-[var(--card)]/80 backdrop-blur-xl p-6 h-full transition-all duration-300 group-hover:bg-[var(--card)]/90">
-                        {/* Ambient Glow */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)]/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none transition-opacity duration-500 group-hover:opacity-100 opacity-50" />
+                    <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)]/40 backdrop-blur-xl p-3.5 transition-all duration-300 group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--card)]/60">
+                        <div className="relative z-10 flex items-center justify-between gap-4">
 
-                        <div className="relative z-10 flex items-center justify-between gap-6">
+                            {/* Left: Info Grid */}
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+                                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)]/80 italic">
+                                        Referral Center
+                                    </h3>
+                                </div>
 
-                            {/* Text Info - Centered/Streamlined without Icon */}
-                            <div className="flex flex-col gap-1.5 flex-1">
-                                <h3 className="text-sm font-black uppercase tracking-[0.25em] text-transparent bg-clip-text bg-gradient-to-r from-[var(--foreground)] to-[var(--muted)] group-hover:to-[var(--accent)] transition-all duration-500">
-                                    Referral Hub
-                                </h3>
-
-                                <div className="flex flex-col gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
-
-                                    {/* Invites Row */}
-                                    <div className="flex items-center gap-2">
-                                        <span className="opacity-70">Invites</span>
-                                        <div className="h-px w-4 bg-[var(--border)] group-hover:bg-[var(--accent)]/30 transition-colors" />
-                                        <span className="text-[var(--foreground)] text-xs font-black tabular-nums">{user.referralCount || 0}</span>
+                                <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                                    {/* Invites */}
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--muted)] opacity-60">Invites</span>
+                                        <span className="text-sm font-black text-[var(--foreground)] tabular-nums">{user.referralCount || 0}</span>
                                     </div>
 
-                                    {/* Code Row */}
+                                    {/* Code */}
                                     <button
                                         onClick={copyToClipboard}
-                                        className="flex items-center gap-2 group/code w-fit hover:opacity-100 transition-opacity text-left"
+                                        className="flex items-center gap-1.5 group/code hover:opacity-100 transition-opacity"
                                     >
-                                        <span className="opacity-70 group-hover/code:text-[var(--accent)] transition-colors">Code</span>
-                                        <div className="h-px w-6 bg-[var(--border)] group-hover/code:bg-[var(--accent)]/50 transition-colors" />
-                                        <div className="px-2 py-0.5 rounded-md bg-[var(--background)] border border-[var(--border)] group-hover/code:border-[var(--accent)]/40 group-hover/code:shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)] transition-all flex items-center gap-2">
-                                            <span className="text-[var(--foreground)] font-mono text-xs tracking-wider">{user.userId}</span>
-                                            {copied ? <FiCheck size={10} className="text-emerald-500" /> : <FiCopy size={10} className="opacity-0 group-hover/code:opacity-100 transition-opacity text-[var(--accent)]" />}
+                                        <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--muted)] opacity-60 group-hover/code:text-[var(--accent)]">Code</span>
+                                        <div className="px-1.5 py-0.5 rounded-md bg-[var(--background)]/50 border border-[var(--border)] group-hover/code:border-[var(--accent)]/40 transition-all flex items-center gap-1.5">
+                                            <span className="text-[11px] font-mono font-bold text-[var(--foreground)] tracking-tight uppercase">{user.userId}</span>
+                                            {copied ? (
+                                                <FiCheck size={10} className="text-emerald-500" />
+                                            ) : (
+                                                <FiCopy size={9} className="text-[var(--accent)] opacity-40 group-hover/code:opacity-100" />
+                                            )}
                                         </div>
                                     </button>
+                                </div>
 
-                                    {/* Footer Row */}
-                                    <div className="pt-2 mt-1 border-t border-[var(--border)]/40 flex items-center gap-2">
-                                        <FiUserPlus size={10} className="text-[var(--accent)]" />
-                                        {user.referredBy ? (
-                                            <span className="text-[10px] font-mono opacity-50">Invited by {user.referredBy}</span>
-                                        ) : (
-                                            (Date.now() - new Date(user.createdAt).getTime() < 24 * 60 * 60 * 1000) && (
-                                                <Link href="/dashboard/referral" className="flex items-center gap-1 text-[var(--accent)] hover:text-[var(--foreground)] transition-colors text-[10px] font-bold tracking-widest">
-                                                    ADD REFERRER <FiArrowRight size={10} />
-                                                </Link>
-                                            )
-                                        )}
-                                    </div>
+                                {/* Footer */}
+                                <div className="mt-2 pt-2 border-t border-[var(--border)]/30 flex items-center gap-2">
+                                    <FiUserPlus size={9} className="text-[var(--accent)] opacity-50" />
+                                    {user.referredBy ? (
+                                        <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)]/50">
+                                            Invited by <span className="text-[var(--foreground)] opacity-80">{user.referredBy}</span>
+                                        </span>
+                                    ) : (
+                                        (Date.now() - new Date(user.createdAt).getTime() < 24 * 60 * 60 * 1000) && (
+                                            <Link href="/dashboard/referral" className="flex items-center gap-1 text-[var(--accent)] hover:text-[var(--foreground)] transition-colors text-[9px] font-black tracking-widest uppercase">
+                                                ADD REFERRER <FiArrowRight size={10} />
+                                            </Link>
+                                        )
+                                    )}
                                 </div>
                             </div>
 
-                            {/* Right: Ultra Premium Button */}
+                            {/* Right: Compact CTA */}
                             <Link
                                 href="/dashboard/referral"
-                                className="relative w-14 h-14 flex items-center justify-center rounded-full border border-[var(--accent)]/20 bg-gradient-to-br from-[var(--card)] to-[var(--background)] shadow-[0_4px_20px_rgba(0,0,0,0.2)] group/btn overflow-hidden hover:scale-105 transition-all duration-300"
+                                className="relative w-11 h-11 shrink-0 flex items-center justify-center rounded-xl bg-[var(--background)] border border-[var(--border)] group/btn transition-all duration-300 hover:border-[var(--accent)]/40 hover:scale-105"
                             >
-                                <div className="absolute inset-0 bg-[var(--accent)] opacity-0 group-hover/btn:opacity-10 transition-opacity duration-300" />
-                                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[var(--accent)]/10 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
+                                <div className="absolute inset-0 bg-[var(--accent)] opacity-0 group-hover/btn:opacity-5 rounded-xl" />
                                 <FiArrowRight
-                                    size={22}
+                                    size={18}
                                     className="text-[var(--muted)] group-hover/btn:text-[var(--accent)] -rotate-45 group-hover/btn:rotate-0 transition-all duration-500 ease-out"
                                 />
                             </Link>
-
                         </div>
                     </div>
                 </motion.div>

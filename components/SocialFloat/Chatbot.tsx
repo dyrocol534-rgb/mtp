@@ -12,6 +12,9 @@ import {
   FiPackage,
   FiLifeBuoy,
   FiZap,
+  FiCreditCard,
+  FiShare2,
+  FiUsers,
 } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 
@@ -22,7 +25,9 @@ const SUPPORT_EMAIL = "tusharkantanayak713@gmail.com";
 
 const QUICK_REPLIES = [
   { label: "Support", icon: FiLifeBuoy, action: "support" },
-  { label: "Delivery Time", icon: FiZap, action: "delivery" },
+  { label: "Delivery", icon: FiZap, action: "delivery" },
+  { label: "Wallet", icon: FiCreditCard, action: "wallet" },
+  { label: "Referral", icon: FiUsers, action: "referral" },
 ];
 
 /* ================= TYPES ================= */
@@ -147,6 +152,14 @@ export default function ChatBot() {
       return "Delivery is near-instant! ⚡ Once your payment is confirmed, diamonds are typically credited within 2 to 10 minutes.";
     }
 
+    if (msg === "wallet") {
+      return `For wallet top-ups: Please contact support if you are facing a hard time or want to pay via methods other than INR. \n📞 WhatsApp: ${SUPPORT_PHONE}`;
+    }
+
+    if (msg === "referral") {
+      return "To learn more about our rewards program, please check the 'Refer and Earn' section in your dashboard. 🎁";
+    }
+
     const nameMatch = msg.match(/my name is (\w+)/);
     if (nameMatch) {
       ctx.userName = nameMatch[1];
@@ -176,6 +189,14 @@ export default function ChatBot() {
       ctx.topic = "support";
       ctx.unknownCount = 0;
       return "Understood. 🔧 If you're facing an issue, please contact us on WhatsApp for the fastest resolution.";
+    }
+
+    if (msg.includes("wallet") || msg.includes("add money") || msg.includes("topup")) {
+      return `For wallet top-ups: Please contact support if you are facing a hard time or want to pay via methods other than INR. \n📞 WhatsApp: ${SUPPORT_PHONE}`;
+    }
+
+    if (msg.includes("refer") || msg.includes("earn") || msg.includes("invite")) {
+      return "To learn more about our rewards program, please check the 'Refer and Earn' section in your dashboard. 🎁";
     }
 
     ctx.unknownCount++;
