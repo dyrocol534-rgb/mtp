@@ -31,7 +31,21 @@ export async function POST(req: Request) {
     }
 
     if (order.status === "success" || order.status === "SUCCESS") {
-      return NextResponse.json({ success: true, message: "Already processed", topupResponse: order.externalResponse });
+      const sanitizedResponse = Array.isArray(order.externalResponse)
+        ? order.externalResponse.map((r: any) => {
+          if (r.data?.price) {
+            const { price, ...rest } = r.data;
+            return { ...r, data: rest };
+          }
+          return r;
+        })
+        : order.externalResponse;
+
+      return NextResponse.json({
+        success: true,
+        message: "Already processed",
+        topupResponse: sanitizedResponse
+      });
     }
 
     if (order.expiresAt && Date.now() > order.expiresAt.getTime()) {
@@ -49,10 +63,20 @@ export async function POST(req: Request) {
       // Wallet payments are already verified and paid
       // Just check if already processed
       if (order.paymentStatus === "success" && order.topupStatus === "success") {
+        const sanitizedResponse = Array.isArray(order.externalResponse)
+          ? order.externalResponse.map((r: any) => {
+            if (r.data?.price) {
+              const { price, ...rest } = r.data;
+              return { ...r, data: rest };
+            }
+            return r;
+          })
+          : order.externalResponse;
+
         return NextResponse.json({
           success: true,
           message: "Already processed",
-          topupResponse: order.externalResponse
+          topupResponse: sanitizedResponse
         });
       }
 
@@ -259,6 +283,12 @@ export async function POST(req: Request) {
 
         const gameData = await gameResp.json();
         console.log(`[fulfillment] Response ${i + 1}/${multiplier}:`, JSON.stringify(gameData));
+
+        // Remove price from response before pushing
+        if (gameData.data?.price) {
+          delete gameData.data.price;
+        }
+
         responses.push(gameData);
 
         const isSuccess = gameResp.ok &&
