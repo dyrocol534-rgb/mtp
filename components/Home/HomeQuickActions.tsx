@@ -152,7 +152,7 @@ export default function HomeQuickActions() {
   };
 
   return (
-    <section className="relative max-w-7xl mx-auto px-4 mt-4">
+    <section className="relative max-w-7xl mx-auto px-4 mt-2">
       <div className="relative z-10 max-w-2xl mx-auto">
         <div className="flex flex-col gap-1">
           {/* ================= TOP ROW ================= */}

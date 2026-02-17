@@ -48,7 +48,7 @@ export default function HomeReferralStats() {
     if (loading) return null;
 
     return (
-        <section className="relative max-w-7xl mx-auto px-4 mt-4 mb-2">
+        <section className="relative max-w-7xl mx-auto px-4 mt-2 mb-2">
             <div className="max-w-xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
