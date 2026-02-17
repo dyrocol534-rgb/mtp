@@ -101,6 +101,18 @@ function BuyFlowContent() {
 
     setLoading(true);
 
+    if (game?.isValidationRequired === false) {
+      setReviewData({
+        userName: "Manual Order",
+        region: "Manual",
+        playerId,
+        zoneId,
+      });
+      setLoading(false);
+      setStep(2);
+      return;
+    }
+
     try {
       const res = await fetch("/api/check-region", {
         method: "POST",
@@ -133,8 +145,6 @@ function BuyFlowContent() {
         setLoading(false);
         setStep(2);
       } else {
-        // Even if success is 200, if we lack data, it's a fail.
-        // If the API returns "Region checked successfully" but provides no data, we should say "Player Not Found".
         const serverMsg = data?.message || "Invalid Player ID / Zone ID";
         const finalError = serverMsg.toLowerCase().includes("success")
           ? "Player Not Found (Invalid ID/Zone)"
@@ -333,6 +343,7 @@ function BuyFlowContent() {
                     >
                       <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/5 rounded-full blur-3xl -z-10" />
                       <ValidationStep
+                        game={game}
                         playerId={playerId}
                         setPlayerId={setPlayerId}
                         zoneId={zoneId}
@@ -355,6 +366,7 @@ function BuyFlowContent() {
                       <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/5 rounded-full blur-3xl -z-10" />
                       {(step === 2 || step === 3) && reviewData && (
                         <ReviewAndPaymentStep
+                          game={game}
                           step={step}
                           setStep={setStep}
                           itemName={item?.itemName || fallbackName}

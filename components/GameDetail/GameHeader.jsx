@@ -49,15 +49,26 @@ export default function GameHeader({ game }) {
             <p className="text-[9px] md:text-[10px] font-bold tracking-widest text-[var(--muted)] uppercase opacity-60">
               {game.gameFrom || "Global Edition"}
             </p>
+            {game.isValidationRequired === false && game.gameDescription && (
+              <p className="text-[8px] font-bold text-[var(--accent)] uppercase tracking-tight mt-0.5 opacity-80 italic line-clamp-1">
+                {game.gameDescription}
+              </p>
+            )}
           </div>
         </div>
 
         {/* RIGHT: Minimalist Trust Badges */}
         <div className="flex items-center gap-2 md:gap-3 relative z-10 shrink-0">
-          {/* Instant Delivery Badge */}
-          <div className="flex items-center gap-2 px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl bg-[var(--accent)]/5 border border-[var(--accent)]/10 hover:border-[var(--accent)]/30 transition-all duration-300 group/badge">
-            <FiZap className="text-[var(--accent)] transition-transform group-hover/badge:scale-110" size={14} fill="currentColor" />
-            <span className="hidden sm:inline text-[9px] font-black uppercase tracking-widest text-[var(--foreground)] opacity-80">Instant</span>
+          {/* Instant/Manual Delivery Badge */}
+          <div className={`flex items-center gap-2 px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl border transition-all duration-300 group/badge 
+            ${game.isValidationRequired === false
+              ? "bg-amber-500/5 border-amber-500/10 hover:border-amber-500/30"
+              : "bg-[var(--accent)]/5 border-[var(--accent)]/10 hover:border-[var(--accent)]/30"
+            }`}>
+            <FiZap className={`${game.isValidationRequired === false ? "text-amber-500" : "text-[var(--accent)]"} transition-transform group-hover/badge:scale-110`} size={14} fill="currentColor" />
+            <span className="hidden sm:inline text-[9px] font-black uppercase tracking-widest text-[var(--foreground)] opacity-80">
+              {game.isValidationRequired === false ? "Manual" : "Instant"}
+            </span>
           </div>
 
           {/* Secure Badge */}

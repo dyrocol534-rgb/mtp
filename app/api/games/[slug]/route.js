@@ -98,7 +98,7 @@ const OTTS = {
     gameDescription: "Ad-free YouTube, background play, YouTube Music.",
     inputFieldOne: "Email / Phone",
     inputFieldTwoOption: [],
-    isValidationRequired: true,
+    isValidationRequired: false,
     gameAvailablity: true,
     itemId: [
       {
@@ -138,7 +138,7 @@ const OTTS = {
     gameDescription: "Movies & series streaming subscription.",
     inputFieldOne: "Account Email",
     inputFieldTwoOption: [],
-    isValidationRequired: true,
+    isValidationRequired: false,
     gameAvailablity: true,
     itemId: [
       {
@@ -178,7 +178,7 @@ const OTTS = {
     gameDescription: "Followers, likes & engagement services.",
     inputFieldOne: "Username",
     inputFieldTwoOption: [],
-    isValidationRequired: true,
+    isValidationRequired: false,
     gameAvailablity: true,
     itemId: [
       {
@@ -209,6 +209,195 @@ const OTTS = {
   },
 };
 
+/* ================= COC CONFIG ================= */
+const COC_CONFIG = {
+  gameName: "Clash of Clans",
+  gameFrom: "Supercell",
+  gameImageId: {
+    image:
+      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771307213/coc_dqjjc0.png",
+  },
+  gameDescription: "Clash of Clans Top-up (Manual Process). High-speed delivery.",
+  inputFieldOne: "Game ID (Player Tag)",
+  inputFieldTwo: "Mobile Number",
+  isValidationRequired: false,
+  gameAvailablity: true,
+  itemId: [
+    {
+      itemName: "Event Pass (India)",
+      itemSlug: "coc-event-pass-in",
+      sellingPrice: 230,
+      dummyPrice: 299,
+      itemAvailablity: true,
+      index: 1,
+      itemImageId: {
+        image:
+          "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771307213/coc_dqjjc0.png",
+      },
+    },
+    {
+      itemName: "Gold Pass (India)",
+      itemSlug: "coc-gold-pass-in",
+      sellingPrice: 330,
+      dummyPrice: 449,
+      itemAvailablity: true,
+      index: 2,
+      itemImageId: {
+        image:
+          "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771307213/coc_dqjjc0.png",
+      },
+    },
+    {
+      itemName: "Event Pass (Global)",
+      itemSlug: "coc-event-pass-global",
+      sellingPrice: 449,
+      dummyPrice: 549,
+      itemAvailablity: true,
+      index: 3,
+      itemImageId: {
+        image:
+          "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771307213/coc_dqjjc0.png",
+      },
+    },
+    {
+      itemName: "Gold Pass (Global)",
+      itemSlug: "coc-gold-pass-global",
+      sellingPrice: 599,
+      dummyPrice: 749,
+      itemAvailablity: true,
+      index: 4,
+      itemImageId: {
+        image:
+          "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771307213/coc_dqjjc0.png",
+      },
+    },
+  ],
+};
+
+/* ================= STARLIGHT CONFIG ================= */
+const STARLIGHT_CONFIG = {
+  gameName: "Starlight Card",
+  gameFrom: "Moonton",
+  gameImageId: {
+    image:
+      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771308008/starkight_xk7xqv.webp",
+  },
+  gameDescription: "Mobile Legends Starlight Membership (Manual Process).",
+  inputFieldOne: "Player ID (Server ID)",
+  inputFieldTwo: "Mobile Number",
+  isValidationRequired: false,
+  gameAvailablity: true,
+  itemId: [
+    {
+      itemName: "Normal Starlight",
+      itemSlug: "starlight-normal",
+      sellingPrice: 230,
+      dummyPrice: 299,
+      itemAvailablity: true,
+      index: 1,
+      itemImageId: {
+        image:
+          "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771308008/starkight_xk7xqv.webp",
+      },
+    },
+    {
+      itemName: "Premium Starlight",
+      itemSlug: "starlight-premium",
+      sellingPrice: 500,
+      dummyPrice: 599,
+      itemAvailablity: true,
+      index: 2,
+      itemImageId: {
+        image:
+          "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771308008/starkight_xk7xqv.webp",
+      },
+    },
+  ],
+};
+
+/* ================= BGMI CONFIG ================= */
+const BGMI_CONFIG = {
+  gameName: "BGMI",
+  gameFrom: "Krafton",
+  gameImageId: {
+    image:
+      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+  },
+  gameDescription: "Battlegrounds Mobile India (Manual Process). High-speed delivery.",
+  inputFieldOne: "Character ID",
+  inputFieldTwo: "Mobile Number",
+  isValidationRequired: false,
+  gameAvailablity: true,
+  itemId: [
+    {
+      itemName: "60 UC",
+      itemSlug: "bgmi-60-uc",
+      sellingPrice: 72,
+      dummyPrice: 95,
+      itemAvailablity: true,
+      index: 1,
+      itemImageId: {
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+      },
+    },
+    {
+      itemName: "325 UC",
+      itemSlug: "bgmi-325-uc",
+      sellingPrice: 360,
+      dummyPrice: 490,
+      itemAvailablity: true,
+      index: 2,
+      itemImageId: {
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+      },
+    },
+    {
+      itemName: "660 UC",
+      itemSlug: "bgmi-660-uc",
+      sellingPrice: 700,
+      dummyPrice: 980,
+      itemAvailablity: true,
+      index: 3,
+      itemImageId: {
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+      },
+    },
+    {
+      itemName: "1800 UC",
+      itemSlug: "bgmi-1800-uc",
+      sellingPrice: 1760,
+      dummyPrice: 2400,
+      itemAvailablity: true,
+      index: 4,
+      itemImageId: {
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+      },
+    },
+    {
+      itemName: "3850 UC",
+      itemSlug: "bgmi-3850-uc",
+      sellingPrice: 3600,
+      dummyPrice: 4800,
+      itemAvailablity: true,
+      index: 5,
+      itemImageId: {
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+      },
+    },
+    {
+      itemName: "8100 UC",
+      itemSlug: "bgmi-8100-uc",
+      sellingPrice: 7200,
+      dummyPrice: 9400,
+      itemAvailablity: true,
+      index: 6,
+      itemImageId: {
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+      },
+    },
+  ],
+};
+
 /* ================= ROLE → PRICING (FIXED) ================= */
 const resolvePricingRole = (role) => {
   if (["user", "member", "admin"].includes(role)) return role;
@@ -225,6 +414,27 @@ export async function GET(req, { params }) {
       return NextResponse.json({
         success: true,
         data: { gameSlug: slug, ...OTTS[slug] },
+      });
+    }
+
+    if (slug === "coc-manual") {
+      return NextResponse.json({
+        success: true,
+        data: { gameSlug: slug, ...COC_CONFIG },
+      });
+    }
+
+    if (slug === "starlight-card-manual") {
+      return NextResponse.json({
+        success: true,
+        data: { gameSlug: slug, ...STARLIGHT_CONFIG },
+      });
+    }
+
+    if (slug === "bgmi-manual") {
+      return NextResponse.json({
+        success: true,
+        data: { gameSlug: slug, ...BGMI_CONFIG },
       });
     }
 

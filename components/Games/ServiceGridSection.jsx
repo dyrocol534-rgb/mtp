@@ -85,14 +85,20 @@ export default function ServiceGridSection({
                 {/* HOVER GLOW */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-radial-gradient from-[var(--accent)]/20 via-transparent to-transparent pointer-events-none" />
 
-                {/* CATEGORY BADGE */}
-                {showCategory && item.category && (
-                  <div className="absolute top-3 left-3 z-20">
+                {/* CATEGORY & MANUAL BADGES */}
+                <div className="absolute top-3 left-3 right-3 z-20 flex justify-between items-start gap-2">
+                  {showCategory && item.category && (
                     <span className="text-[7px] sm:text-[8px] font-black uppercase tracking-[0.15em] px-2 py-0.5 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-white">
                       {item.category}
                     </span>
-                  </div>
-                )}
+                  )}
+                  {item.isManual && (
+                    <span className="text-[7px] sm:text-[8px] font-black uppercase tracking-[0.15em] px-2 py-0.5 rounded-lg bg-amber-500/80 backdrop-blur-md border border-amber-400/30 text-white shadow-[0_0_10px_rgba(245,158,11,0.3)] flex items-center gap-1">
+                      <FiZap size={8} fill="currentColor" />
+                      Manual
+                    </span>
+                  )}
+                </div>
 
                 {/* VIEW BUTTON (MATCHING GAMECARD) */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 scale-75 group-hover:scale-100">
@@ -116,6 +122,11 @@ export default function ServiceGridSection({
                   <p className="text-[8px] sm:text-[9px] font-bold uppercase tracking-tight text-[var(--muted)]">
                     {ctaText}
                   </p>
+                  {item.isManual && (
+                    <span className="flex-1 text-right text-[7px] font-black text-amber-500 uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
+                      • Manual
+                    </span>
+                  )}
                 </div>
               </div>
 

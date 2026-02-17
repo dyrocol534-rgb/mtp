@@ -6,6 +6,22 @@ import Image from "next/image";
 
 const storyData = [
   {
+    id: 7,
+    title: "Starlight",
+    badge: "Hot",
+    color: "#06b6d4", // Cyan
+    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771308008/starkight_xk7xqv.webp",
+    link: "/games/starlight-card-manual",
+  },
+  {
+    id: 0,
+    title: "Weekly Pass",
+    badge: "Best",
+    color: "#22c55e", // Green
+    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769514968/WhatsApp_Image_2026-01-27_at_17.05.34_1_wwfz3p.jpg",
+    link: "/games/mobile-legends988?type=weekly-pass",
+  },
+  {
     id: 1,
     title: "Weekly Bundle",
     badge: "Hot",
@@ -38,11 +54,11 @@ const storyData = [
   },
   {
     id: 5,
-    title: "PUBG Mobile",
+    title: "BGMI",
     badge: "Sale",
     color: "#f59e0b", // Orange
     image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
-    link: "/games/pubg-mobile138",
+    link: "/games/bgmi-manual",
   },
   {
     id: 6,

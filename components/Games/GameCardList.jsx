@@ -78,12 +78,13 @@ export default function GameCardList({ game, isOutOfStock, index = 0 }) {
 
             {!disabled && game.tagId && (
               <span
-                className="text-[8px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-lg backdrop-blur-md border border-white/5 shadow-xl"
+                className="text-[8px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-lg backdrop-blur-md border border-white/5 shadow-xl flex items-center gap-1.5"
                 style={{
                   background: `${game.tagId.tagBackground}cc`,
                   color: game.tagId.tagColor,
                 }}
               >
+                {game.tagId.tagName === "Manual" && <FiZap size={10} fill="currentColor" />}
                 {game.tagId.tagName}
               </span>
             )}

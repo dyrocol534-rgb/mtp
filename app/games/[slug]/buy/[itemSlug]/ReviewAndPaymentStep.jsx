@@ -7,6 +7,7 @@ import { FiCreditCard, FiSmartphone, FiUser, FiInfo, FiCheck, FiShield } from "r
 import { motion } from "framer-motion";
 
 export default function ReviewAndPaymentStep({
+  game,
   step,
   setStep,
   itemName,
@@ -24,6 +25,10 @@ export default function ReviewAndPaymentStep({
   slug,
   itemSlug,
 }) {
+  const fieldOneLabel = game?.inputFieldOne || "Player ID";
+  const fieldTwoLabel = game?.inputFieldTwo || "Zone ID";
+
+  const isManual = game?.isValidationRequired === false;
   const [upiQR, setUpiQR] = useState("");
   const [isRedirecting, setIsRedirecting] = useState(false);
 
@@ -139,17 +144,17 @@ export default function ReviewAndPaymentStep({
               </h3>
               <div className="space-y-3">
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-[var(--muted)]">Username</p>
+                  <p className="text-[10px] uppercase font-bold text-[var(--muted)]">{isManual ? "Delivery Mode" : "Username"}</p>
                   <p className="font-bold text-[var(--accent)] truncate text-sm">{reviewData.userName}</p>
                 </div>
                 <div className="flex gap-4">
                   <div>
-                    <p className="text-[10px] uppercase font-bold text-[var(--muted)]">Player ID</p>
+                    <p className="text-[10px] uppercase font-bold text-[var(--muted)]">{fieldOneLabel}</p>
                     <p className="font-medium truncate text-sm">{reviewData.playerId}</p>
                   </div>
                   {reviewData.zoneId && (
                     <div>
-                      <p className="text-[10px] uppercase font-bold text-[var(--muted)]">Zone ID</p>
+                      <p className="text-[10px] uppercase font-bold text-[var(--muted)]">{fieldTwoLabel}</p>
                       <p className="font-medium truncate text-sm">{reviewData.zoneId}</p>
                     </div>
                   )}

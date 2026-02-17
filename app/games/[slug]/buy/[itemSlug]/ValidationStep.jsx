@@ -4,6 +4,7 @@ import RecentVerifiedPlayers from "../../../../region/RecentVerifiedPlayers";
 import { motion } from "framer-motion";
 
 export default function ValidationStep({
+  game,
   playerId,
   setPlayerId,
   zoneId,
@@ -13,6 +14,11 @@ export default function ValidationStep({
   error,
   setError,
 }) {
+  const isValidationRequired = game?.isValidationRequired !== false;
+  const fieldOneLabel = game?.inputFieldOne || "Player ID";
+  const fieldTwoLabel = game?.inputFieldTwo || "Zone ID";
+
+  const buttonText = isValidationRequired ? "Check Player" : "Continue Order";
   return (
     <div className="space-y-4">
       {/* Premium Error State */}
@@ -42,7 +48,7 @@ export default function ValidationStep({
       {/* Input Group */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)] ml-1 opacity-60">Player ID</label>
+          <label className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)] ml-1 opacity-60">{fieldOneLabel}</label>
           <div className="relative group">
             <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-[var(--accent)] transition-colors duration-300">
               <FiUser className="text-lg" />
@@ -53,7 +59,7 @@ export default function ValidationStep({
                 setPlayerId(e.target.value);
                 if (error && setError) setError("");
               }}
-              placeholder="12345678"
+              placeholder={`Enter ${fieldOneLabel}`}
               className={`w-full pl-11 pr-4 py-2.5 rounded-xl bg-white/[0.03] border text-sm text-[var(--foreground)] placeholder-[var(--muted)]/40 focus:ring-2 focus:ring-[var(--accent)]/10 outline-none transition-all duration-300 font-bold
                 ${error ? "border-red-500/30 focus:border-red-500" : "border-white/5 focus:border-[var(--accent)]"}
               `}
@@ -63,7 +69,7 @@ export default function ValidationStep({
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)] ml-1 opacity-60">Zone ID</label>
+          <label className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)] ml-1 opacity-60">{fieldTwoLabel}</label>
           <div className="relative group">
             <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-[var(--accent)] transition-colors duration-300">
               <FiGlobe className="text-lg" />
@@ -74,7 +80,7 @@ export default function ValidationStep({
                 setZoneId(e.target.value);
                 if (error && setError) setError("");
               }}
-              placeholder="1234"
+              placeholder={`Enter ${fieldTwoLabel}`}
               className={`w-full pl-11 pr-4 py-2.5 rounded-xl bg-white/[0.03] border text-sm text-[var(--foreground)] placeholder-[var(--muted)]/40 focus:ring-2 focus:ring-[var(--accent)]/10 outline-none transition-all duration-300 font-bold
                 ${error ? "border-red-500/30 focus:border-red-500" : "border-white/5 focus:border-[var(--accent)]"}
               `}
@@ -103,7 +109,7 @@ export default function ValidationStep({
             </span>
           ) : (
             <>
-              Check Player
+              {buttonText}
               <FiCheckCircle className="text-lg" />
             </>
           )}

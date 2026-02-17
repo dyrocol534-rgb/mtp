@@ -27,6 +27,10 @@ const HOK_IMAGE =
 
 const GENSIN_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769530599/WhatsApp_Image_2026-01-27_at_19.17.57_cjsh5f.jpg";
+const COC_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771307213/coc_dqjjc0.png";
+const STARLIGHT_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771308008/starkight_xk7xqv.webp";
 const WEEKLY_MONTHLY_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1769872025/WhatsApp_Image_2026-01-31_at_20.33.31_nzn2ll.jpg";
 
@@ -40,6 +44,7 @@ const OTTS = [
       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/aa_avjoox.jpg",
     category: "OTT",
     available: true,
+    isManual: true,
   },
   {
     name: "Netflix",
@@ -48,6 +53,7 @@ const OTTS = [
       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/s_d5mln0.jpg",
     category: "OTT",
     available: true,
+    isManual: true,
   },
   {
     name: "Instagram Services",
@@ -56,6 +62,7 @@ const OTTS = [
       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/a_jnlvg0.jpg",
     category: "Social",
     available: true,
+    isManual: true,
   },
 ];
 /* ================= MEMBERSHIP SECTION ================= */
@@ -68,6 +75,7 @@ const MEMBERSHIPS = [
     type: "silver",
     category: "Membership",
     available: true,
+    isManual: true,
   },
   {
     name: "Reseller Membership",
@@ -77,6 +85,7 @@ const MEMBERSHIPS = [
     type: "reseller",
     category: "Membership",
     available: true,
+    isManual: true,
   },
 ];
 
@@ -189,6 +198,54 @@ export async function GET() {
           (game: any) => !excludedGameSlugs.includes(game.gameSlug)
         )
         ?.map(normalizeGame) || [];
+
+    // Add COC Manual
+    filteredGames.push({
+      gameName: "Clash of Clans",
+      gameSlug: "coc-manual",
+      gameFrom: "Supercell",
+      gameAvailablity: true,
+      gameImageId: {
+        image: COC_IMAGE,
+      },
+      tagId: {
+        tagName: "Manual",
+        tagBackground: "#f59e0b",
+        tagColor: "#ffffff",
+      },
+    });
+
+    // Add Starlight Card
+    filteredGames.push({
+      gameName: "Starlight Card",
+      gameSlug: "starlight-card-manual",
+      gameFrom: "Moonton",
+      gameAvailablity: true,
+      gameImageId: {
+        image: STARLIGHT_IMAGE,
+      },
+      tagId: {
+        tagName: "Manual",
+        tagBackground: "#f59e0b",
+        tagColor: "#ffffff",
+      },
+    });
+
+    // Add BGMI Manual
+    filteredGames.push({
+      gameName: "BGMI",
+      gameSlug: "bgmi-manual",
+      gameFrom: "Krafton",
+      gameAvailablity: true,
+      gameImageId: {
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+      },
+      tagId: {
+        tagName: "Manual",
+        tagBackground: "#f59e0b",
+        tagColor: "#ffffff",
+      },
+    });
 
     /* ================= FILTER CATEGORY GAMES ================= */
     const filteredCategories =

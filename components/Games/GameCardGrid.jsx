@@ -55,12 +55,13 @@ export default function GameCardGrid({ game, isOutOfStock, index = 0 }) {
           {!disabled && game.tagId && (
             <div className="absolute top-3 left-3 z-20">
               <span
-                className="text-[8px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-lg shadow-2xl backdrop-blur-md border border-white/10"
+                className="text-[8px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-lg shadow-2xl backdrop-blur-md border border-white/10 flex items-center gap-1.5"
                 style={{
                   background: `${game.tagId.tagBackground}cc`,
                   color: game.tagId.tagColor,
                 }}
               >
+                {game.tagId.tagName === "Manual" && <FiZap size={10} fill="currentColor" />}
                 {game.tagId.tagName}
               </span>
             </div>
