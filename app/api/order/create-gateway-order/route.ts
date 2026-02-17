@@ -47,6 +47,25 @@ const OTTS: Record<string, OTTConfig> = {
   },
 };
 
+const MANUAL_GAMES: Record<string, MembershipConfig> = {
+  "starlight-card-manual": {
+    items: {
+      "starlight-normal": 230,
+      "starlight-premium": 500,
+    },
+  },
+  "bgmi-manual": {
+    items: {
+      "bgmi-60-uc": 72,
+      "bgmi-325-uc": 360,
+      "bgmi-660-uc": 700,
+      "bgmi-1800-uc": 1760,
+      "bgmi-3850-uc": 3600,
+      "bgmi-8100-uc": 7200,
+    },
+  },
+};
+
 /* =====================================================
    PRICE RESOLVER
 ===================================================== */
@@ -67,6 +86,13 @@ async function resolvePrice(
   if (OTTS[gameSlug]) {
     const price = OTTS[gameSlug][itemSlug];
     if (!price) throw new Error("Invalid OTT item");
+    return price;
+  }
+
+  // MANUAL GAMES
+  if (MANUAL_GAMES[gameSlug]) {
+    const price = MANUAL_GAMES[gameSlug].items[itemSlug];
+    if (!price) throw new Error("Invalid manual game item");
     return price;
   }
 
