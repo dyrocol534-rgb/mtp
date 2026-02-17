@@ -5,6 +5,7 @@ import GameBannerCarousel from "./GameBannerCarousel";
 import HomeServices from "./HomeServices";
 import TrustHighlights from "./TrustHighlights";
 import TopNoticeBanner from "./TopNoticeBanner";
+import FlashSale from "./FlashSale";
 import ScrollingNoticeBand from "./ScrollingNoticeBand";
 import StorySlider from "./StorySlider";
 import HomeQuickActions from "./HomeQuickActions";
@@ -16,11 +17,13 @@ export default function HeroSection() {
   return (
     <>
       <TopNoticeBanner />
+
       <GameBannerCarousel />
 
       <StorySlider />
 
       <HomeQuickActions />
+      <FlashSale />
       <HomeReferralStats />
 
 
