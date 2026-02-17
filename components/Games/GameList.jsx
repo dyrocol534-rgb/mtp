@@ -8,6 +8,7 @@ export default function GameList({ games, isOutOfStock }) {
       {games.map((game, i) => (
         <GameCardList
           key={i}
+          index={i}
           game={game}
           isOutOfStock={isOutOfStock}
         />

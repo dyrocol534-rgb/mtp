@@ -8,6 +8,7 @@ export default function GameGrid({ games, isOutOfStock }) {
       {games.map((game, i) => (
         <GameCardGrid
           key={i}
+          index={i}
           game={game}
           isOutOfStock={isOutOfStock}
         />

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/public/logo.png";
-import { FiChevronRight, FiEye } from "react-icons/fi";
+import { FiChevronRight, FiEye, FiZap } from "react-icons/fi";
 
 export default function GameCardGrid({ game, isOutOfStock, index = 0 }) {
   const disabled = isOutOfStock(game.gameName);
