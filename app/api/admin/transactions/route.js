@@ -45,19 +45,33 @@ export async function GET(req) {
       ];
     }
 
+    /* ================= STATS ================= */
+    const now = new Date();
+    const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
+    const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const startOfMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
     /* ================= QUERY ================= */
-    const [transactions, total] = await Promise.all([
+    const [transactions, total, count1d, count7d, count30d] = await Promise.all([
       Order.find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean(),
       Order.countDocuments(filter),
+      Order.countDocuments({ ...filter, createdAt: { $gte: startOfDay } }),
+      Order.countDocuments({ ...filter, createdAt: { $gte: startOfWeek } }),
+      Order.countDocuments({ ...filter, createdAt: { $gte: startOfMonth } }),
     ]);
 
     return Response.json({
       success: true,
       data: transactions,
+      stats: {
+        count1d,
+        count7d,
+        count30d,
+      },
       pagination: {
         total,
         page,

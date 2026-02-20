@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
+import WalletTransaction from "@/models/WalletTransaction";
 import jwt from "jsonwebtoken";
 
 export async function GET(req) {
@@ -36,12 +37,24 @@ export async function GET(req) {
             ];
         }
 
-        const [totalBalanceAgg, wallets, totalCount] = await Promise.all([
-            // Sum all user wallets (this is global sum, not affected by pagination/search usually, 
-            // but maybe we want global sum regardless of search? Keeping it global for now)
+        const now = new Date();
+        const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
+
+        const [totalBalanceAgg, todayCreditsAgg, todayDebitsAgg, wallets, totalCount] = await Promise.all([
+            // Sum all user wallets
             User.aggregate([
                 { $match: { wallet: { $gt: 0 } } },
                 { $group: { _id: null, total: { $sum: "$wallet" } } }
+            ]),
+            // Today's Credits (Deposits)
+            WalletTransaction.aggregate([
+                { $match: { createdAt: { $gte: startOfDay }, type: "credit", status: "success" } },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            ]),
+            // Today's Debits (Usage)
+            WalletTransaction.aggregate([
+                { $match: { createdAt: { $gte: startOfDay }, type: "debit", status: "success" } },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
             ]),
             // Paginated wallets
             User.find(query)
@@ -59,6 +72,9 @@ export async function GET(req) {
             success: true,
             data: {
                 totalBalance: totalBalanceAgg[0]?.total || 0,
+                activeWallets: totalCount,
+                todayDeposits: todayCreditsAgg[0]?.total || 0,
+                todayUsage: todayDebitsAgg[0]?.total || 0,
                 wallets: wallets || [],
                 pagination: {
                     total: totalCount,

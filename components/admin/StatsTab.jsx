@@ -26,6 +26,9 @@ export default function StatsTab() {
     // Data state for stats & wallet list
     const [data, setData] = useState({
         totalBalance: 0,
+        activeWallets: 0,
+        todayDeposits: 0,
+        todayUsage: 0,
         wallets: [],
         pagination: { total: 0, page: 1, limit: 10, totalPages: 1 }
     });
@@ -224,30 +227,33 @@ export default function StatsTab() {
                 </div>
             ) : (
                 <>
-                    {/* TOTAL BALANCE CARD */}
-                    <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--accent)]/30 transition-all">
-                        <div className="absolute inset-x-0 top-0 h-1 bg-[var(--accent)] opacity-20 group-hover:opacity-100 transition-opacity" />
-
-                        <div className="flex items-start justify-between mb-4">
-                            <div>
-                                <p className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide">
-                                    Total Wallet Liability
-                                </p>
-                                <p className="text-[10px] text-[var(--muted)]/60 mt-1 max-w-sm">
-                                    The cumulative sum of all user wallet balances currently held across the platform.
-                                </p>
-                            </div>
-                            <div className="p-3 bg-[var(--accent)]/10 rounded-xl text-[var(--accent)]">
-                                <FiCreditCard size={24} />
-                            </div>
-                        </div>
-
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-4xl font-extrabold text-[var(--foreground)] tracking-tight">
-                                {(data.totalBalance || 0).toLocaleString()}
-                            </span>
-                            <span className="text-sm font-medium text-[var(--muted)]">Credits</span>
-                        </div>
+                    {/* STATS GRID */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <InsightCard
+                            label="Wallet Liability"
+                            value={`₹${(data.totalBalance || 0).toLocaleString()}`}
+                            icon={<FiCreditCard size={14} />}
+                            color="blue"
+                        />
+                        <InsightCard
+                            label="Active Wallets"
+                            value={data.activeWallets || 0}
+                            icon={<FiUser size={14} />}
+                            color="amber"
+                        />
+                        <InsightCard
+                            label="Today's Deposits"
+                            value={`₹${(data.todayDeposits || 0).toLocaleString()}`}
+                            icon={<FiArrowUp size={14} />}
+                            color="emerald"
+                            pulse={data.todayDeposits > 0}
+                        />
+                        <InsightCard
+                            label="Today's Usage"
+                            value={`₹${(data.todayUsage || 0).toLocaleString()}`}
+                            icon={<FiArrowDown size={14} />}
+                            color="purple"
+                        />
                     </div>
 
                     {/* MANUAL WALLET ADJUSTMENT */}
@@ -762,6 +768,28 @@ export default function StatsTab() {
                     </div>
                 </>
             )}
+        </div>
+    );
+}
+
+function InsightCard({ label, value, icon, color, pulse }) {
+    const colors = {
+        blue: "text-blue-500 bg-blue-500/5 border-blue-500/10",
+        amber: "text-amber-500 bg-amber-500/5 border-amber-500/10",
+        purple: "text-purple-500 bg-purple-500/5 border-purple-500/10",
+        emerald: "text-emerald-500 bg-emerald-500/5 border-emerald-500/10",
+    };
+
+    return (
+        <div className={`p-4 rounded-2xl border ${colors[color]} flex flex-col gap-2 relative overflow-hidden bg-[var(--card)]`}>
+            {pulse && (
+                <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-current animate-ping" />
+            )}
+            <div className="flex items-center gap-2 opacity-60">
+                {icon}
+                <span className="text-[9px] font-black uppercase tracking-widest">{label}</span>
+            </div>
+            <span className="text-xl font-black tabular-nums">{value}</span>
         </div>
     );
 }

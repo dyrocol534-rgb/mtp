@@ -43,17 +43,28 @@ export async function GET(req) {
       ];
     }
 
-    const total = await SupportQuery.countDocuments(query);
+    /* ================= STATS ================= */
+    const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
 
-    const data = await SupportQuery.find(query)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean();
+    const [data, total, openCount, todayCount] = await Promise.all([
+      SupportQuery.find(query)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      SupportQuery.countDocuments(query),
+      SupportQuery.countDocuments({ status: { $in: ["open", "in_progress"] } }),
+      SupportQuery.countDocuments({ createdAt: { $gte: startOfDay } }),
+    ]);
 
     return Response.json({
       success: true,
       data,
+      stats: {
+        total,
+        open: openCount,
+        today: todayCount,
+      },
       pagination: {
         total,
         page,

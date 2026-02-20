@@ -35,6 +35,12 @@ export default function SupportQueriesTab() {
     totalPages: 1,
   });
 
+  const [stats, setStats] = useState({
+    total: 0,
+    open: 0,
+    today: 0,
+  });
+
   useEffect(() => {
     fetchQueries();
   }, [page, limit, search]);
@@ -53,6 +59,7 @@ export default function SupportQueriesTab() {
       const data = await res.json();
 
       setQueries(data?.data || []);
+      setStats(data?.stats || { total: 0, open: 0, today: 0 });
       setPagination(
         data?.pagination || { total: 0, page: 1, totalPages: 1 }
       );
@@ -140,6 +147,29 @@ export default function SupportQueriesTab() {
             <RefreshCcw size={16} className={loading ? "animate-spin" : ""} />
           </button>
         </div>
+      </div>
+
+      {/* ================= STATS GRID ================= */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <InsightCard
+          label="Total Queries"
+          value={stats.total}
+          icon={<Inbox size={14} />}
+          color="blue"
+        />
+        <InsightCard
+          label="Active Pending"
+          value={stats.open}
+          icon={<AlertCircle size={14} />}
+          color="amber"
+          pulse={stats.open > 0}
+        />
+        <InsightCard
+          label="Received Today"
+          value={stats.today}
+          icon={<MessageSquare size={14} />}
+          color="purple"
+        />
       </div>
 
       {/* ================= SEARCH & FILTER ================= */}
@@ -409,5 +439,31 @@ function DetailBlock({ label, value, emphasize, icon }) {
         {value}
       </p>
     </div>
+  );
+}
+
+function InsightCard({ label, value, icon, color, pulse }) {
+  const colors = {
+    blue: "text-blue-500 bg-blue-500/5 border-blue-500/10",
+    amber: "text-amber-500 bg-amber-500/5 border-amber-500/10",
+    purple: "text-purple-500 bg-purple-500/5 border-purple-500/10",
+    emerald: "text-emerald-500 bg-emerald-500/5 border-emerald-500/10",
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`p-4 rounded-2xl border ${colors[color]} flex flex-col gap-2 relative overflow-hidden bg-[var(--card)]`}
+    >
+      {pulse && (
+        <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-current animate-ping" />
+      )}
+      <div className="flex items-center gap-2 opacity-60">
+        {icon}
+        <span className="text-[9px] font-black uppercase tracking-widest">{label}</span>
+      </div>
+      <span className="text-xl font-black tabular-nums">{value}</span>
+    </motion.div>
   );
 }
