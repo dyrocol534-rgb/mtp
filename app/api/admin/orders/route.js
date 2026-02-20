@@ -75,19 +75,49 @@ export async function GET(req) {
       if (to) filter.createdAt.$lte = new Date(to);
     }
 
+    /* ================= STATS (ORDERS) ================= */
+    const now = new Date();
+    const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
+    const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const startOfMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
     /* ================= QUERY ================= */
-    const [orders, total] = await Promise.all([
+    const [orders, total, rev1dAgg, rev1wAgg, rev1mAgg, todayOrders] = await Promise.all([
       Order.find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean(),
       Order.countDocuments(filter),
+      // Revenue Aggregations
+      Order.aggregate([
+        { $match: { createdAt: { $gte: startOfDay }, status: "success" } },
+        { $group: { _id: null, total: { $sum: "$price" } } }
+      ]),
+      Order.aggregate([
+        { $match: { createdAt: { $gte: startOfWeek }, status: "success" } },
+        { $group: { _id: null, total: { $sum: "$price" } } }
+      ]),
+      Order.aggregate([
+        { $match: { createdAt: { $gte: startOfMonth }, status: "success" } },
+        { $group: { _id: null, total: { $sum: "$price" } } }
+      ]),
+      Order.countDocuments({ createdAt: { $gte: startOfDay } })
     ]);
+
+    const revenue = {
+      day: rev1dAgg[0]?.total || 0,
+      week: rev1wAgg[0]?.total || 0,
+      month: rev1mAgg[0]?.total || 0,
+    };
 
     return Response.json({
       success: true,
       data: orders,
+      orderStats: {
+        revenue,
+        todayCount: todayOrders,
+      },
       pagination: {
         total,
         page,
