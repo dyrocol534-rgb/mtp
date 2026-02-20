@@ -20,7 +20,8 @@ import {
   Users,
   IdCard,
   Crown,
-  Type
+  Type,
+  Activity
 } from "lucide-react";
 
 export default function UsersTab() {
@@ -203,6 +204,7 @@ export default function UsersTab() {
                     <th className="px-6 py-4">Contact</th>
                     <th className="px-6 py-4">Role</th>
                     <th className="px-6 py-4">Joined Date</th>
+                    <th className="px-6 py-4">Last Active</th>
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -239,6 +241,16 @@ export default function UsersTab() {
                       </td>
                       <td className="px-6 py-4 text-xs font-medium text-[var(--muted)]">
                         {new Date(u.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="text-xs font-semibold text-[var(--foreground)]">
+                            {u.lastLogin ? new Date(u.lastLogin).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : "Never"}
+                          </span>
+                          <span className="text-[10px] text-[var(--muted)]/60">
+                            {u.lastLogin ? new Date(u.lastLogin).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : ""}
+                          </span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                         <RoleDropdown
@@ -298,6 +310,12 @@ export default function UsersTab() {
                         <span className="text-xs">{new Date(u.createdAt).toLocaleDateString()}</span>
                       </div>
 
+                      <div className="flex items-center gap-2 text-[var(--accent)]/80">
+                        <Activity size={12} />
+                        <span className="text-xs font-semibold">
+                          {u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : "Never"}
+                        </span>
+                      </div>
                       <RoleDropdown
                         value={u.userType}
                         compact
@@ -400,6 +418,16 @@ export default function UsersTab() {
                 <DrawerSection icon={<Mail size={18} />} title="Contact Details">
                   <DrawerDetail label="Email Address" value={selectedUser.email} />
                   <DrawerDetail label="Phone Number" value={selectedUser.phone || "Not provided"} />
+                </DrawerSection>
+
+                <DrawerSection icon={<Activity size={18} />} title="Activity">
+                  <DrawerDetail
+                    label="Last Logged In"
+                    value={selectedUser.lastLogin
+                      ? `${new Date(selectedUser.lastLogin).toLocaleDateString(undefined, { dateStyle: 'long' })} at ${new Date(selectedUser.lastLogin).toLocaleTimeString()}`
+                      : "No record found"
+                    }
+                  />
                 </DrawerSection>
 
                 <DrawerSection icon={<Shield size={18} />} title="Account Management">

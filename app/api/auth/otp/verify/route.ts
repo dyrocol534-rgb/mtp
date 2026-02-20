@@ -24,6 +24,7 @@ export async function POST(request: Request) {
         // Clear OTP after success
         user.resetOtp = null;
         user.resetOtpExpiry = null;
+        user.lastLogin = new Date();
         await user.save();
 
         const token = jwt.sign(

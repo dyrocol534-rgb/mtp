@@ -62,6 +62,10 @@ export async function POST(request: Request) {
             }
         }
 
+        /* ================= UPDATE LAST LOGIN ================= */
+        foundUser.lastLogin = new Date();
+        await foundUser.save();
+
         // 4. Generate Token
         const token = jwt.sign(
             {

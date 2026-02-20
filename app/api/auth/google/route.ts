@@ -42,6 +42,10 @@ export async function POST(req: Request) {
         order: 0,
         userType: "user",
       });
+    } else {
+      /* ================= UPDATE LAST LOGIN ================= */
+      user.lastLogin = new Date();
+      await user.save();
     }
 
     /* ================= JWT ================= */

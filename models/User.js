@@ -88,6 +88,12 @@ const UserSchema = new mongoose.Schema(
     /* ================= FORGOT PASSWORD ================= */
     resetOtp: String,
     resetOtpExpiry: Date,
+
+    /* ================= TRACKING ================= */
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );

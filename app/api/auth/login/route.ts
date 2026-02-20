@@ -65,6 +65,10 @@ export async function POST(request: Request) {
       );
     }
 
+    /* ================= UPDATE LAST LOGIN ================= */
+    foundUser.lastLogin = new Date();
+    await foundUser.save();
+
     /* ================= JWT GENERATION ================= */
     const token = jwt.sign(
       {

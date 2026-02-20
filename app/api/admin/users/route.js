@@ -57,7 +57,7 @@ export async function GET(req) {
     /* ================= QUERY ================= */
     const [users, total] = await Promise.all([
       User.find(filter, "-password")
-        .sort({ createdAt: -1 })
+        .sort({ lastLogin: -1, createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean(),
