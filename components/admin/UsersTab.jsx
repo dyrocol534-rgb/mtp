@@ -31,14 +31,14 @@ export default function UsersTab() {
   const [updatingUserId, setUpdatingUserId] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeStats, setActiveStats] = useState({
-    last24h: 0,
-    last7d: 0,
-    last30d: 0,
+    day: 0,
+    week: 0,
+    month: 0,
   });
   const [newStats, setNewStats] = useState({
-    last24h: 0,
-    last7d: 0,
-    last30d: 0,
+    day: 0,
+    week: 0,
+    month: 0,
   });
 
   const [page, setPage] = useState(1);
@@ -76,8 +76,8 @@ export default function UsersTab() {
 
       const data = await res.json();
       if (data.success) {
-        setActiveStats(data.activeStats || { last24h: 0, last7d: 0, last30d: 0 });
-        setNewStats(data.newStats || { last24h: 0, last7d: 0, last30d: 0 });
+        setActiveStats(data.activeStats || { day: 0, week: 0, month: 0 });
+        setNewStats(data.newStats || { day: 0, week: 0, month: 0 });
         setPagination(prev => ({ ...prev, total: data.total }));
       }
     } catch (err) {
@@ -196,9 +196,15 @@ export default function UsersTab() {
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Active Users</h4>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            <StatCard label="Today" value={activeStats.last24h} compact />
-            <StatCard label="Week" value={activeStats.last7d} compact />
-            <StatCard label="Month" value={activeStats.last30d} compact />
+            <InsightCard
+              label="24h"
+              value={activeStats.day}
+              compact
+              color="blue"
+              pulse={activeStats.day > 0}
+            />
+            <InsightCard label="7d" value={activeStats.week} compact color="blue" />
+            <InsightCard label="30d" value={activeStats.month} compact color="blue" />
           </div>
         </div>
 
@@ -209,9 +215,9 @@ export default function UsersTab() {
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">New Registered</h4>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            <StatCard label="Today" value={newStats.last24h} compact color="emerald" />
-            <StatCard label="Week" value={newStats.last7d} compact color="emerald" />
-            <StatCard label="Month" value={newStats.last30d} compact color="emerald" />
+            <InsightCard label="24h" value={newStats.day} compact color="emerald" pulse={newStats.day > 0} />
+            <InsightCard label="7d" value={newStats.week} compact color="emerald" />
+            <InsightCard label="30d" value={newStats.month} compact color="emerald" />
           </div>
         </div>
       </div>
@@ -750,10 +756,11 @@ function DrawerDetail({ label, value }) {
   );
 }
 
-function StatCard({ label, value, icon, subtext, compact, color = "blue" }) {
+function InsightCard({ label, value, icon, color, pulse, compact }) {
   const colorClasses = {
     blue: "text-[var(--accent)] border-[var(--accent)]/10 bg-[var(--accent)]/5",
     emerald: "text-emerald-500 border-emerald-500/10 bg-emerald-500/5",
+    amber: "text-amber-500 border-amber-500/10 bg-amber-500/5",
   };
 
   if (compact) {
@@ -761,10 +768,13 @@ function StatCard({ label, value, icon, subtext, compact, color = "blue" }) {
       <motion.div
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`px-4 py-3 rounded-xl border ${colorClasses[color]} flex flex-col items-center justify-center text-center`}
+        className={`px-4 py-3 rounded-xl border ${colorClasses[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
       >
+        {pulse && (
+          <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
+        )}
         <span className="text-[9px] font-bold uppercase tracking-tighter opacity-60 mb-0.5">{label}</span>
-        <span className="text-base font-extrabold tabular-nums">{value}</span>
+        <span className="text-base font-extrabold tabular-nums whitespace-nowrap">{value}</span>
       </motion.div>
     );
   }
@@ -773,15 +783,14 @@ function StatCard({ label, value, icon, subtext, compact, color = "blue" }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex items-start gap-4 shadow-sm"
+      className={`p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex items-start gap-4 shadow-sm ${colorClasses[color]}`}
     >
       <div className="p-3 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)]">
         {icon}
       </div>
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]/60 mb-1">{label}</p>
-        <p className="text-2xl font-extrabold text-[var(--foreground)]">{value}</p>
-        <p className="text-[11px] text-[var(--muted)] mt-0.5">{subtext}</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-1">{label}</p>
+        <p className="text-2xl font-extrabold">{value}</p>
       </div>
     </motion.div>
   );

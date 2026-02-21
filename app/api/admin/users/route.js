@@ -39,14 +39,14 @@ export async function GET(req) {
       success: true,
       total: totalUsers,
       activeStats: {
-        last24h: active24h,
-        last7d: active7d,
-        last30d: active30d,
+        day: active24h,
+        week: active7d,
+        month: active30d,
       },
       newStats: {
-        last24h: new24h,
-        last7d: new7d,
-        last30d: new30d,
+        day: new24h,
+        week: new7d,
+        month: new30d,
       },
     });
   } catch (err) {

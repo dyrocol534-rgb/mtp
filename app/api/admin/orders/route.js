@@ -32,33 +32,46 @@ export async function GET(req) {
 
     /* ================= STATS (ORDERS) ================= */
     const now = new Date();
-    const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
-    const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const startOfMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const last30d = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     /* ================= QUERY ================= */
-    const [rev1dAgg, rev1wAgg, rev1mAgg, todayOrders, totalOrders] = await Promise.all([
-      // Revenue Aggregations
+    const [
+      rev1dAgg, rev7dAgg, rev30dAgg,
+      count1d, count7d, count30d,
+      totalOrders
+    ] = await Promise.all([
+      // Revenue Aggregations (Successful Orders Only)
       Order.aggregate([
-        { $match: { createdAt: { $gte: startOfDay }, status: "success" } },
+        { $match: { createdAt: { $gte: last24h }, status: "success" } },
         { $group: { _id: null, total: { $sum: "$price" } } }
       ]),
       Order.aggregate([
-        { $match: { createdAt: { $gte: startOfWeek }, status: "success" } },
+        { $match: { createdAt: { $gte: last7d }, status: "success" } },
         { $group: { _id: null, total: { $sum: "$price" } } }
       ]),
       Order.aggregate([
-        { $match: { createdAt: { $gte: startOfMonth }, status: "success" } },
+        { $match: { createdAt: { $gte: last30d }, status: "success" } },
         { $group: { _id: null, total: { $sum: "$price" } } }
       ]),
-      Order.countDocuments({ createdAt: { $gte: startOfDay } }),
+      // Order Counts (All Status)
+      Order.countDocuments({ createdAt: { $gte: last24h } }),
+      Order.countDocuments({ createdAt: { $gte: last7d } }),
+      Order.countDocuments({ createdAt: { $gte: last30d } }),
       Order.countDocuments({})
     ]);
 
     const revenue = {
       day: rev1dAgg[0]?.total || 0,
-      week: rev1wAgg[0]?.total || 0,
-      month: rev1mAgg[0]?.total || 0,
+      week: rev7dAgg[0]?.total || 0,
+      month: rev30dAgg[0]?.total || 0,
+    };
+
+    const counts = {
+      day: count1d,
+      week: count7d,
+      month: count30d,
     };
 
     return Response.json({
@@ -66,7 +79,7 @@ export async function GET(req) {
       total: totalOrders,
       orderStats: {
         revenue,
-        todayCount: todayOrders,
+        counts,
       }
     });
 

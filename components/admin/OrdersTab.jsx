@@ -36,7 +36,11 @@ export default function OrdersTab() {
       week: 0,
       month: 0,
     },
-    todayCount: 0
+    counts: {
+      day: 0,
+      week: 0,
+      month: 0,
+    }
   });
 
   const [page, setPage] = useState(1);
@@ -72,7 +76,10 @@ export default function OrdersTab() {
       });
       const data = await res.json();
       if (data.success) {
-        setOrderStats(data.orderStats || { revenue: { day: 0, week: 0, month: 0 }, todayCount: 0 });
+        setOrderStats(data.orderStats || {
+          revenue: { day: 0, week: 0, month: 0 },
+          counts: { day: 0, week: 0, month: 0 }
+        });
         setPagination(prev => ({ ...prev, total: data.total }));
       }
     } catch (err) {
@@ -193,32 +200,63 @@ export default function OrdersTab() {
       </div>
 
       {/* ================= ORDER STATS ================= */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <InsightCard
-          label="Today's Load"
-          value={orderStats.todayCount}
-          icon={<ShoppingBag size={14} />}
-          color="amber"
-          pulse={orderStats.todayCount > 0}
-        />
-        <InsightCard
-          label="24h Revenue"
-          value={`₹${(orderStats.revenue?.day || 0).toLocaleString()}`}
-          icon={<IndianRupee size={14} />}
-          color="emerald"
-        />
-        <InsightCard
-          label="7d Revenue"
-          value={`₹${(orderStats.revenue?.week || 0).toLocaleString()}`}
-          icon={<Calendar size={14} />}
-          color="blue"
-        />
-        <InsightCard
-          label="30d Revenue"
-          value={`₹${(orderStats.revenue?.month || 0).toLocaleString()}`}
-          icon={<Target size={14} />}
-          color="purple"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Order Volume Column */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 px-1">
+            <ShoppingBag size={14} className="text-amber-500" />
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Order Volume</h4>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <InsightCard
+              label="24h"
+              value={orderStats.counts?.day}
+              color="amber"
+              compact
+              pulse={orderStats.counts?.day > 0}
+            />
+            <InsightCard
+              label="7d"
+              value={orderStats.counts?.week}
+              color="amber"
+              compact
+            />
+            <InsightCard
+              label="30d"
+              value={orderStats.counts?.month}
+              color="amber"
+              compact
+            />
+          </div>
+        </div>
+
+        {/* Revenue Snapshot Column */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 px-1">
+            <IndianRupee size={14} className="text-emerald-500" />
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Revenue Snapshot</h4>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <InsightCard
+              label="24h"
+              value={`₹${(orderStats.revenue?.day || 0).toLocaleString()}`}
+              color="emerald"
+              compact
+            />
+            <InsightCard
+              label="7d"
+              value={`₹${(orderStats.revenue?.week || 0).toLocaleString()}`}
+              color="emerald"
+              compact
+            />
+            <InsightCard
+              label="30d"
+              value={`₹${(orderStats.revenue?.month || 0).toLocaleString()}`}
+              color="emerald"
+              compact
+            />
+          </div>
+        </div>
       </div>
 
       {/* ================= FILTERS & SEARCH ================= */}
@@ -664,13 +702,29 @@ function DrawerDetail({ label, value, emphasize }) {
   );
 }
 
-function InsightCard({ label, value, icon, color, pulse }) {
+function InsightCard({ label, value, icon, color, pulse, compact }) {
   const colors = {
-    blue: "text-blue-500 bg-blue-500/5 border-blue-500/10",
-    amber: "text-amber-500 bg-amber-500/5 border-amber-500/10",
-    purple: "text-purple-500 bg-purple-500/5 border-purple-500/10",
-    emerald: "text-emerald-500 bg-emerald-500/5 border-emerald-500/10",
+    blue: "text-blue-500 border-blue-500/10 bg-blue-500/5",
+    amber: "text-amber-500 border-amber-500/10 bg-amber-500/5",
+    purple: "text-purple-500 border-purple-500/10 bg-purple-500/5",
+    emerald: "text-emerald-500 border-emerald-500/10 bg-emerald-500/5",
   };
+
+  if (compact) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`px-4 py-3 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
+      >
+        {pulse && (
+          <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
+        )}
+        <span className="text-[9px] font-bold uppercase tracking-tighter opacity-60 mb-0.5">{label}</span>
+        <span className="text-base font-extrabold tabular-nums whitespace-nowrap">{value}</span>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div

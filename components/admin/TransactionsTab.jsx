@@ -39,9 +39,16 @@ export default function TransactionsTab() {
   });
 
   const [stats, setStats] = useState({
-    count1d: 0,
-    count7d: 0,
-    count30d: 0,
+    counts: {
+      day: 0,
+      week: 0,
+      month: 0,
+    },
+    volume: {
+      day: 0,
+      week: 0,
+      month: 0,
+    }
   });
 
   useEffect(() => {
@@ -60,7 +67,10 @@ export default function TransactionsTab() {
       });
       const data = await res.json();
       if (data.success) {
-        setStats(data.stats || { count1d: 0, count7d: 0, count30d: 0 });
+        setStats(data.stats || {
+          counts: { day: 0, week: 0, month: 0 },
+          volume: { day: 0, week: 0, month: 0 }
+        });
         setPagination(prev => ({ ...prev, total: data.total }));
       }
     } catch (err) {
@@ -146,26 +156,63 @@ export default function TransactionsTab() {
       </div>
 
       {/* ================= STATS ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <InsightCard
-          label="24h Transactions"
-          value={stats.count1d}
-          icon={<Clock size={14} />}
-          color="blue"
-          pulse={stats.count1d > 0}
-        />
-        <InsightCard
-          label="7d Transactions"
-          value={stats.count7d}
-          icon={<Calendar size={14} />}
-          color="purple"
-        />
-        <InsightCard
-          label="30d Transactions"
-          value={stats.count30d}
-          icon={<ShoppingBag size={14} />}
-          color="emerald"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Transaction Volume Column */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 px-1">
+            <Hash size={14} className="text-blue-500" />
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Transaction Volume</h4>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <InsightCard
+              label="24h"
+              value={stats.counts?.day}
+              color="blue"
+              compact
+              pulse={stats.counts?.day > 0}
+            />
+            <InsightCard
+              label="7d"
+              value={stats.counts?.week}
+              color="blue"
+              compact
+            />
+            <InsightCard
+              label="30d"
+              value={stats.counts?.month}
+              color="blue"
+              compact
+            />
+          </div>
+        </div>
+
+        {/* Revenue Snapshot Column */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 px-1">
+            <IndianRupee size={14} className="text-emerald-500" />
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Revenue Snapshot</h4>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <InsightCard
+              label="24h"
+              value={`₹${(stats.volume?.day || 0).toLocaleString()}`}
+              color="emerald"
+              compact
+            />
+            <InsightCard
+              label="7d"
+              value={`₹${(stats.volume?.week || 0).toLocaleString()}`}
+              color="emerald"
+              compact
+            />
+            <InsightCard
+              label="30d"
+              value={`₹${(stats.volume?.month || 0).toLocaleString()}`}
+              color="emerald"
+              compact
+            />
+          </div>
+        </div>
       </div>
 
       {/* ================= SEARCH & FILTER ================= */}
@@ -460,13 +507,29 @@ function DrawerDetail({ label, value, emphasize }) {
   );
 }
 
-function InsightCard({ label, value, icon, color, pulse }) {
+function InsightCard({ label, value, icon, color, pulse, compact }) {
   const colors = {
-    blue: "text-blue-500 bg-blue-500/5 border-blue-500/10",
-    amber: "text-amber-500 bg-amber-500/5 border-amber-500/10",
-    purple: "text-purple-500 bg-purple-500/5 border-purple-500/10",
-    emerald: "text-emerald-500 bg-emerald-500/5 border-emerald-500/10",
+    blue: "text-blue-500 border-blue-500/10 bg-blue-500/5",
+    amber: "text-amber-500 border-amber-500/10 bg-amber-500/5",
+    purple: "text-purple-500 border-purple-500/10 bg-purple-500/5",
+    emerald: "text-emerald-500 border-emerald-500/10 bg-emerald-500/5",
   };
+
+  if (compact) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`px-4 py-3 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
+      >
+        {pulse && (
+          <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
+        )}
+        <span className="text-[9px] font-bold uppercase tracking-tighter opacity-60 mb-0.5">{label}</span>
+        <span className="text-base font-extrabold tabular-nums whitespace-nowrap">{value}</span>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div

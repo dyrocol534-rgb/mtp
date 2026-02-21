@@ -22,9 +22,9 @@ export async function GET(req) {
 
     /* ================= STATS ================= */
     const now = new Date();
-    const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
-    const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const startOfMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const last30d = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     /* ================= BASE FILTER ================= */
     let filter = {
@@ -32,20 +32,45 @@ export async function GET(req) {
     };
 
     /* ================= QUERY ================= */
-    const [totalTx, count1d, count7d, count30d] = await Promise.all([
-      Order.countDocuments(filter),
-      Order.countDocuments({ ...filter, createdAt: { $gte: startOfDay } }),
-      Order.countDocuments({ ...filter, createdAt: { $gte: startOfWeek } }),
-      Order.countDocuments({ ...filter, createdAt: { $gte: startOfMonth } }),
+    const [
+      vol1dAgg, vol7dAgg, vol30dAgg,
+      count1d, count7d, count30d,
+      totalTx
+    ] = await Promise.all([
+      // Volume Aggregations (Successful Transactions Only)
+      Order.aggregate([
+        { $match: { ...filter, createdAt: { $gte: last24h } } },
+        { $group: { _id: null, total: { $sum: "$price" } } }
+      ]),
+      Order.aggregate([
+        { $match: { ...filter, createdAt: { $gte: last7d } } },
+        { $group: { _id: null, total: { $sum: "$price" } } }
+      ]),
+      Order.aggregate([
+        { $match: { ...filter, createdAt: { $gte: last30d } } },
+        { $group: { _id: null, total: { $sum: "$price" } } }
+      ]),
+      // Transaction Counts
+      Order.countDocuments({ ...filter, createdAt: { $gte: last24h } }),
+      Order.countDocuments({ ...filter, createdAt: { $gte: last7d } }),
+      Order.countDocuments({ ...filter, createdAt: { $gte: last30d } }),
+      Order.countDocuments(filter)
     ]);
 
     return Response.json({
       success: true,
       total: totalTx,
       stats: {
-        count1d,
-        count7d,
-        count30d,
+        counts: {
+          day: count1d,
+          week: count7d,
+          month: count30d,
+        },
+        volume: {
+          day: vol1dAgg[0]?.total || 0,
+          week: vol7dAgg[0]?.total || 0,
+          month: vol30dAgg[0]?.total || 0,
+        }
       }
     });
   } catch (err) {
