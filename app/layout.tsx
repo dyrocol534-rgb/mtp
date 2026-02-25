@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 
+export const dynamic = "force-dynamic";
+
 import "./globals.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
@@ -14,7 +16,9 @@ import ChatbotWrapper from "@/components/Layout/ChatbotWrapper";
 import ValentinePopup from "@/components/Seasonal/ValentinePopup";
 import ValentineEffect from "@/components/Seasonal/ValentineEffect";
 import Maintaince from "@/components/Seasonal/Maintaince";
+import MaintenanceWrapper from "@/components/Layout/MaintenanceWrapper";
 import { FEATURE_FLAGS } from "@/lib/featureFlags";
+import { getAppSettings } from "@/lib/settings";
 import BottomNav from "@/components/Layout/BottomNav";
 
 
@@ -56,11 +60,13 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const settings = await getAppSettings();
+
   return (
     <html lang="en" className={poppins.variable}>
 
@@ -81,7 +87,7 @@ export default function RootLayout({
            */}
           {/* <ValentineEffect /> */}
           {/* <ValentinePopup /> */}
-          {FEATURE_FLAGS.MAINTENANCE_MODE && <Maintaince />}
+          <MaintenanceWrapper maintenanceMode={settings.maintenanceMode} />
           <main className="pt-16 pb-24 md:pb-0">{children}</main>
 
 
