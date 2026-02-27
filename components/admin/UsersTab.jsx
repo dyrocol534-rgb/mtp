@@ -51,6 +51,9 @@ export default function UsersTab() {
     to: "",
   });
 
+  const [sortBy, setSortBy] = useState("lastLogin");
+  const [order, setOrder] = useState("desc");
+
   const [showFilters, setShowFilters] = useState(false);
 
   const [pagination, setPagination] = useState({
@@ -65,7 +68,7 @@ export default function UsersTab() {
 
   useEffect(() => {
     fetchUsersList();
-  }, [page, limit, search, filters]);
+  }, [page, limit, search, filters, sortBy, order]);
 
   const fetchUsersStats = async () => {
     try {
@@ -94,6 +97,8 @@ export default function UsersTab() {
         page,
         limit,
         search,
+        sortBy,
+        order,
         ...(filters.userType && { userType: filters.userType }),
         ...(filters.from && { from: filters.from }),
         ...(filters.to && { to: filters.to }),
@@ -114,6 +119,16 @@ export default function UsersTab() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSort = (field) => {
+    if (sortBy === field) {
+      setOrder(order === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setOrder("desc");
+    }
+    setPage(1);
   };
 
   const changeUserRole = async (userId, newUserType) => {
@@ -236,6 +251,30 @@ export default function UsersTab() {
             className="w-full h-11 pl-11 pr-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-sm focus:border-[var(--accent)]/50 outline-none transition-all placeholder:text-[var(--muted)]/40"
           />
         </div>
+        <div className="flex gap-2">
+          <select
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setPage(1);
+            }}
+            className="h-11 px-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-sm font-semibold focus:border-[var(--accent)]/50 outline-none transition-all cursor-pointer"
+          >
+            <option value="lastLogin">Last Active</option>
+            <option value="totalOrders">Order Count</option>
+            <option value="joinDate">Join Date</option>
+            <option value="name">Name</option>
+          </select>
+          <button
+            onClick={() => {
+              setOrder(order === "asc" ? "desc" : "asc");
+              setPage(1);
+            }}
+            className="h-11 px-3 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] flex items-center justify-center hover:bg-[var(--foreground)]/[0.05] transition-all"
+          >
+            <Activity size={16} className={`text-[var(--accent)] transition-transform ${order === "asc" ? "rotate-180" : ""}`} />
+          </button>
+        </div>
         <button
           onClick={() => setShowFilters(true)}
           className="h-11 px-5 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] flex items-center justify-center gap-2.5 hover:bg-[var(--foreground)]/[0.05] transition-all outline-none"
@@ -268,11 +307,20 @@ export default function UsersTab() {
               <table className="w-full text-left text-sm">
                 <thead className="bg-[var(--foreground)]/[0.03] border-b border-[var(--border)] text-[var(--muted)]">
                   <tr className="text-xs font-semibold">
-                    <th className="px-6 py-4">User</th>
+                    <th className="px-6 py-4 cursor-pointer hover:text-[var(--foreground)]" onClick={() => handleSort("name")}>
+                      User {sortBy === "name" && (order === "asc" ? "↑" : "↓")}
+                    </th>
                     <th className="px-6 py-4">Contact</th>
+                    <th className="px-6 py-4 cursor-pointer hover:text-[var(--foreground)]" onClick={() => handleSort("totalOrders")}>
+                      Orders {sortBy === "totalOrders" && (order === "asc" ? "↑" : "↓")}
+                    </th>
                     <th className="px-6 py-4">Role</th>
-                    <th className="px-6 py-4">Joined Date</th>
-                    <th className="px-6 py-4">Last Active</th>
+                    <th className="px-6 py-4 cursor-pointer hover:text-[var(--foreground)]" onClick={() => handleSort("joinDate")}>
+                      Joined Date {sortBy === "joinDate" && (order === "asc" ? "↑" : "↓")}
+                    </th>
+                    <th className="px-6 py-4 cursor-pointer hover:text-[var(--foreground)]" onClick={() => handleSort("lastLogin")}>
+                      Last Active {sortBy === "lastLogin" && (order === "asc" ? "↑" : "↓")}
+                    </th>
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -299,6 +347,12 @@ export default function UsersTab() {
                         <div className="flex flex-col text-[var(--muted)]">
                           <span className="text-[var(--foreground)] font-medium text-xs">{u.email}</span>
                           <span className="text-[11px] mt-0.5">{u.phone || "No phone linked"}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-1.5">
+                          <Activity size={12} className="text-[var(--accent)]" />
+                          <span className="font-bold text-[var(--foreground)]">{u.totalOrders || 0}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -355,10 +409,16 @@ export default function UsersTab() {
                         <p className="text-[10px] text-[var(--muted)]/40 font-mono truncate">{u.userId}</p>
                       </div>
                     </div>
-                    <span className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest ${getRoleClass(u.userType)}`}>
-                      {getRoleIcon(u.userType)}
-                      {u.userType}
-                    </span>
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest ${getRoleClass(u.userType)}`}>
+                        {getRoleIcon(u.userType)}
+                        {u.userType}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--border)] bg-[var(--foreground)]/[0.03] text-[var(--muted)] text-[9px] font-black uppercase tracking-widest">
+                        <Activity size={10} className="text-[var(--accent)]" />
+                        {u.totalOrders || 0} Orders
+                      </span>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 gap-4">
@@ -484,6 +544,7 @@ export default function UsersTab() {
                 <DrawerSection icon={<IdCard size={18} />} title="Basic Information">
                   <DrawerDetail label="Full Name" value={selectedUser.name} />
                   <DrawerDetail label="User ID" value={selectedUser.userId} />
+                  <DrawerDetail label="Total Success Orders" value={selectedUser.totalOrders || 0} />
                   <DrawerDetail label="Member Since" value={new Date(selectedUser.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })} />
                 </DrawerSection>
 

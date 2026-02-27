@@ -30,6 +30,19 @@ export async function GET(req) {
 
         const skip = (page - 1) * limit;
 
+        /* ================= SORTING ================= */
+        const sortBy = searchParams.get("sortBy") || "lastLogin";
+        const order = searchParams.get("order") === "asc" ? 1 : -1;
+
+        const sortMap = {
+            name: { name: order },
+            joinDate: { createdAt: order },
+            lastLogin: { lastLogin: order },
+            totalOrders: { totalOrders: order }
+        };
+
+        const currentSort = sortMap[sortBy] || { lastLogin: -1 };
+
         /* ================= FILTER ================= */
         let filter = {};
 
@@ -39,6 +52,7 @@ export async function GET(req) {
                 { name: { $regex: search, $options: "i" } },
                 { email: { $regex: search, $options: "i" } },
                 { phone: { $regex: search, $options: "i" } },
+                { userId: { $regex: search, $options: "i" } },
             ];
         }
 
@@ -55,12 +69,56 @@ export async function GET(req) {
         }
 
         /* ================= QUERYUS ================= */
+        const pipeline = [
+            { $match: filter },
+            {
+                $lookup: {
+                    from: "orders",
+                    let: {
+                        customId: "$userId",
+                        objectIdStr: { $toString: "$_id" }
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        {
+                                            $or: [
+                                                { $eq: ["$userId", "$$customId"] },
+                                                { $eq: ["$userId", "$$objectIdStr"] }
+                                            ]
+                                        },
+                                        { $in: ["$status", ["success", "SUCCESS"]] }
+                                    ]
+                                }
+                            }
+                        },
+                        { $count: "count" }
+                    ],
+                    as: "orderStats"
+                }
+            },
+            {
+                $addFields: {
+                    totalOrders: { $ifNull: [{ $arrayElemAt: ["$orderStats.count", 0] }, 0] }
+                }
+            },
+            // 🔴 Sort first to ensure pagination works across the "all" results
+            { $sort: currentSort },
+            // 🔵 Paginate after sorting
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $project: {
+                    password: 0,
+                    orderStats: 0
+                }
+            }
+        ];
+
         const [users, total] = await Promise.all([
-            User.find(filter, "-password")
-                .sort({ lastLogin: -1, createdAt: -1 })
-                .skip(skip)
-                .limit(limit)
-                .lean(),
+            User.aggregate(pipeline),
             User.countDocuments(filter),
         ]);
 
