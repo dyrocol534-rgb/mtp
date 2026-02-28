@@ -1,204 +1,50 @@
 import type { SkinItem } from "./types";
+import { zenithSkins } from "./grand/zenith";
+import { transformerSkins } from "./grand/transformer";
+import { starwarSkins } from "./grand/starwar";
+import { soulvesselSkins } from "./grand/soulvessel";
+import { sanrioSkins } from "./grand/sanrio";
+import { saintseiyaSkins } from "./grand/saintseiya";
+import { primeSkins } from "./grand/prime";
+import { neobeastSkins } from "./grand/neobeast";
+import { narutoSkins } from "./grand/naruto";
+import { mistbenderSkins } from "./grand/mistbender";
+import { pandaSkins } from "./grand/panda";
+import { kofSkins } from "./grand/kof";
+import { kishinSkins } from "./grand/kishin";
+import { jjkSkins } from "./grand/jjk";
+import { hxhSkins } from "./grand/hxh";
+import { exorcistSkins } from "./grand/exorcists";
+import { ducatiSkins } from "./grand/ducati";
+import { dawningSkins } from "./grand/dawning";
+import { aspirantsSkins } from "./grand/aspirants";
+import { elevenSkins } from "./grand/eleven";
+import { abyssSkins } from "./grand/abyss";
+import { allstarSkins } from "./grand/allstar";
+import { aotSkins } from "./grand/aot";
 
 export const grandSkins: SkinItem[] = [
-  {
-    id: "grand-kof-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "kof",
-  },
-  {
-    id: "grand-zenith-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "zenith",
-  },
-  {
-    id: "grand-transformer-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "transformer",
-  },
-  {
-    id: "grand-11-11-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "11.11",
-  },
-  {
-    id: "grand-sanrio-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "sanrio",
-  },
-  {
-    id: "grand-panda-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "panda",
-  },
-  {
-    id: "grand-prime-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "prime",
-  },
-  {
-    id: "grand-mistbender-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "mistbender",
-  },
-  {
-    id: "grand-starwar-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "starwar",
-  },
-  {
-    id: "grand-dawning-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "dawning",
-  },
-  {
-    id: "grand-aspirants-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "aspirants",
-  },
-  {
-    id: "grand-aot-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "aot",
-  },
-  {
-    id: "grand-exorcists-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "exorcists",
-  },
-  {
-    id: "grand-naruto-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "naruto",
-  },
-  {
-    id: "grand-saintseiya-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "saintsaiya",
-  },
-  {
-    id: "grand-abyss-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "abyss",
-  },
-  {
-    id: "grand-allstar-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "allstar",
-  },
-  {
-    id: "grand-metrozero-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "metrozero",
-  },
-  {
-    id: "grand-kissin-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "kissin",
-  },
-  {
-    id: "grand-ducati-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "ducati",
-  },
-  {
-    id: "grand-neobeast-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "neobeast",
-  },
-  {
-    id: "grand-soulvessel-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "soulvessel",
-  },
-  {
-    id: "grand-hunter-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "hunter",
-  },
-  {
-    id: "grand-jjs-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "jjs",
-  },
-  {
-    id: "grand-nexussee-1",
-    hero: "name",
-    name: "name",
-    image: "/skins/logo.png",
-    category: "grand",
-    subCategory: "nexussee",
-  },
+  ...zenithSkins,
+  ...transformerSkins,
+  ...starwarSkins,
+  ...soulvesselSkins,
+  ...sanrioSkins,
+  ...saintseiyaSkins,
+  ...primeSkins,
+  ...neobeastSkins,
+  ...narutoSkins,
+  ...mistbenderSkins,
+  ...pandaSkins,
+  ...kofSkins,
+  ...kishinSkins,
+  ...jjkSkins,
+  ...hxhSkins,
+  ...exorcistSkins,
+  ...ducatiSkins,
+  ...dawningSkins,
+  ...aspirantsSkins,
+  ...elevenSkins,
+  ...abyssSkins,
+  ...allstarSkins,
+  ...aotSkins,
 ];
