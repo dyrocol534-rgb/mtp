@@ -26,8 +26,8 @@ export default function GameDetailPage() {
   const [activeItem, setActiveItem] = useState<any>(null);
   const [redirecting, setRedirecting] = useState(false);
   const [viewMode, setViewMode] = useState<"slider" | "grid">("grid");
-const isBGMI =
-  game?.gameName?.toLowerCase() === "pubg mobile";
+  const isBGMI =
+    game?.gameName?.toLowerCase() === "pubg mobile";
 
   /* ================= FETCH GAME ================= */
   useEffect(() => {
@@ -96,16 +96,16 @@ const isBGMI =
       image: item.itemImageId?.image || "",
     });
 
-     const isBGMI =
-    game?.gameName?.toLowerCase() === "pubg mobile";
+    const isBGMI =
+      game?.gameName?.toLowerCase() === "pubg mobile";
 
-  const basePath = isBGMI
-    ? `/games/pubg/${slug}/buy`
-    : `/games/${slug}/buy`;
+    const basePath = isBGMI
+      ? `/games/pubg/${slug}/buy`
+      : `/games/${slug}/buy`;
 
-  router.push(
-    `${basePath}/${item.itemSlug}?${query.toString()}`
-  );
+    router.push(
+      `${basePath}/${item.itemSlug}?${query.toString()}`
+    );
   };
 
   return (
@@ -114,57 +114,59 @@ const isBGMI =
       <GameHeader game={game} />
 
       {/* ================= PACKAGE SELECTOR ================= */}
-    {isBGMI ? (
-  <PackageSelectorBgmi
-    items={items}
-    activeItem={activeItem}
-    setActiveItem={setActiveItem}
-    viewMode={viewMode}
-    setViewMode={setViewMode}
-    sliderRef={sliderRef}
-    buyPanelRef={buyPanelRef}
-    calculateDiscount={calculateDiscount}
-    scrollToItem={scrollToItem}
-  />
-) : (
-  <PackageSelector
-    items={items}
-    activeItem={activeItem}
-    setActiveItem={setActiveItem}
-    viewMode={viewMode}
-    setViewMode={setViewMode}
-    sliderRef={sliderRef}
-    buyPanelRef={buyPanelRef}
-    calculateDiscount={calculateDiscount}
-    scrollToItem={scrollToItem}
-  />
-)}
+      {isBGMI ? (
+        <PackageSelectorBgmi
+          items={items}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          sliderRef={sliderRef}
+          buyPanelRef={buyPanelRef}
+          calculateDiscount={calculateDiscount}
+          scrollToItem={scrollToItem}
+        />
+      ) : (
+        <PackageSelector
+          items={items}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          sliderRef={sliderRef}
+          buyPanelRef={buyPanelRef}
+          calculateDiscount={calculateDiscount}
+          scrollToItem={scrollToItem}
+        />
+      )}
 
 
       {/* ================= BUY PANEL ================= */}
-   {isBGMI ? (
-  <BuyPanelBgmi
-    activeItem={activeItem}
-    redirecting={redirecting}
-    goBuy={goBuy}
-    calculateDiscount={calculateDiscount}
-    buyPanelRef={buyPanelRef}
-  />
-) : (
-  <BuyPanel
-    activeItem={activeItem}
-    redirecting={redirecting}
-    goBuy={goBuy}
-    calculateDiscount={calculateDiscount}
-    buyPanelRef={buyPanelRef}
-  />
-)}
+      {isBGMI ? (
+        <BuyPanelBgmi
+          activeItem={activeItem}
+          gameAvailablity={game.gameAvailablity}
+          redirecting={redirecting}
+          goBuy={goBuy}
+          calculateDiscount={calculateDiscount}
+          buyPanelRef={buyPanelRef}
+        />
+      ) : (
+        <BuyPanel
+          activeItem={activeItem}
+          gameAvailablity={game.gameAvailablity}
+          redirecting={redirecting}
+          goBuy={goBuy}
+          calculateDiscount={calculateDiscount}
+          buyPanelRef={buyPanelRef}
+        />
+      )}
 
       {/* ================= PURCHASE GUIDE ================= */}
       <div className="max-w-6xl mx-auto mt-6">
-<div className="max-w-6xl mx-auto mt-6">
-  {isBGMI ? <div>  </div>: <MLBBPurchaseGuide />}
-</div>      </div>
+        <div className="max-w-6xl mx-auto mt-6">
+          {isBGMI ? <div>  </div> : <MLBBPurchaseGuide />}
+        </div>      </div>
     </section>
   );
 }

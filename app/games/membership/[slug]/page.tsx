@@ -145,6 +145,7 @@ export default function GameDetailPage() {
       {isBGMI ? (
         <BuyPanelBgmi
           activeItem={activeItem}
+          gameAvailablity={game.gameAvailablity}
           redirecting={redirecting}
           goBuy={goBuy}
           calculateDiscount={calculateDiscount}
@@ -153,6 +154,7 @@ export default function GameDetailPage() {
       ) : (
         <BuyPanelBgmi
           activeItem={activeItem}
+          gameAvailablity={game.gameAvailablity}
           redirecting={redirecting}
           goBuy={goBuy}
           calculateDiscount={calculateDiscount}
