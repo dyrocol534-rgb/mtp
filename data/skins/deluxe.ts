@@ -27,6 +27,7 @@ import { mscSkins } from "./deluxe/partone/msc";
 import { lunarfestSkins } from "./deluxe/partone/lunarfest";
 import { anniversarySkins } from "./deluxe/partone/anniversary";
 import { mythicSkins } from "./deluxe/partone/mythic";
+import { epicSkinsPartTwo } from "./deluxe/parttwo/epic";
 
 export const deluxeSkins: SkinItem[] = [
   ...lightbornSkins,
@@ -57,4 +58,5 @@ export const deluxeSkins: SkinItem[] = [
   ...lunarfestSkins,
   ...anniversarySkins,
   ...mythicSkins,
+  ...epicSkinsPartTwo,
 ];
