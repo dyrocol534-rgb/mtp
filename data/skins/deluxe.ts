@@ -19,6 +19,14 @@ import { saberSkins } from "./deluxe/partone/saber";
 import { risingSkins } from "./deluxe/partone/rising";
 import { pacquiaoSkins } from "./deluxe/partone/pacquiao";
 import { neymarSkins } from "./deluxe/partone/neymar";
+import { narutoSkins } from "./deluxe/partone/naruto";
+import { meowSkins } from "./deluxe/partone/meow";
+import { mworldSkins } from "./deluxe/partone/mworld";
+import { mseriesSkins } from "./deluxe/partone/mseries";
+import { mscSkins } from "./deluxe/partone/msc";
+import { lunarfestSkins } from "./deluxe/partone/lunarfest";
+import { anniversarySkins } from "./deluxe/partone/anniversary";
+import { mythicSkins } from "./deluxe/partone/mythic";
 
 export const deluxeSkins: SkinItem[] = [
   ...lightbornSkins,
@@ -41,4 +49,12 @@ export const deluxeSkins: SkinItem[] = [
   ...risingSkins,
   ...pacquiaoSkins,
   ...neymarSkins,
+  ...narutoSkins,
+  ...meowSkins,
+  ...mworldSkins,
+  ...mseriesSkins,
+  ...mscSkins,
+  ...lunarfestSkins,
+  ...anniversarySkins,
+  ...mythicSkins,
 ];
