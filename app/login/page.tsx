@@ -345,10 +345,10 @@ function AuthContent() {
                         <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)]/70">SECURE SHELL v2.0</span>
                       </div>
                       <a
-                        href="tel:+919178521537"
+                        href="tel:+916372305866"
                         className="text-[10px] font-black text-[var(--accent)] uppercase tracking-widest hover:brightness-125 transition-all"
                       >
-                        Help-Desk: +91 9178521537
+                        Help-Desk: +91 6372305866
                       </a>
                       <p className="text-[7px] text-[var(--muted)]/30 uppercase tracking-[0.2em] animate-pulse">
                         System Monitoring Active • Session ID: RT-77

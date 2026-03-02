@@ -22,7 +22,7 @@ import { useUIStore } from "@/store/useUIStore";
 
 /* ================= CONFIG ================= */
 
-const SUPPORT_PHONE = "9178521537";
+const SUPPORT_PHONE = "6372305866";
 const SUPPORT_EMAIL = "tusharkantanayak713@gmail.com";
 
 const QUICK_REPLIES = [

@@ -89,7 +89,7 @@ export default function WhatsAppCommunityPopup() {
                 "
               >
                 <QRCodeCanvas
-                  value="https://wa.me/919178521537?text=Hi%20I%20want%20to%20join%20the%20buyers%20community"
+                  value="https://wa.me/916372305866?text=Hi%20I%20want%20to%20join%20the%20buyers%20community"
                   size={150}
                   level="H"
                 />
@@ -101,7 +101,7 @@ export default function WhatsAppCommunityPopup() {
 
               {/* CTA */}
               <a
-                href="https://wa.me/919178521537"
+                href="https://wa.me/916372305866"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
