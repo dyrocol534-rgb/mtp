@@ -87,8 +87,7 @@ const OTTS = {
     gameName: "YouTube Premium",
     gameFrom: "Google",
     gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/aa_avjoox.jpg",
+      image: "/ott/youtube.webp",
     },
     gameDescription: "Ad-free YouTube, background play, YouTube Music.",
     inputFieldOne: "Email / Phone",
@@ -104,8 +103,7 @@ const OTTS = {
         itemAvailablity: true,
         index: 1,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/aa_avjoox.jpg",
+          image: "/ott/youtube.webp",
         },
       },
     ],
@@ -115,8 +113,7 @@ const OTTS = {
     gameName: "Netflix",
     gameFrom: "Netflix Inc.",
     gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/s_d5mln0.jpg",
+      image: "/ott/netflix.webp",
     },
     gameDescription: "Movies & series streaming subscription.",
     inputFieldOne: "Account Email",
@@ -132,8 +129,7 @@ const OTTS = {
         itemAvailablity: true,
         index: 1,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/s_d5mln0.jpg",
+          image: "/ott/netflix.webp",
         },
       },
     ],
@@ -143,8 +139,7 @@ const OTTS = {
     gameName: "Spotify Premium",
     gameFrom: "Spotify",
     gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771319767/sporytyf_d59bfc.png",
+      image: "/ott/spotify.webp",
     },
     gameDescription: "Premium music streaming subscription.",
     inputFieldOne: "Email / Phone",
@@ -160,8 +155,7 @@ const OTTS = {
         itemAvailablity: true,
         index: 1,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771319767/sporytyf_d59bfc.png",
+          image: "/ott/spotify.webp",
         },
       },
     ],
@@ -169,62 +163,62 @@ const OTTS = {
 };
 
 /* ================= COC CONFIG ================= */
-// const COC_CONFIG = {
-//   gameName: "Clash of Clans",
-//   gameFrom: "Supercell",
-//     image: "/game-assets/coc_logo.png",
-//   gameDescription: "Clash of Clans Top-up (Manual Process). High-speed delivery.",
-//   inputFieldOne: "Game ID (Player Tag)",
-//   inputFieldTwo: "Mobile Number",
-//   isValidationRequired: false,
-//   gameAvailablity: true,
-//   itemId: [
-//     {
-//       itemName: "Event Pass (India)",
-//       itemSlug: "coc-event-pass-in",
-//       sellingPrice: 230,
-//       dummyPrice: 299,
-//       itemAvailablity: true,
-//       index: 1,
-//       itemImageId: {
-//         image: "/game-assets/coc_logo.png",
-//       },
-//     },
-//     {
-//       itemName: "Gold Pass (India)",
-//       itemSlug: "coc-gold-pass-in",
-//       sellingPrice: 330,
-//       dummyPrice: 449,
-//       itemAvailablity: true,
-//       index: 2,
-//       itemImageId: {
-//         image: "/game-assets/coc_logo.png",
-//       },
-//     },
-//     {
-//       itemName: "Event Pass (Global)",
-//       itemSlug: "coc-event-pass-global",
-//       sellingPrice: 449,
-//       dummyPrice: 549,
-//       itemAvailablity: true,
-//       index: 3,
-//       itemImageId: {
-//         image: "/game-assets/coc_logo.png",
-//       },
-//     },
-//     {
-//       itemName: "Gold Pass (Global)",
-//       itemSlug: "coc-gold-pass-global",
-//       sellingPrice: 599,
-//       dummyPrice: 749,
-//       itemAvailablity: true,
-//       index: 4,
-//       itemImageId: {
-//         image: "/game-assets/coc_logo.png",
-//       },
-//     },
-//   ],
-// };
+const COC_CONFIG = {
+  gameName: "Clash of Clans",
+  gameFrom: "Supercell",
+  image: "/game-assets/coc_logo.png",
+  gameDescription: "Clash of Clans Top-up (Manual Process). High-speed delivery.",
+  inputFieldOne: "Game ID (Player Tag)",
+  inputFieldTwo: "Mobile Number",
+  isValidationRequired: false,
+  gameAvailablity: true,
+  itemId: [
+    {
+      itemName: "Event Pass (India)",
+      itemSlug: "coc-event-pass-in",
+      sellingPrice: 230,
+      dummyPrice: 299,
+      itemAvailablity: true,
+      index: 1,
+      itemImageId: {
+        image: "/game-assets/coc_logo.png",
+      },
+    },
+    {
+      itemName: "Gold Pass (India)",
+      itemSlug: "coc-gold-pass-in",
+      sellingPrice: 330,
+      dummyPrice: 449,
+      itemAvailablity: true,
+      index: 2,
+      itemImageId: {
+        image: "/game-assets/coc_logo.png",
+      },
+    },
+    {
+      itemName: "Event Pass (Global)",
+      itemSlug: "coc-event-pass-global",
+      sellingPrice: 449,
+      dummyPrice: 549,
+      itemAvailablity: true,
+      index: 3,
+      itemImageId: {
+        image: "/game-assets/coc_logo.png",
+      },
+    },
+    {
+      itemName: "Gold Pass (Global)",
+      itemSlug: "coc-gold-pass-global",
+      sellingPrice: 599,
+      dummyPrice: 749,
+      itemAvailablity: true,
+      index: 4,
+      itemImageId: {
+        image: "/game-assets/coc_logo.png",
+      },
+    },
+  ],
+};
 
 /* ================= STARLIGHT CONFIG ================= */
 const STARLIGHT_CONFIG = {
@@ -269,8 +263,7 @@ const BGMI_CONFIG = {
   gameName: "BGMI",
   gameFrom: "Krafton",
   gameImageId: {
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+    image: "/game-assets/bgmi.webp",
   },
   gameDescription: "Battlegrounds Mobile India (Manual Process). High-speed delivery.",
   inputFieldOne: "Character ID",
@@ -286,7 +279,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 1,
       itemImageId: {
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+        image: "/game-assets/bgmi.webp",
       },
     },
     {
@@ -297,7 +290,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 2,
       itemImageId: {
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1773030230/bgmi_vwyq0p.webp",
+        image: "/game-assets/bgmi.webp",
       },
     },
     {
@@ -308,7 +301,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 3,
       itemImageId: {
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1773030230/bgmi_vwyq0p.webp",
+        image: "/game-assets/bgmi.webp",
       },
     },
     {
@@ -319,7 +312,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 4,
       itemImageId: {
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1773030230/bgmi_vwyq0p.webp",
+        image: "/game-assets/bgmi.webp",
       },
     },
     {
@@ -330,7 +323,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 5,
       itemImageId: {
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1773030230/bgmi_vwyq0p.webp",
+        image: "/game-assets/bgmi.webp",
       },
     },
     {
@@ -341,7 +334,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 6,
       itemImageId: {
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1773030230/bgmi_vwyq0p.webp",
+        image: "/game-assets/bgmi.webp",
       },
     },
   ],
@@ -366,12 +359,12 @@ export async function GET(req, { params }) {
       });
     }
 
-    // if (slug === "coc-manual") {
-    //   return NextResponse.json({
-    //     success: true,
-    //     data: { gameSlug: slug, ...COC_CONFIG },
-    //   });
-    // }
+    if (slug === "coc-manual") {
+      return NextResponse.json({
+        success: true,
+        data: { gameSlug: slug, ...COC_CONFIG },
+      });
+    }
 
     if (slug === "starlight-card-manual") {
       return NextResponse.json({

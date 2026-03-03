@@ -28,8 +28,7 @@ const OTTS = [
   {
     name: "YouTube Premium",
     slug: "youtube-premium",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/aa_avjoox.jpg",
+    image: "/ott/youtube.webp",
     category: "OTT",
     available: true,
     isManual: true,
@@ -37,8 +36,7 @@ const OTTS = [
   {
     name: "Netflix",
     slug: "netflix",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/s_d5mln0.jpg",
+    image: "/ott/netflix.webp",
     category: "OTT",
     available: true,
     isManual: true,
@@ -46,8 +44,7 @@ const OTTS = [
   {
     name: "Spotify Premium",
     slug: "spotify",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771319767/sporytyf_d59bfc.png",
+    image: "/ott/spotify.webp",
     category: "OTT",
     available: true,
     isManual: true,
@@ -187,21 +184,21 @@ export async function GET() {
         )
         ?.map(normalizeGame) || [];
 
-    // // Add COC Manual
-    // filteredGames.push({
-    //   gameName: "Clash of Clans",
-    //   gameSlug: "coc-manual",
-    //   gameFrom: "Supercell",
-    //   gameAvailablity: true,
-    //   gameImageId: {
-    //     image: COC_IMAGE,
-    //   },
-    //   tagId: {
-    //     tagName: "Manual",
-    //     tagBackground: "#f59e0b",
-    //     tagColor: "#ffffff",
-    //   },
-    // });
+    // Add COC Manual
+    filteredGames.push({
+      gameName: "Clash of Clans",
+      gameSlug: "coc-manual",
+      gameFrom: "Supercell",
+      gameAvailablity: true,
+      gameImageId: {
+        image: COC_IMAGE,
+      },
+      tagId: {
+        tagName: "Manual",
+        tagBackground: "#f59e0b",
+        tagColor: "#ffffff",
+      },
+    });
 
     // Add Starlight Card
     filteredGames.push({
@@ -226,7 +223,7 @@ export async function GET() {
       gameFrom: "Krafton",
       gameAvailablity: true,
       gameImageId: {
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+        image: "/game-assets/bgmi.webp",
       },
       tagId: {
         tagName: "Manual",
