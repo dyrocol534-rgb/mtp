@@ -57,7 +57,7 @@ const storyData = [
     title: "BGMI",
     badge: "Sale",
     color: "#f59e0b", // Orange
-    image: "/game-assets/bgmi.webp",
+    image: "/game-assets/bgmi-logo.webp",
     link: "/games/bgmi-manual",
   },
   {

@@ -279,7 +279,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 1,
       itemImageId: {
-        image: "/game-assets/bgmi.webp",
+        image: "/game-assets/bgmi-logo.webp",
       },
     },
     {
@@ -290,7 +290,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 2,
       itemImageId: {
-        image: "/game-assets/bgmi.webp",
+        image: "/game-assets/bgmi-logo.webp",
       },
     },
     {
@@ -301,7 +301,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 3,
       itemImageId: {
-        image: "/game-assets/bgmi.webp",
+        image: "/game-assets/bgmi-logo.webp",
       },
     },
     {
@@ -312,7 +312,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 4,
       itemImageId: {
-        image: "/game-assets/bgmi.webp",
+        image: "/game-assets/bgmi-logo.webp",
       },
     },
     {
@@ -323,7 +323,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 5,
       itemImageId: {
-        image: "/game-assets/bgmi.webp",
+        image: "/game-assets/bgmi-logo.webp",
       },
     },
     {
@@ -334,7 +334,7 @@ const BGMI_CONFIG = {
       itemAvailablity: true,
       index: 6,
       itemImageId: {
-        image: "/game-assets/bgmi.webp",
+        image: "/game-assets/bgmi-logo.webp",
       },
     },
   ],

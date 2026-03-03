@@ -223,7 +223,7 @@ export async function GET() {
       gameFrom: "Krafton",
       gameAvailablity: true,
       gameImageId: {
-        image: "/game-assets/bgmi.webp",
+        image: "/game-assets/bgmi-logo.webp",
       },
       tagId: {
         tagName: "Manual",
@@ -300,11 +300,11 @@ export async function GET() {
         // regionalGames,
 
         // 🔥 OTT SECTION
-        // otts: {
-        //   title: "OTT Subscriptions",
-        //   items: OTTS.filter((o) => o.available),
-        //   total: OTTS.filter((o) => o.available).length,
-        // },
+        otts: {
+          title: "OTT Subscriptions",
+          items: OTTS.filter((o) => o.available),
+          total: OTTS.filter((o) => o.available).length,
+        },
         // 🔥 MEMBERSHIP SECTION
         memberships: {
           title: "Memberships & Passes",
