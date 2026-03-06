@@ -6,6 +6,11 @@ const AppSettingsSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        mlbbWeeklyProvider: {
+            type: String,
+            enum: ["1game", "smileone"],
+            default: "1game",
+        },
         // We can add more settings here in the future
     },
     { timestamps: true }

@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import User from "@/models/User";
+import { getAppSettings } from "@/lib/settings";
+import { placeSmileOrder } from "@/lib/smileOne";
 
 export async function POST(req: Request) {
   try {
@@ -265,36 +267,60 @@ export async function POST(req: Request) {
     const responses = [];
     let successCount = 0;
 
+    // Fetch App Settings for provider check
+    const settings = await getAppSettings();
+    const useSmileOne = settings.mlbbWeeklyProvider === "smileone";
+
     for (let i = 0; i < multiplier; i++) {
       try {
         console.log(`[fulfillment] Attempt ${i + 1}/${multiplier} | Order: ${orderId} | ID: ${finalOrder.gameSlug}_${baseItemSlug}`);
 
-        const gameResp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api-service/order`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.API_SECRET_KEY!,
-          },
-          body: JSON.stringify({
+        let gameData: any;
+        let isSuccess = false;
+
+        // Check if we should use Smile One for Weekly Pass
+        const isWeeklyPass = finalOrder.gameSlug === "mobile-legends988" && (baseItemSlug.toLowerCase().includes("weekly") || baseItemSlug.includes("pass"));
+
+        if (useSmileOne && isWeeklyPass) {
+          console.log(`[fulfillment] Using SmileOne for Weekly Pass`);
+          const smileResp = await placeSmileOrder({
             playerId: String(finalOrder.playerId),
             zoneId: String(finalOrder.zoneId),
-            productId: `${finalOrder.gameSlug}_${baseItemSlug}`,
-            currency: "USD",
-          }),
-        });
+            gameSlug: finalOrder.gameSlug,
+            itemSlug: baseItemSlug,
+            orderId: multiplier > 1 ? `${orderId}-${i}` : orderId
+          });
+          gameData = smileResp.data;
+          isSuccess = smileResp.success;
+        } else {
+          // Default provider (1game)
+          const gameResp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api-service/order`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": process.env.API_SECRET_KEY!,
+            },
+            body: JSON.stringify({
+              playerId: String(finalOrder.playerId),
+              zoneId: String(finalOrder.zoneId),
+              productId: `${finalOrder.gameSlug}_${baseItemSlug}`,
+              currency: "USD",
+            }),
+          });
 
-        const gameData = await gameResp.json();
+          gameData = await gameResp.json();
+          isSuccess = gameResp.ok &&
+            (gameData?.success === true || gameData?.status === true || gameData?.result?.status === "SUCCESS");
+        }
+
         console.log(`[fulfillment] Response ${i + 1}/${multiplier}:`, JSON.stringify(gameData));
 
         // Remove price from response before pushing
-        if (gameData.data?.price) {
+        if (gameData?.data?.price) {
           delete gameData.data.price;
         }
 
         responses.push(gameData);
-
-        const isSuccess = gameResp.ok &&
-          (gameData?.success === true || gameData?.status === true || gameData?.result?.status === "SUCCESS");
 
         if (isSuccess) {
           successCount++;

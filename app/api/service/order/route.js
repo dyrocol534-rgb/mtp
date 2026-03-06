@@ -5,6 +5,8 @@ import User from "@/models/User";
 import ApiKey from "@/models/ApiKey";
 import { validateApiKey } from "@/lib/apiKeyAuth";
 import { calculateItemPrice } from "@/lib/pricingUtils";
+import { getAppSettings } from "@/lib/settings";
+import { placeSmileOrder } from "@/lib/smileOne";
 
 export async function POST(req) {
     try {
@@ -18,6 +20,39 @@ export async function POST(req) {
 
         if (!gameSlug || !itemSlug || !playerId) {
             return NextResponse.json({ success: false, message: "Missing required fields (gameSlug, itemSlug, playerId)" }, { status: 400 });
+        }
+
+        // ⚡ REGION RESTRICTION CHECK for mobile-legends988
+        if (gameSlug === "mobile-legends988") {
+            try {
+                const regionCheckResp = await fetch("https://game-off-ten.vercel.app/api/v1/check-region", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": process.env.API_SECRET_KEY,
+                    },
+                    body: JSON.stringify({ id: playerId, zone: zoneId }),
+                });
+
+                const regionData = await regionCheckResp.json();
+                const playerRegion = regionData?.data?.region?.toUpperCase();
+                const restrictedRegions = ["INDO", "ID", "PH", "SG", "RU", "MY", "MM"];
+
+                if (restrictedRegions.includes(playerRegion)) {
+                    return NextResponse.json({
+                        success: false,
+                        message: `Orders from ${playerRegion} region are not allowed for this product.`
+                    }, { status: 400 });
+                }
+            } catch (regionErr) {
+                console.error("Region check failed during order:", regionErr);
+                // We proceed if the validator is down, or we could block it?
+                // Given the requirement "dont allow", we might want to block if we can't verify,
+                // but usually, it's safer to proceed if the validation service itself is down,
+                // UNLESS the user wants strict enforcement.
+                // For now, we proceed to avoid blocking orders due to 3rd party issues,
+                // but we might want to change this if strictness is preferred.
+            }
         }
 
         await connectDB();
@@ -97,26 +132,45 @@ export async function POST(req) {
             await newOrder.save();
 
             // 2. Call external fulfillment service
-            const gameResp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api-service/order`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-api-key": process.env.API_SECRET_KEY,
-                },
-                body: JSON.stringify({
+            const settings = await getAppSettings();
+            const useSmileOne = settings.mlbbWeeklyProvider === "smileone";
+            const isWeeklyPass = gameSlug === "mobile-legends988" && (itemSlug.toLowerCase().includes("weekly") || itemSlug.includes("pass"));
+
+            let gameData;
+            let isSuccess = false;
+
+            if (useSmileOne && isWeeklyPass) {
+                console.log(`[Service API] Using SmileOne for Weekly Pass`);
+                const smileResp = await placeSmileOrder({
                     playerId: String(playerId),
                     zoneId: String(zoneId || ""),
-                    productId: `${gameSlug}_${itemSlug}`,
-                    currency: "USD",
-                }),
-            });
+                    gameSlug: gameSlug,
+                    itemSlug: itemSlug,
+                    orderId: orderId
+                });
+                gameData = smileResp.data;
+                isSuccess = smileResp.success;
+            } else {
+                const gameResp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api-service/order`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": process.env.API_SECRET_KEY,
+                    },
+                    body: JSON.stringify({
+                        playerId: String(playerId),
+                        zoneId: String(zoneId || ""),
+                        productId: `${gameSlug}_${itemSlug}`,
+                        currency: "USD",
+                    }),
+                });
 
-            const gameData = await gameResp.json();
+                gameData = await gameResp.json();
+                isSuccess = gameResp.ok &&
+                    (gameData?.success === true || gameData?.status === true || gameData?.result?.status === "SUCCESS");
+            }
 
             // 3. Update Order based on response
-            const isSuccess = gameResp.ok &&
-                (gameData?.success === true || gameData?.status === true || gameData?.result?.status === "SUCCESS");
-
             if (isSuccess) {
                 newOrder.status = "success";
                 newOrder.topupStatus = "success";

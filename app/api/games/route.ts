@@ -122,6 +122,7 @@ export async function GET() {
         };
       }
       if (updatedGame.gameName === "SG/MY Mlbb") {
+        updatedGame.gameName = "MLBB All Region";
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_MY_IMAGE,
@@ -134,6 +135,7 @@ export async function GET() {
         };
       }
       if (updatedGame.gameName === "MLBB INDO") {
+        updatedGame.gameName = "MLBB INDONESIA";
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_INDO_IMAGE,

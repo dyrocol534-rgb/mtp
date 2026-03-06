@@ -23,7 +23,7 @@ export async function GET(req) {
         await connectDB();
         const user = await getUser(req);
 
-        if (!user || (user.userType !== "member" && user.userType !== "owner")) {
+        if (!user) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 

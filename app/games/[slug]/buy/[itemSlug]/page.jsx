@@ -127,6 +127,16 @@ function BuyFlowContent() {
         data?.data &&
         (data?.data?.username || data?.data?.region)
       ) {
+        // Filter restricted regions for mobile-legends988
+        const restrictedRegions = ["INDO", "ID", "PH", "SG", "RU", "MY", "MM"];
+        const playerRegion = data.data.region?.toUpperCase();
+
+        if (slug === "mobile-legends988" && restrictedRegions.includes(playerRegion)) {
+          setError(`Orders from ${playerRegion} region are not allowed for this product.`);
+          setLoading(false);
+          return;
+        }
+
         saveVerifiedPlayer({
           playerId,
           zoneId,

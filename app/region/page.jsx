@@ -6,6 +6,7 @@ import { Loader2, User, MapPin, CheckCircle, XCircle } from "lucide-react";
 import { saveVerifiedPlayer } from "@/utils/storage/verifiedPlayerStorage";
 import RecentVerifiedPlayers from "./RecentVerifiedPlayers";
 import { FiTarget, FiBox, FiUser, FiCheckCircle } from "react-icons/fi";
+import { formatRegion } from "@/utils/regionFormatter";
 
 export default function RegionPage() {
   const [id, setId] = useState("");
@@ -150,8 +151,7 @@ export default function RegionPage() {
                         {result.data?.username}
                       </h2>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-black uppercase text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">{result.data?.region}</span>
-                        <span className="text-[10px] font-bold uppercase text-[var(--muted)] opacity-40">Active Instance</span>
+                        <span className="text-[10px] font-black uppercase text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">{formatRegion(result.data?.region)}</span>
                       </div>
                     </div>
                   </div>

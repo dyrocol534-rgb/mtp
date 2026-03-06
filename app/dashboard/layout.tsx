@@ -3,7 +3,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { motion } from "framer-motion";
 import AuthGuard from "../../components/AuthGuard";
-import { FiZap, FiInbox, FiHelpCircle, FiZap as FiZapIcon, FiUser, FiCreditCard, FiUsers, FiKey } from "react-icons/fi";
+import { FiZap, FiInbox, FiHelpCircle, FiZap as FiZapIcon, FiUser, FiCreditCard, FiUsers, FiKey, FiGift } from "react-icons/fi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import DashboardCard from "../../components/Dashboard/DashboardCard";
@@ -101,13 +101,12 @@ export default function DashboardLayout({
         { key: "orders", label: "Operations", value: "Orders", icon: FiInbox, href: "/dashboard/orders" },
         { key: "support", label: "Protocol", value: "Support", icon: FiHelpCircle, href: "/dashboard/support" },
         { key: "wallet", label: "Credits", value: "Wallet", icon: FiCreditCard, href: "/dashboard/wallet" },
+        { key: "redeem", label: "Gift Card", value: "Redeem", icon: FiGift, href: "/dashboard/redeem" },
         { key: "referral", label: "Network", value: "Referral", icon: FiUsers, href: "/dashboard/referral" },
         // { key: "account", label: "Identity", value: "Profile", icon: FiUser, href: "/dashboard/account" },
     ];
 
-    if (userDetails.userType === "member" || userDetails.userType === "owner") {
-        tabCards.push({ key: "api-keys", label: "Access", value: "API Keys", icon: FiKey, href: "/dashboard/api-keys" });
-    }
+    tabCards.push({ key: "api-keys", label: "Access", value: "API Keys", icon: FiKey, href: "/dashboard/api-keys" });
 
     return (
         <AuthGuard>

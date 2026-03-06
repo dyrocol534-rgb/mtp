@@ -17,6 +17,7 @@ import SupportQueriesTab from "@/components/admin/SupportQueriesTab";
 import BannersTab from "@/components/admin/BannersTab";
 import StatsTab from "@/components/admin/StatsTab";
 import SettingsTab from "@/components/admin/SettingsTab";
+import RedeemCodesTab from "@/components/admin/RedeemCodesTab";
 
 
 export default function AdminPanalPage() {
@@ -235,9 +236,8 @@ export default function AdminPanalPage() {
           </div>
 
 
-          {/* TABS */}
           <div className="mb-5 flex flex-wrap gap-2">
-            {["wallet", "users", "orders", "transactions", "queries", "pricing", "banners", "settings"].map(
+            {["wallet", "redeem", "users", "orders", "transactions", "queries", "pricing", "banners", "settings"].map(
               (tab) => {
                 const isActive = activeTab === tab;
 
@@ -295,6 +295,7 @@ export default function AdminPanalPage() {
           {/* PANEL */}
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6">
             {activeTab === "wallet" && <StatsTab />}
+            {activeTab === "redeem" && <RedeemCodesTab />}
             {activeTab === "users" && (
               <UsersTab
 

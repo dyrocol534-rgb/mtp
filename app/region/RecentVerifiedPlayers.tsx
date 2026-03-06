@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiShield, FiArrowRight, FiClock, FiRotateCcw } from "react-icons/fi";
 import { getVerifiedPlayers } from "@/utils/storage/verifiedPlayerStorage";
+import { formatRegion } from "@/utils/regionFormatter";
 
 function timeAgo(ts?: number) {
   if (!ts) return "";
@@ -81,7 +82,7 @@ export default function RecentVerifiedPlayers({
 
               <div className="text-right flex-shrink-0">
                 <span className="block text-[8px] font-black text-[var(--accent)] tracking-widest uppercase italic mb-0.5">
-                  {p.region || "N/A"}
+                  {formatRegion(p.region)}
                 </span>
                 {p.savedAt && (
                   <div className="flex items-center justify-end gap-1 text-[7px] font-bold text-[var(--muted)] opacity-30 uppercase">

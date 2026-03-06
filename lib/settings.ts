@@ -8,12 +8,15 @@ export const getAppSettings = unstable_cache(
             await connectDB();
             const settings = await AppSettings.findOne({}).lean();
             if (!settings) {
-                return { maintenanceMode: false };
+                return { maintenanceMode: false, mlbbWeeklyProvider: "1game" };
             }
-            return { maintenanceMode: !!settings.maintenanceMode };
+            return {
+                maintenanceMode: !!settings.maintenanceMode,
+                mlbbWeeklyProvider: settings.mlbbWeeklyProvider || "1game"
+            };
         } catch (error) {
             console.error("Error fetching app settings:", error);
-            return { maintenanceMode: false };
+            return { maintenanceMode: false, mlbbWeeklyProvider: "1game" };
         }
     },
     ["app-settings"],

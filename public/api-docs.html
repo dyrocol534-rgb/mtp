@@ -351,9 +351,10 @@
         <div class="warn-box">
             <strong>3-Layer Protection:</strong>
             <ul style="margin:8px 0 0;padding-left:20px;line-height:2;">
-                <li><strong>IP Whitelisting</strong> — Restrict your key to specific server IPs via the Dashboard.
+                <li><strong>IP Whitelisting (Optional)</strong> — Restrict your key to specific server IPs via the
+                    Dashboard.
                     Requests from other IPs are instantly rejected.</li>
-                <li><strong>Daily Spend Limit</strong> — Automated daily cap (default ₹25,000). Resets every midnight.
+                <li><strong>Daily Spend Limit</strong> — Automated daily cap (default ₹10,000). Resets every midnight.
                 </li>
                 <li><strong>Rate Limiting</strong> — 2-second cooldown between requests to prevent loops.</li>
             </ul>
@@ -387,7 +388,7 @@
   },
   <span class="key">"apiKey"</span>: {
     <span class="key">"name"</span>: <span class="str">"My Website"</span>,
-    <span class="key">"dailyLimit"</span>: <span class="num">25000</span>,
+    <span class="key">"dailyLimit"</span>: <span class="num">10000</span>,
     <span class="key">"usedToday"</span>: <span class="num">150</span>
   }
 }</pre>
@@ -613,6 +614,12 @@
                         <td>401</td>
                         <td>IP not whitelisted</td>
                         <td>Add your server IP to the Allowed IPs list in the Dashboard.</td>
+                    </tr>
+                    <tr>
+                        <td>403</td>
+                        <td>Region Restricted</td>
+                        <td>Product is unavailable for the user's specific region (e.g., MLBB restricted in Indo, PH,
+                            SG, etc.).</td>
                     </tr>
                     <tr>
                         <td>403</td>

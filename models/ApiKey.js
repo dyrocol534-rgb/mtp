@@ -41,7 +41,7 @@ const ApiKeySchema = new mongoose.Schema(
         },
         dailyLimit: {
             type: Number,
-            default: 25000, // Default 25k limit per day for safety
+            default: 10000, // Default 10k limit per day for safety
         },
         usedToday: {
             type: Number,

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
-import { FiChevronRight, FiLogOut, FiCheckCircle, FiShield, FiZap, FiMenu, FiX, FiLayers, FiCompass, FiGrid, FiShoppingBag, FiMessageSquare, FiUser, FiBell, FiUsers } from "react-icons/fi";
+import { FiChevronRight, FiLogOut, FiCheckCircle, FiShield, FiZap, FiMenu, FiX, FiLayers, FiCompass, FiGrid, FiShoppingBag, FiMessageSquare, FiUser, FiBell, FiUsers, FiKey, FiGift } from "react-icons/fi";
 
 /* ================= CONFIG ================= */
 const HEADER_CONFIG = {
@@ -25,7 +25,9 @@ const HEADER_CONFIG = {
     common: [
       { label: "My Orders", href: "/dashboard/orders", icon: <FiShoppingBag size={14} />, desc: "Track your top-ups" },
       { label: "My Wallet", href: "/dashboard/wallet", icon: <FiLayers size={14} />, desc: "Balance & Recharge" },
+      { label: "Redeem Code", href: "/dashboard/redeem", icon: <FiGift size={14} />, desc: "Claim gift credits" },
       { label: "Refer & Earn", href: "/dashboard/referral", icon: <FiUsers size={14} />, desc: "Earn rewards" },
+      { label: "API Setup", href: "/dashboard/api-keys", icon: <FiKey size={14} />, desc: "Developer API Access" },
       { label: "Membership", href: "/admin-panal", icon: <FiShield size={14} />, desc: "Elite Tier" },
       { label: "Support", href: "/dashboard/support", icon: <FiMessageSquare size={14} />, desc: "Get help 24/7" },
     ],
@@ -360,34 +362,28 @@ export default function Header() {
                         </div>
                       ) : (
                         <>
-                          <div className="space-y-3">
-                            <p className="px-1 text-[9px] font-bold text-[var(--muted)] uppercase tracking-[0.2em] opacity-40">Tactical Grid</p>
-                            <div className="grid grid-cols-2 gap-2.5">
-                              {HEADER_CONFIG.nav.map((item) => (
-                                <Link key={item.label} href={item.href} onClick={() => setUserMenuOpen(false)} className="flex flex-col items-center justify-center p-4 rounded-[1.2rem] bg-[var(--foreground)]/[0.03] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition-all group">
-                                  <span className="text-[var(--accent)] group-hover:text-white mb-1.5">{item.icon}</span>
-                                  <span className="text-[10px] font-bold">{item.label}</span>
-                                </Link>
-                              ))}
-                            </div>
+                          <div className="grid grid-cols-2 gap-2.5 mb-6">
+                            {HEADER_CONFIG.nav.map((item) => (
+                              <Link key={item.label} href={item.href} onClick={() => setUserMenuOpen(false)} className="flex flex-col items-center justify-center p-2.5 rounded-[1.2rem] bg-[var(--foreground)]/[0.03] border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition-all group">
+                                <span className="text-[var(--accent)] group-hover:text-white mb-1">{item.icon}</span>
+                                <span className="text-[10px] font-bold">{item.label}</span>
+                              </Link>
+                            ))}
                           </div>
 
-                          <div className="space-y-2">
-                            <p className="px-1 text-[9px] font-bold text-[var(--muted)] uppercase tracking-[0.2em] opacity-40">Navigation</p>
-                            <div className="space-y-1.5">
-                              {HEADER_CONFIG.userMenu.common.map((item) => (
-                                <Link key={item.label} href={item.href} onClick={() => setUserMenuOpen(false)} className="flex items-center justify-between p-3 rounded-xl bg-[var(--foreground)]/[0.02] border border-transparent hover:border-[var(--accent)]/10 hover:bg-[var(--accent)]/5 transition-all group">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[var(--foreground)]/5 flex items-center justify-center text-[var(--muted)] group-hover:text-[var(--accent)] transition-all">{item.icon}</div>
-                                    <div className="flex flex-col">
-                                      <p className="text-xs font-bold text-[var(--foreground)] leading-tight">{item.label}</p>
-                                      <p className="text-[9px] text-[var(--muted)]">{item.desc}</p>
-                                    </div>
+                          <div className="space-y-1.5">
+                            {HEADER_CONFIG.userMenu.common.map((item) => (
+                              <Link key={item.label} href={item.href} onClick={() => setUserMenuOpen(false)} className="flex items-center justify-between p-3 rounded-xl bg-[var(--foreground)]/[0.02] border border-transparent hover:border-[var(--accent)]/10 hover:bg-[var(--accent)]/5 transition-all group">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-lg bg-[var(--foreground)]/5 flex items-center justify-center text-[var(--muted)] group-hover:text-[var(--accent)] transition-all">{item.icon}</div>
+                                  <div className="flex flex-col">
+                                    <p className="text-xs font-bold text-[var(--foreground)] leading-tight">{item.label}</p>
+                                    <p className="text-[9px] text-[var(--muted)]">{item.desc}</p>
                                   </div>
-                                  <FiChevronRight className="text-[var(--muted)] opacity-20 group-hover:text-[var(--accent)] group-hover:translate-x-1 transition-all" />
-                                </Link>
-                              ))}
-                            </div>
+                                </div>
+                                <FiChevronRight className="text-[var(--muted)] opacity-20 group-hover:text-[var(--accent)] group-hover:translate-x-1 transition-all" />
+                              </Link>
+                            ))}
                           </div>
 
                           {user?.userType === "owner" && (

@@ -7,6 +7,7 @@ import {
     FiAlertCircle, FiRefreshCw, FiShield, FiGlobe,
     FiEdit2, FiSave, FiX, FiBarChart, FiMapPin
 } from "react-icons/fi";
+import Link from "next/link";
 import { useUser } from "../layout";
 
 interface ApiKey {
@@ -66,6 +67,12 @@ export default function ApiKeysPage() {
     const handleCreateKey = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newKeyName.trim()) return;
+
+        if (userDetails.userType !== "member" && userDetails.userType !== "owner") {
+            setError("Only members can generate API keys.");
+            setIsCreating(false);
+            return;
+        }
 
         setIsCreating(true);
         setError(null);
@@ -176,24 +183,12 @@ export default function ApiKeysPage() {
         setEditingId(key._id);
         setEditValues({
             name: key.name,
-            dailyLimit: key.dailyLimit || 25000,
+            dailyLimit: key.dailyLimit || 10000,
             allowedIpString: (key.allowedIps || []).join(', ')
         });
     };
 
-    if (userDetails.userType !== "member" && userDetails.userType !== "owner") {
-        return (
-            <div className="flex flex-col items-center justify-center h-[400px] text-center space-y-4">
-                <div className="p-4 rounded-full bg-red-500/10 border border-red-500/20">
-                    <FiLock className="text-red-500" size={32} />
-                </div>
-                <h2 className="text-2xl font-black italic uppercase">Access Denied</h2>
-                <p className="text-[var(--muted)] max-w-sm">
-                    API Management is only available for mlbbtopup.in Members and Owners.
-                </p>
-            </div>
-        );
-    }
+
 
     return (
         <div className="space-y-8">
@@ -204,26 +199,37 @@ export default function ApiKeysPage() {
                         {keys.length >= 2 ? "Maximum limit (2) reached" : "Secure server-to-server endpoints for your business"}
                     </p>
                 </div>
-                {keys.length < 2 && (
-                    <form onSubmit={handleCreateKey} className="flex gap-2">
-                        <input
-                            type="text"
-                            placeholder="Key Label (e.g. My Website)"
-                            value={newKeyName}
-                            onChange={(e) => setNewKeyName(e.target.value)}
-                            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 focus:border-[var(--accent)] outline-none transition-all text-sm w-full md:w-64"
-                            disabled={isCreating}
-                        />
-                        <button
-                            type="submit"
-                            disabled={isCreating || !newKeyName.trim()}
-                            className="px-4 py-2 rounded-xl bg-[var(--accent)] text-black font-black italic uppercase text-xs flex items-center gap-2 hover:scale-105 transition-all disabled:opacity-50"
-                        >
-                            {isCreating ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : <FiPlus />}
-                            Create Key
-                        </button>
-                    </form>
-                )}
+                <div className="flex gap-2">
+                    {keys.length < 2 && (
+                        (userDetails.userType === "member" || userDetails.userType === "owner") ? (
+                            <form onSubmit={handleCreateKey} className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Key Label (e.g. My Website)"
+                                    value={newKeyName}
+                                    onChange={(e) => setNewKeyName(e.target.value)}
+                                    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 focus:border-[var(--accent)] outline-none transition-all text-sm w-full md:w-64"
+                                    disabled={isCreating}
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={isCreating || !newKeyName.trim()}
+                                    className="px-4 py-2 rounded-xl bg-[var(--accent)] text-black font-black italic uppercase text-xs flex items-center gap-2 hover:scale-105 transition-all disabled:opacity-50"
+                                >
+                                    {isCreating ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : <FiPlus />}
+                                    Create Key
+                                </button>
+                            </form>
+                        ) : (
+                            <Link
+                                href="/dashboard/support"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase italic hover:bg-amber-500/20 transition-all"
+                            >
+                                <FiLock /> Only Member Feature - Contact Support
+                            </Link>
+                        )
+                    )}
+                </div>
             </div>
 
             {error && (
@@ -298,6 +304,12 @@ export default function ApiKeysPage() {
                                                         <h3 className="font-black italic uppercase text-base leading-none mb-1">{key.name}</h3>
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-[10px] bg-black/40 px-2 py-0.5 rounded font-mono text-white/40">TK_****{key.lastFour}</span>
+                                                            <button
+                                                                onClick={() => alert("For security, full API keys are only shown once during creation. If you've lost your key, please use the 'Regenerate' option to get a new one.")}
+                                                                className="text-[8px] font-black uppercase text-[var(--accent)] hover:underline"
+                                                            >
+                                                                Show Full Key?
+                                                            </button>
                                                             {key.allowedIps?.length > 0 && (
                                                                 <span className="text-[8px] bg-[var(--accent)] text-black font-black uppercase px-1.5 rounded-sm">IP Locked</span>
                                                             )}
@@ -319,13 +331,13 @@ export default function ApiKeysPage() {
                                             <div className="space-y-1.5 pt-2">
                                                 <div className="flex justify-between text-[10px] font-black uppercase italic">
                                                     <span className="text-white/40 flex items-center gap-1"><FiBarChart /> Daily Budget</span>
-                                                    <span className="text-[var(--accent)]">₹{key.usedToday || 0} / ₹{key.dailyLimit || 25000}</span>
+                                                    <span className="text-[var(--accent)]">₹{key.usedToday || 0} / ₹{key.dailyLimit || 10000}</span>
                                                 </div>
                                                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                                     <motion.div
                                                         initial={{ width: 0 }}
-                                                        animate={{ width: `${Math.min(((key.usedToday || 0) / (key.dailyLimit || 25000)) * 100, 100)}%` }}
-                                                        className={`h-full rounded-full ${(key.usedToday || 0) > (key.dailyLimit || 25000) * 0.8 ? 'bg-red-500' : 'bg-[var(--accent)]'}`}
+                                                        animate={{ width: `${Math.min(((key.usedToday || 0) / (key.dailyLimit || 10000)) * 100, 100)}%` }}
+                                                        className={`h-full rounded-full ${(key.usedToday || 0) > (key.dailyLimit || 10000) * 0.8 ? 'bg-red-500' : 'bg-[var(--accent)]'}`}
                                                     />
                                                 </div>
                                             </div>
@@ -410,7 +422,7 @@ export default function ApiKeysPage() {
                         <FiAlertCircle /> 3-Layer Protection Active
                     </h4>
                     <p className="text-[var(--muted)] text-[10px] leading-relaxed font-bold opacity-60">
-                        1. <b>IP Whitelisting:</b> Restrict access to your own servers.<br />
+                        1. <b>IP Whitelisting (Optional):</b> Restrict access to your own servers for enhanced security.<br />
                         2. <b>Daily Limits:</b> Automated safety cap to protect your wallet.<br />
                         3. <b>Atomic Daily Limits:</b> Concurrent orders are safe — each deduction uses MongoDB's atomic operations, preventing double-spends even under high load.
                     </p>
