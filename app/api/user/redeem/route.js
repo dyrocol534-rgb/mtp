@@ -31,31 +31,35 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Code is required" }, { status: 400 });
         }
 
-        // Find and validate the code
-        const redeemCode = await RedeemCode.findOne({ code: code.trim().toUpperCase() });
+        // Find and mark as used ATOMICALLY to prevent race conditions
+        const redeemCode = await RedeemCode.findOneAndUpdate(
+            { code: code.trim().toUpperCase(), status: "active" },
+            {
+                $set: {
+                    status: "used",
+                    usedBy: user._id,
+                    usedAt: new Date()
+                }
+            },
+            { new: true }
+        );
 
         if (!redeemCode) {
-            return NextResponse.json({ success: false, message: "Invalid redeem code" }, { status: 404 });
-        }
-
-        if (redeemCode.status === "used") {
+            // Check if it exists at all to give better error
+            const exists = await RedeemCode.findOne({ code: code.trim().toUpperCase() });
+            if (!exists) {
+                return NextResponse.json({ success: false, message: "Invalid redeem code" }, { status: 404 });
+            }
             return NextResponse.json({ success: false, message: "This code has already been used" }, { status: 400 });
         }
 
-        // Start transaction/atomic update
+        // Update User Wallet
         const balanceBefore = user.wallet || 0;
         const balanceAfter = balanceBefore + redeemCode.value;
 
-        // Update User Wallet
         await User.findByIdAndUpdate(user._id, {
             $inc: { wallet: redeemCode.value }
         });
-
-        // Mark code as used
-        redeemCode.status = "used";
-        redeemCode.usedBy = user._id;
-        redeemCode.usedAt = new Date();
-        await redeemCode.save();
 
         // Log Transaction
         const transactionId = `TXN-REDEEM-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
