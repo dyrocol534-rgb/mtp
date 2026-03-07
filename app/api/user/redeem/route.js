@@ -51,12 +51,12 @@ export async function POST(req) {
             // a. Check if user already claimed
             const alreadyClaimed = redeemCode.claimedBy.some(claim => claim.user.toString() === user._id.toString());
             if (alreadyClaimed) {
-                return NextResponse.json({ success: false, message: "You have already claimed this coupon" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "You have already used this code once. Try some other code." }, { status: 400 });
             }
 
             // b. Check if total uses reached
             if (redeemCode.claimedBy.length >= redeemCode.maxUses) {
-                return NextResponse.json({ success: false, message: "This coupon has reached its maximum usage limit" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "This code has reached its usage limit. Try some other code." }, { status: 400 });
             }
 
             // c. Atomic Update for Series
@@ -84,7 +84,7 @@ export async function POST(req) {
         } else {
             // SINGLE-USE LOGIC (Original)
             if (redeemCode.status === "used") {
-                return NextResponse.json({ success: false, message: "This code has already been used" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "This code has already been used. Try some other code." }, { status: 400 });
             }
 
             const updated = await RedeemCode.findOneAndUpdate(
