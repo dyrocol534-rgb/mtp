@@ -3,7 +3,7 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { FiHome, FiCreditCard, FiShoppingBag, FiUsers, FiHeadphones, FiMessageSquare, FiGrid } from "react-icons/fi";
+import { FiHome, FiCreditCard, FiShoppingBag, FiUsers, FiHeadphones, FiMessageSquare, FiGrid, FiTarget, FiGift } from "react-icons/fi";
 
 import { useUIStore } from "@/store/useUIStore";
 
@@ -18,9 +18,11 @@ const BottomNav = () => {
 
     const navItems = [
         { label: "Wallet", icon: FiCreditCard, path: "/dashboard/wallet", action: () => router.push("/dashboard/wallet") },
+        { label: "Redeem", icon: FiGift, path: "/dashboard/redeem", action: () => router.push("/dashboard/redeem") },
         { label: "Games", icon: FiGrid, path: "/games", action: () => router.push("/games") },
-        { label: "Orders", icon: FiShoppingBag, path: "/dashboard/orders", action: () => router.push("/dashboard/orders") },
+        { label: "Region", icon: FiTarget, path: "/region", action: () => router.push("/region") },
         { label: "Home", icon: FiHome, path: "/", isHome: true, action: () => router.push("/") },
+        { label: "Orders", icon: FiShoppingBag, path: "/dashboard/orders", action: () => router.push("/dashboard/orders") },
         { label: "Referral", icon: FiUsers, path: "/dashboard/referral", action: () => router.push("/dashboard/referral") },
         { label: "Support", icon: FiHeadphones, path: "/dashboard/support", action: () => router.push("/dashboard/support") },
         { label: "AI Chat", icon: FiMessageSquare, action: () => toggleChatbot() },

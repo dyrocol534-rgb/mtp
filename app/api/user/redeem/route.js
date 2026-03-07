@@ -31,29 +31,80 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Code is required" }, { status: 400 });
         }
 
-        // Find and mark as used ATOMICALLY to prevent race conditions
-        const redeemCode = await RedeemCode.findOneAndUpdate(
-            { code: code.trim().toUpperCase(), status: "active" },
-            {
-                $set: {
-                    status: "used",
-                    usedBy: user._id,
-                    usedAt: new Date()
-                }
-            },
-            { new: true }
-        );
+        const normalizedCode = code.trim().toUpperCase();
+
+        // 1. Find the code
+        const redeemCode = await RedeemCode.findOne({ code: normalizedCode });
 
         if (!redeemCode) {
-            // Check if it exists at all to give better error
-            const exists = await RedeemCode.findOne({ code: code.trim().toUpperCase() });
-            if (!exists) {
-                return NextResponse.json({ success: false, message: "Invalid redeem code" }, { status: 404 });
-            }
-            return NextResponse.json({ success: false, message: "This code has already been used" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid redeem code" }, { status: 404 });
         }
 
-        // Update User Wallet
+        // 2. Check if expired or inactive
+        if (redeemCode.status !== "active") {
+            return NextResponse.json({ success: false, message: "This code is no longer active" }, { status: 400 });
+        }
+
+        if (redeemCode.isSeries) {
+            // MULTI-USE SERIES LOGIC
+
+            // a. Check if user already claimed
+            const alreadyClaimed = redeemCode.claimedBy.some(claim => claim.user.toString() === user._id.toString());
+            if (alreadyClaimed) {
+                return NextResponse.json({ success: false, message: "You have already claimed this coupon" }, { status: 400 });
+            }
+
+            // b. Check if total uses reached
+            if (redeemCode.claimedBy.length >= redeemCode.maxUses) {
+                return NextResponse.json({ success: false, message: "This coupon has reached its maximum usage limit" }, { status: 400 });
+            }
+
+            // c. Atomic Update for Series
+            const updated = await RedeemCode.findOneAndUpdate(
+                {
+                    _id: redeemCode._id,
+                    status: "active",
+                    "claimedBy.user": { $ne: user._id } // Not claimed by this user
+                },
+                {
+                    $push: { claimedBy: { user: user._id, at: new Date() } }
+                },
+                { new: true }
+            );
+
+            if (!updated) {
+                return NextResponse.json({ success: false, message: "Failed to claim coupon. It might have reached its limit or you've already claimed it." }, { status: 400 });
+            }
+
+            // If it was the last use, we could mark as used, but not strictly necessary for series since we check length
+            if (updated.claimedBy.length >= updated.maxUses) {
+                await RedeemCode.findByIdAndUpdate(updated._id, { $set: { status: "used" } });
+            }
+
+        } else {
+            // SINGLE-USE LOGIC (Original)
+            if (redeemCode.status === "used") {
+                return NextResponse.json({ success: false, message: "This code has already been used" }, { status: 400 });
+            }
+
+            const updated = await RedeemCode.findOneAndUpdate(
+                { _id: redeemCode._id, status: "active" },
+                {
+                    $set: {
+                        status: "used",
+                        usedBy: user._id,
+                        usedAt: new Date()
+                    }
+                },
+                { new: true }
+            );
+
+            if (!updated) {
+                return NextResponse.json({ success: false, message: "Failed to redeem code. It might have been used just now." }, { status: 400 });
+            }
+        }
+
+        // 3. Update User Wallet
         const balanceBefore = user.wallet || 0;
         const balanceAfter = balanceBefore + redeemCode.value;
 
@@ -61,7 +112,7 @@ export async function POST(req) {
             $inc: { wallet: redeemCode.value }
         });
 
-        // Log Transaction
+        // 4. Log Transaction
         const transactionId = `TXN-REDEEM-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
         await WalletTransaction.create({
             transactionId,
