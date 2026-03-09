@@ -25,7 +25,7 @@ const SERVICES = [
 ];
 
 export default function HomeServices() {
-  const whatsappLink = "https://wa.me/916372305866";
+  const whatsappLink = "https://wa.me/919178521537";
 
   return (
     <section className="py-12 bg-[var(--background)] relative overflow-hidden">

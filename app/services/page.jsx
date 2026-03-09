@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FiUsers, FiGlobe, FiZap, FiCode, FiArrowRight, FiMessageCircle } from "react-icons/fi";
 
 export default function ServicesPage() {
-  const whatsappLink = "https://wa.me/916372305866";
+  const whatsappLink = "https://wa.me/919178521537";
 
   const services = [
     {
