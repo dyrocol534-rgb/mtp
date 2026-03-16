@@ -56,10 +56,11 @@ Verify a Player ID/Zone ID and check account region before ordering.
 *   **Body:** `{"gameSlug": "...", "playerId": "...", "zoneId": "..."}`
 
 ### 🚀 Place Order
-Deduct funds automatically from your wallet and place an order.
+Place a top-up order. Funds are temporarily deducted and auto-executed.
 *   **URL:** `/api/service/order`
 *   **Method:** `POST`
-*   **Body:** `{"gameSlug": "...", "itemSlug": "...", "playerId": "..."}`
+*   **Body:** `{"gameSlug": "...", "itemSlug": "...", "playerId": "...", "zoneId": "..."}`
+*   **Note:** If fulfillment fails, the **full amount is instantly refunded** to your wallet. The response will include `"status": "failed"` and `"success": false`.
 
 ---
 

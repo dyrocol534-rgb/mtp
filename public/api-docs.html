@@ -51,6 +51,7 @@
             margin: 0 0 8px;
             background: linear-gradient(135deg, #fff 40%, var(--primary));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -515,9 +516,8 @@
                 <span class="endpoint-path">/api/service/order</span>
             </div>
             <div class="endpoint-desc">
-                Places an order. Funds are instantly deducted from your wallet and the top-up is
-                <strong>auto-executed</strong> in real-time.
-                No manual processing required.
+                Places an order. Funds are temporarily deducted and auto-executed in real-time.
+                If fulfillment fails, <strong>funds are instantly refunded</strong> to your wallet.
             </div>
             <div class="endpoint-body">
                 <div>
@@ -536,6 +536,7 @@
                     <div class="code-label">Sample Response — Success (200 OK)</div>
                     <pre>{
   <span class="key">"success"</span>: <span class="bool">true</span>,
+  <span class="key">"status"</span>: <span class="str">"success"</span>,
   <span class="key">"message"</span>: <span class="str">"Order fulfilled successfully"</span>,
   <span class="key">"order"</span>: {
     <span class="key">"orderId"</span>: <span class="str">"API-XK9P2A1B"</span>,
@@ -547,10 +548,11 @@
 }</pre>
                 </div>
                 <div>
-                    <div class="code-label">Sample Response — Fulfillment Failed (200 OK)</div>
+                    <div class="code-label">Sample Response — Failure (e.g. 403 or 200 with error)</div>
                     <pre>{
   <span class="key">"success"</span>: <span class="bool">false</span>,
-  <span class="key">"message"</span>: <span class="str">"Payment deducted, but fulfillment failed"</span>,
+  <span class="key">"status"</span>: <span class="str">"failed"</span>,
+  <span class="key">"message"</span>: <span class="str">"Order failed. Wallet balance has been preserved."</span>,
   <span class="key">"order"</span>: {
     <span class="key">"orderId"</span>: <span class="str">"API-XK9P2A1B"</span>,
     <span class="key">"status"</span>: <span class="str">"failed"</span>,
