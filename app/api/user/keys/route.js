@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import ApiKey from "@/models/ApiKey";
+import { ensureDailyReset } from "@/lib/apiKeyUtils";
 
 // Helper to get user from token
 async function getUser(req) {
@@ -29,7 +30,10 @@ export async function GET(req) {
 
         const keys = await ApiKey.find({ userId: user._id }).sort({ createdAt: -1 });
 
-        return NextResponse.json({ success: true, keys });
+        // ⚡ Ensure each key's daily limit is reset if it's a new day
+        const processedKeys = await Promise.all(keys.map(key => ensureDailyReset(key)));
+
+        return NextResponse.json({ success: true, keys: processedKeys });
     } catch (error) {
         console.error("GET Keys Error:", error);
         return NextResponse.json({ success: false, message: "Server Error" }, { status: 500 });
