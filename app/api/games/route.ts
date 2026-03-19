@@ -81,7 +81,7 @@ export async function GET() {
       headers: {
         "x-api-key": process.env.API_SECRET_KEY!,
       },
-      next: { revalidate: 300 } // Cache list for 5 minutes instead of fetching every request
+      next: { revalidate: 1800 } // Cache list for 30 minutes instead of fetching every request
     });
 
     const data = await response.json();
@@ -317,7 +317,7 @@ export async function GET() {
       },
     }, {
       headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=59'
+        'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=59'
       }
     });
   } catch (error) {
@@ -328,7 +328,12 @@ export async function GET() {
         success: false,
         message: "Failed to fetch game list",
       },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=59'
+        }
+      }
     );
   }
 }

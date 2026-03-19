@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
+import { unstable_cache } from "next/cache";
 
 /* ================= AUTH (ANY USER) ================= */
 function verifyUser(req: Request) {
@@ -85,144 +86,119 @@ export async function GET(req: Request) {
     const end = searchParams.get("end");
 
     const skip = (page - 1) * limit;
-    const dateFilter = getDateFilter(range, start, end);
 
     let data = [];
     let total = 0;
 
-    /* ================= REFERRAL LEADERBOARD ================= */
-    if (type === "referral") {
-      const match: any = {
-        referredBy: { $exists: true, $ne: null }
-      };
+    /* ================= CACHED AGGREGATION WRAPPER ================= */
+    const getCachedLeaderboard = unstable_cache(
+      async (t: string, r: string, s: string | null, e: string | null, sk: number, l: number) => {
+        if (t === "referral") {
+          const match: any = { referredBy: { $exists: true, $ne: null } };
+          const df = getDateFilter(r, s, e);
+          if (df) match.createdAt = df;
 
-      if (dateFilter) {
-        match.createdAt = dateFilter;
-      }
-
-      const leaderboard = await User.aggregate([
-        { $match: match },
-        {
-          $group: {
-            _id: "$referredBy",
-            referralCount: { $sum: 1 },
-            lastReferralAt: { $max: "$createdAt" }
-          }
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "_id",     // referredBy (which is userId)
-            foreignField: "userId", // userId in User collection
-            as: "referrerInfo"
-          }
-        },
-        { $unwind: "$referrerInfo" },
-        { $sort: { referralCount: -1 } },
-        {
-          $facet: {
-            data: [
-              { $skip: skip },
-              { $limit: limit },
-              {
-                $project: {
-                  _id: 0,
-                  referralCount: 1,
-                  user: {
-                    name: "$referrerInfo.name",
-                    userId: "$referrerInfo.userId",
-                    avatar: "$referrerInfo.avatar"
-                  }
-                }
+          const leaderboard = await User.aggregate([
+            { $match: match },
+            {
+              $group: {
+                _id: "$referredBy",
+                referralCount: { $sum: 1 },
+                lastReferralAt: { $max: "$createdAt" }
               }
-            ],
-            totalCount: [{ $count: "count" }]
-          }
-        }
-      ]);
-
-      data = leaderboard[0]?.data || [];
-      total = leaderboard[0]?.totalCount[0]?.count || 0;
-
-    }
-    /* ================= PURCHASE LEADERBOARD (Default) ================= */
-    else {
-      const match: any = {
-        paymentStatus: "success",
-        topupStatus: "success",
-      };
-
-      if (dateFilter) {
-        match.createdAt = dateFilter;
-      }
-
-      const leaderboard = await Order.aggregate([
-        { $match: match },
-
-        {
-          $group: {
-            _id: {
-              email: "$email",
-              phone: "$phone",
             },
-            totalSpent: { $sum: "$price" },
-            totalOrders: { $sum: 1 },
-            lastOrderAt: { $max: "$createdAt" },
-          },
-        },
+            {
+              $lookup: {
+                from: "users",
+                localField: "_id",
+                foreignField: "userId",
+                as: "referrerInfo"
+              }
+            },
+            { $unwind: "$referrerInfo" },
+            { $sort: { referralCount: -1 } },
+            {
+              $facet: {
+                data: [
+                  { $skip: sk },
+                  { $limit: l },
+                  {
+                    $project: {
+                      _id: 0,
+                      referralCount: 1,
+                      user: {
+                        name: "$referrerInfo.name",
+                        userId: "$referrerInfo.userId",
+                        avatar: "$referrerInfo.avatar"
+                      }
+                    }
+                  }
+                ],
+                totalCount: [{ $count: "count" }]
+              }
+            }
+          ]);
+          return {
+            data: leaderboard[0]?.data || [],
+            total: leaderboard[0]?.totalCount[0]?.count || 0
+          };
+        } else {
+          const match: any = { paymentStatus: "success", topupStatus: "success" };
+          const df = getDateFilter(r, s, e);
+          if (df) match.createdAt = df;
 
-        {
-          $lookup: {
-            from: "users",
-            let: { email: "$_id.email", phone: "$_id.phone" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $or: [
-                      { $eq: ["$email", "$$email"] },
-                      { $eq: ["$phone", "$$phone"] },
-                    ],
+          const leaderboard = await Order.aggregate([
+            { $match: match },
+            {
+              $group: {
+                _id: { email: "$email", phone: "$phone" },
+                totalSpent: { $sum: "$price" },
+                totalOrders: { $sum: 1 },
+                lastOrderAt: { $max: "$createdAt" },
+              },
+            },
+            {
+              $lookup: {
+                from: "users",
+                let: { email: "$_id.email", phone: "$_id.phone" },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $or: [
+                          { $eq: ["$email", "$$email"] },
+                          { $eq: ["$phone", "$$phone"] },
+                        ],
+                      },
+                    },
                   },
-                },
+                  { $project: { _id: 0, userId: 1, name: 1, email: 1, phone: 1 } },
+                ],
+                as: "user",
               },
-              {
-                $project: {
-                  _id: 0,
-                  userId: 1,
-                  name: 1,
-                  email: 1,
-                  phone: 1,
-                },
+            },
+            { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+            { $sort: { totalSpent: -1 } },
+            {
+              $facet: {
+                data: [{ $skip: sk }, { $limit: l }],
+                totalCount: [{ $count: "count" }],
               },
-            ],
-            as: "user",
-          },
-        },
+            },
+          ]);
+          return {
+            data: leaderboard[0]?.data || [],
+            total: leaderboard[0]?.totalCount[0]?.count || 0
+          };
+        }
+      },
+      ["leaderboard-cache"],
+      { revalidate: 600, tags: ["leaderboard"] } // Cache for 10 minutes
+    );
 
-        {
-          $unwind: {
-            path: "$user",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-
-        { $sort: { totalSpent: -1 } },
-
-        {
-          $facet: {
-            data: [
-              { $skip: skip },
-              { $limit: limit },
-            ],
-            totalCount: [{ $count: "count" }],
-          },
-        },
-      ]);
-
-      data = leaderboard[0]?.data || [];
-      total = leaderboard[0]?.totalCount[0]?.count || 0;
-    }
+    const result = await getCachedLeaderboard(type, range, start, end, skip, limit);
+    data = result.data;
+    total = result.total;
 
     return Response.json({
       success: true,

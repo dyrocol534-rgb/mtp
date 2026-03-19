@@ -17,7 +17,7 @@ export async function GET() {
       data: banners,
     }, {
       headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=59'
+        'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=59'
       }
     });
   } catch (error) {

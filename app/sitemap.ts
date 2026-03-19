@@ -142,7 +142,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       headers: {
         "x-api-key": process.env.API_SECRET_KEY || "",
       },
-      next: { revalidate: 3600 },
+      next: { revalidate: 1800 },
     });
 
     if (response.ok) {
