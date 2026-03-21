@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/_next/", "/admin", "/dashboard", "/dashboard/"],
+      disallow: ["/api/", "/_next/", "/admin", "/dashboard", "/dashboard/", "/admin-panal", "/owner-panal"],
     },
     sitemap: [
       "https://mlbbtopup.in/sitemap.xml",

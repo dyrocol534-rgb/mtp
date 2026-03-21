@@ -23,43 +23,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/region`,
       lastModified: now,
-      changeFrequency: "weekly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/services`,
       lastModified: now,
-      changeFrequency: "weekly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/about`,
       lastModified: now,
-      changeFrequency: "monthly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.6,
     },
     {
       url: `${baseUrl}/contact`,
       lastModified: now,
-      changeFrequency: "monthly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.6,
     },
     {
       url: `${baseUrl}/privacy-policy`,
       lastModified: now,
-      changeFrequency: "yearly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.4,
     },
     {
       url: `${baseUrl}/terms-and-conditions`,
       lastModified: now,
-      changeFrequency: "yearly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.4,
     },
     {
       url: `${baseUrl}/refund-policy`,
       lastModified: now,
-      changeFrequency: "yearly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.4,
     },
     {
@@ -71,48 +71,59 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/idsonsell`,
       lastModified: now,
-      changeFrequency: "weekly" as const,
+      changeFrequency: "daily" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/leaderboard`,
+      lastModified: now,
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/check`,
+      lastModified: now,
+      changeFrequency: "daily" as const,
       priority: 0.7,
     },
     // Static Blog Posts
     {
       url: `${baseUrl}/blog/is-mlbb-top-up-legal-in-india`,
       lastModified: now,
-      changeFrequency: "monthly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.6,
     },
     {
       url: `${baseUrl}/blog/how-to-buy-mlbb-diamonds-safely-in-india`,
       lastModified: now,
-      changeFrequency: "monthly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.6,
     },
     {
       url: `${baseUrl}/blog/mlbb-weekly-pass-price-in-india`,
       lastModified: now,
-      changeFrequency: "monthly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.6,
     },
     {
       url: `${baseUrl}/blog/how-to-gift-mlbb-diamonds`,
       lastModified: now,
-      changeFrequency: "monthly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.6,
     },
     {
       url: `${baseUrl}/blog/best-mlbb-diamond-packages-value-guide`,
       lastModified: new Date("2026-02-26"),
-      changeFrequency: "monthly" as const,
+      changeFrequency: "daily" as const,
       priority: 0.7,
     },
-
   ];
 
   /* ================= OTT & MEMBERSHIP STATIC DATA ================= */
   const OTTS = [
     { slug: "youtube-premium" },
     { slug: "netflix" },
-    { slug: "instagram" },
+    { slug: "spotify" },
   ];
 
   const MEMBERSHIPS = [
@@ -123,19 +134,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const ottRoutes = OTTS.map((item) => ({
     url: `${baseUrl}/games/ott/${item.slug}`,
     lastModified: now,
-    changeFrequency: "monthly" as const,
+    changeFrequency: "daily" as const,
     priority: 0.8,
   }));
 
   const membershipRoutes = MEMBERSHIPS.map((item) => ({
     url: `${baseUrl}/games/membership/${item.slug}`,
     lastModified: now,
-    changeFrequency: "monthly" as const,
+    changeFrequency: "daily" as const,
     priority: 0.8,
   }));
 
   /* ================= DYNAMIC GAME ROUTES ================= */
   let gameRoutes: MetadataRoute.Sitemap = [];
+
+  // Manual games (Must match app/api/games/route.ts)
+  const manualGames = [
+    { slug: "coc-manual", priority: 0.9 },
+    { slug: "starlight-card-manual", priority: 0.9 },
+    { slug: "bgmi-manual", priority: 0.9 },
+  ];
+
+  const manualRoutes = manualGames.map((g) => ({
+    url: `${baseUrl}/games/${g.slug}`,
+    lastModified: now,
+    changeFrequency: "daily" as const,
+    priority: g.priority,
+  }));
 
   try {
     const response = await fetch("https://game-off-ten.vercel.app/api/v1/game", {
@@ -154,7 +179,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .map((g: any) => ({
           url: `${baseUrl}/games/${g.gameSlug}`,
           lastModified: now, // Could use g.updatedAt if available
-          changeFrequency: "weekly" as const,
+          changeFrequency: "daily" as const,
           priority: 0.9,
         }));
     }
@@ -162,5 +187,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Sitemap generation error:", error);
   }
 
-  return [...staticRoutes, ...gameRoutes, ...ottRoutes, ...membershipRoutes];
+  return [...staticRoutes, ...gameRoutes, ...manualRoutes, ...ottRoutes, ...membershipRoutes];
 }
