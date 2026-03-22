@@ -6,12 +6,12 @@ import Image from "next/image";
 
 const storyData = [
   {
-    id: 7,
-    title: "Starlight",
-    badge: "Hot",
-    color: "#06b6d4", // Cyan
-    image: "/game-assets/starkight.webp",
-    link: "/games/starlight-card-manual",
+    id: 5,
+    title: "BGMI",
+    badge: "Sale",
+    color: "#f59e0b", // Orange
+    image: "/game-assets/bgmi-logo.webp",
+    link: "/games/bgmi-manual",
   },
   {
     id: 0,
@@ -52,13 +52,14 @@ const storyData = [
     image: "/game-assets/mlbb-ph-small.jpg",
     link: "/games/mlbb-smallphp980",
   },
+
   {
-    id: 5,
-    title: "BGMI",
-    badge: "Sale",
-    color: "#f59e0b", // Orange
-    image: "/game-assets/bgmi-logo.webp",
-    link: "/games/bgmi-manual",
+    id: 7,
+    title: "Starlight",
+    badge: "Hot",
+    color: "#06b6d4", // Cyan
+    image: "/game-assets/starkight.webp",
+    link: "/games/starlight-card-manual",
   },
   {
     id: 6,
