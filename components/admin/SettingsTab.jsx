@@ -76,10 +76,10 @@ const SettingsTab = () => {
             <div>
                 <h2 className="text-xl font-bold text-[var(--foreground)] flex items-center gap-2">
                     <FiSettings className="text-[var(--accent)]" />
-                    Global Settings
+                    Main Settings
                 </h2>
                 <p className="text-sm text-[var(--muted)] mt-1">
-                    Configure application-wide parameters and maintenance controls.
+                    Manage your website status and background settings.
                 </p>
             </div>
 

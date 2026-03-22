@@ -177,9 +177,9 @@ export default function OrdersTab() {
       {/* ================= HEADER ================= */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">Active Deployments</h2>
+          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">Recent Orders</h2>
           <p className="text-xs text-[var(--muted)] font-medium mt-1">
-            Analyze, verify, and fulfill customer order packets
+             Check and complete customer orders.
           </p>
         </div>
 
@@ -187,7 +187,7 @@ export default function OrdersTab() {
           <div className="px-3 py-1.5 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
             <span className="text-[10px] font-bold text-[var(--muted)] uppercase">
-              {pagination.total} Processed
+              {pagination.total} TOTAL ORDERS
             </span>
           </div>
           <button
@@ -199,62 +199,30 @@ export default function OrdersTab() {
         </div>
       </div>
 
-      {/* ================= ORDER STATS ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* Order Volume Column */}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           <div className="flex items-center gap-2 px-1">
-            <ShoppingBag size={14} className="text-amber-500" />
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Order Volume</h4>
+            <ShoppingBag size={12} className="text-amber-500" />
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Order Count</h4>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <InsightCard
-              label="24h"
-              value={orderStats.counts?.day}
-              color="amber"
-              compact
-              pulse={orderStats.counts?.day > 0}
-            />
-            <InsightCard
-              label="7d"
-              value={orderStats.counts?.week}
-              color="amber"
-              compact
-            />
-            <InsightCard
-              label="30d"
-              value={orderStats.counts?.month}
-              color="amber"
-              compact
-            />
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <InsightCard label="Today" value={orderStats.counts?.day} color="amber" compact pulse={orderStats.counts?.day > 0} />
+            <InsightCard label="Week" value={orderStats.counts?.week} color="amber" compact />
+            <InsightCard label="Month" value={orderStats.counts?.month} color="amber" compact />
           </div>
         </div>
 
         {/* Revenue Snapshot Column */}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           <div className="flex items-center gap-2 px-1">
-            <IndianRupee size={14} className="text-emerald-500" />
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Revenue Snapshot</h4>
+            <IndianRupee size={12} className="text-emerald-500" />
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Earnings Summary</h4>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <InsightCard
-              label="24h"
-              value={`₹${(orderStats.revenue?.day || 0).toLocaleString()}`}
-              color="emerald"
-              compact
-            />
-            <InsightCard
-              label="7d"
-              value={`₹${(orderStats.revenue?.week || 0).toLocaleString()}`}
-              color="emerald"
-              compact
-            />
-            <InsightCard
-              label="30d"
-              value={`₹${(orderStats.revenue?.month || 0).toLocaleString()}`}
-              color="emerald"
-              compact
-            />
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <InsightCard label="Today" value={`₹${(orderStats.revenue?.day || 0).toLocaleString()}`} color="emerald" compact />
+            <InsightCard label="Week" value={`₹${(orderStats.revenue?.week || 0).toLocaleString()}`} color="emerald" compact />
+            <InsightCard label="Month" value={`₹${(orderStats.revenue?.month || 0).toLocaleString()}`} color="emerald" compact />
           </div>
         </div>
       </div>
@@ -269,7 +237,7 @@ export default function OrdersTab() {
               setPage(1);
               setSearch(e.target.value);
             }}
-            placeholder="Search by Order ID, Email, or Game Platform..."
+            placeholder="Search by Order ID, Email, Payment Method, or Game..."
             className="w-full h-11 pl-11 pr-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-sm focus:border-[var(--accent)]/50 outline-none transition-all placeholder:text-[var(--muted)]/40"
           />
         </div>
@@ -329,9 +297,9 @@ export default function OrdersTab() {
               setPage(1);
               setFilters({ status: "", gameSlug: "", from: "", to: "" });
             }}
-            className="h-10 rounded-lg border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-[10px] font-black uppercase tracking-widest hover:bg-[var(--foreground)]/[0.05] transition-all"
+            className="h-10 rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] text-[10px] font-bold uppercase tracking-widest border border-[var(--border)] hover:bg-[var(--foreground)]/[0.05] transition-all"
           >
-            Reset Matrix
+            Clear Filters
           </button>
         </div>
       </div>
@@ -346,7 +314,7 @@ export default function OrdersTab() {
             className="py-32 flex flex-col items-center justify-center space-y-4"
           >
             <Loader2 className="animate-spin text-[var(--accent)]" size={32} />
-            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-[0.2em]">Syncing Order Records</p>
+            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-[0.2em]">Loading Orders...</p>
           </motion.div>
         ) : (
           <motion.div
@@ -359,11 +327,12 @@ export default function OrdersTab() {
               <table className="w-full text-left text-sm">
                 <thead className="bg-[var(--foreground)]/[0.03] border-b border-[var(--border)]">
                   <tr className="text-[10px] uppercase font-bold tracking-widest text-[var(--muted)]">
-                    <th className="px-6 py-4">Protocol</th>
-                    <th className="px-6 py-4">Timeline</th>
-                    <th className="px-6 py-4">Target Item</th>
-                    <th className="px-6 py-4">Value</th>
-                    <th className="px-6 py-4">Status Command</th>
+                    <th className="px-6 py-4">Game</th>
+                    <th className="px-6 py-4">Time</th>
+                    <th className="px-6 py-4">Item Details</th>
+                    <th className="px-6 py-4">Method</th>
+                    <th className="px-6 py-4">Price</th>
+                    <th className="px-6 py-4">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border)]">
@@ -383,7 +352,10 @@ export default function OrdersTab() {
                             <div className="w-8 h-8 rounded-lg bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--accent)]">
                               <Gamepad2 size={16} />
                             </div>
-                            <span className="text-[var(--foreground)] font-bold uppercase text-xs">{o.gameSlug}</span>
+                            <div className="flex flex-col">
+                              <span className="text-[var(--foreground)] font-bold uppercase text-xs">{o.gameSlug}</span>
+                              <span className="text-[10px] text-[var(--muted)] font-medium truncate max-w-[120px] lowercase">{o.email}</span>
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -395,6 +367,11 @@ export default function OrdersTab() {
                         <td className="px-6 py-4 max-w-xs">
                           <span className="text-[var(--foreground)]/60 font-medium truncate block">{o.itemName}</span>
                           <span className="text-[10px] text-[var(--muted)]/40 font-mono uppercase">{o.orderId}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-[10px] font-bold text-[var(--muted)] uppercase border border-[var(--border)] px-2 py-1 rounded-md bg-[var(--foreground)]/[0.02]">
+                            {o.paymentMethod || "N/A"}
+                          </span>
                         </td>
                         <td className="px-6 py-4">
                           <span className="text-base font-black text-emerald-500 tabular-nums">
@@ -428,34 +405,39 @@ export default function OrdersTab() {
                 return (
                   <motion.div
                     key={o._id}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.03 }}
                     onClick={() => setSelectedOrder(o)}
-                    className="p-5 rounded-[1.8rem] border border-[var(--border)] bg-[var(--card)] active:bg-[var(--foreground)]/[0.05] transition-all"
+                    className="p-3.5 sm:p-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] active:bg-[var(--foreground)]/[0.05] transition-all"
                   >
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--accent)]">
-                          <Gamepad2 size={16} />
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--accent)]">
+                          <Gamepad2 size={14} />
                         </div>
-                        <p className="font-bold text-[var(--foreground)] uppercase text-xs tracking-tight">{o.gameSlug}</p>
+                        <div className="flex flex-col min-w-0">
+                          <p className="font-bold text-[var(--foreground)] uppercase text-[11px] leading-none mb-0.5 truncate">{o.gameSlug}</p>
+                          <p className="text-[10px] text-[var(--muted)] font-medium truncate max-w-[140px] lowercase leading-none">{o.email}</p>
+                        </div>
                       </div>
-                      <span className="text-lg font-black text-emerald-500">₹{o.price}</span>
+                      <div className="flex flex-col items-end">
+                        <span className="text-base font-black text-emerald-500 tabular-nums">₹{o.price}</span>
+                        <span className="text-[8px] font-bold text-[var(--muted)] uppercase opacity-60 tracking-tighter">{o.paymentMethod}</span>
+                      </div>
                     </div>
 
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-[11px] font-medium text-[var(--foreground)]/60 line-clamp-1 italic">"{o.itemName}"</p>
-                        <p className="text-[9px] font-mono text-[var(--muted)] mt-1 uppercase">{o.orderId}</p>
+                    <div className="flex items-center justify-between gap-3 text-[10px]">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-[var(--foreground)]/60 line-clamp-1 italic truncate">"{o.itemName}"</p>
+                        <p className="text-[8px] font-mono text-[var(--muted)]/40 mt-0.5 uppercase tracking-tighter truncate">{o.orderId}</p>
                       </div>
 
-                      <div className="flex items-center justify-between gap-4 pt-1" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-2">
-                          <Calendar size={12} className="text-[var(--muted)]/40" />
-                          <span className="text-[10px] font-bold text-[var(--muted)]/60">{new Date(o.createdAt).toLocaleDateString()}</span>
+                      <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex flex-col items-end mr-1">
+                          <span className="font-bold text-[var(--muted)]/60 leading-tight">{new Date(o.createdAt).toLocaleDateString()}</span>
+                          <span className="text-[8px] font-medium text-[var(--muted)]/40 leading-tight">{new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
-
                         <StatusDropdown
                           value={o.status}
                           disabled={updating}
@@ -478,7 +460,7 @@ export default function OrdersTab() {
             {!orders.length && (
               <div className="py-20 text-center border border-dashed border-[var(--border)] rounded-[2rem]">
                 <ShoppingBag className="mx-auto text-[var(--muted)]/20 mb-4" size={48} />
-                <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">Deployment Queue Clear</p>
+                <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">No Orders Found</p>
               </div>
             )}
 
@@ -494,14 +476,14 @@ export default function OrdersTab() {
                     disabled={page === 1}
                     className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[10px] font-bold uppercase text-[var(--muted)]/60 hover:text-[var(--foreground)] hover:bg-[var(--foreground)]/[0.05] disabled:opacity-20 transition-all font-mono"
                   >
-                    RETRIEVE PREV
+                    PREVIOUS
                   </button>
                   <button
                     onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
                     disabled={page === pagination.totalPages}
                     className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[10px] font-bold uppercase text-[var(--muted)]/60 hover:text-[var(--foreground)] hover:bg-[var(--foreground)]/[0.05] disabled:opacity-20 transition-all font-mono"
                   >
-                    RETRIEVE NEXT
+                    NEXT
                   </button>
                 </div>
               </div>
@@ -532,7 +514,7 @@ export default function OrdersTab() {
                 <div className="flex items-start justify-between mb-8">
                   <div className="space-y-1">
                     <p className="text-[10px] font-bold text-[var(--accent)] uppercase tracking-widest">Order Verification</p>
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Mission Brief</h3>
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Order Details</h3>
                   </div>
                   <button
                     onClick={() => setSelectedOrder(null)}
@@ -564,27 +546,27 @@ export default function OrdersTab() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-8 space-y-10">
-                <DrawerSection icon={<Gamepad2 size={16} />} title="Service Objective">
-                  <DrawerDetail label="Platform" value={selectedOrder.gameSlug} emphasize />
-                  <DrawerDetail label="Asset Identity" value={selectedOrder.itemName} />
-                  <DrawerDetail label="Registry Slug" value={selectedOrder.itemSlug} />
+                <DrawerSection icon={<Gamepad2 size={16} />} title="Item Info">
+                  <DrawerDetail label="Game" value={selectedOrder.gameSlug} emphasize />
+                  <DrawerDetail label="Item Name" value={selectedOrder.itemName} />
+                  <DrawerDetail label="Item Code" value={selectedOrder.itemSlug} />
                 </DrawerSection>
 
-                <DrawerSection icon={<Smartphone size={16} />} title="Terminal Link">
-                  <DrawerDetail label="User Protocol ID" value={selectedOrder.playerId} emphasize />
-                  <DrawerDetail label="Zone Sector" value={selectedOrder.zoneId || "GLOBAL"} />
+                <DrawerSection icon={<Smartphone size={16} />} title="Player ID Info">
+                  <DrawerDetail label="Player ID" value={selectedOrder.playerId} emphasize />
+                  <DrawerDetail label="Server/Zone" value={selectedOrder.zoneId || "GLOBAL"} />
                 </DrawerSection>
 
-                <DrawerSection icon={<CreditCard size={16} />} title="Financial Protocol">
-                  <DrawerDetail label="Gateway Path" value={selectedOrder.paymentMethod} />
-                  <DrawerDetail label="Fund Status" value={selectedOrder.paymentStatus} emphasize />
-                  <DrawerDetail label="Provision Status" value={selectedOrder.topupStatus} />
+                <DrawerSection icon={<CreditCard size={16} />} title="Payment Info">
+                  <DrawerDetail label="Payment Method" value={selectedOrder.paymentMethod} />
+                  <DrawerDetail label="Payment Status" value={selectedOrder.paymentStatus} emphasize />
+                  <DrawerDetail label="Product Status" value={selectedOrder.topupStatus} />
                 </DrawerSection>
 
-                <DrawerSection icon={<User size={16} />} title="Authorized Entity">
-                  <DrawerDetail label="Comm Signal" value={selectedOrder.email || "GUEST"} />
-                  <DrawerDetail label="Phone Link" value={selectedOrder.phone || "N/A"} />
-                  <DrawerDetail label="Timestamp" value={new Date(selectedOrder.createdAt).toLocaleString()} />
+                <DrawerSection icon={<User size={16} />} title="Buyer Info">
+                  <DrawerDetail label="Email" value={selectedOrder.email || "GUEST"} />
+                  <DrawerDetail label="Phone" value={selectedOrder.phone || "N/A"} />
+                  <DrawerDetail label="Time" value={new Date(selectedOrder.createdAt).toLocaleString()} />
                 </DrawerSection>
 
                 <div className="pt-6 border-t border-[var(--border)] opacity-20">
@@ -702,7 +684,7 @@ function DrawerDetail({ label, value, emphasize }) {
   );
 }
 
-function InsightCard({ label, value, icon, color, pulse, compact }) {
+function InsightCard({ label, value, color, pulse, compact }) {
   const colors = {
     blue: "text-blue-500 border-blue-500/10 bg-blue-500/5",
     amber: "text-amber-500 border-amber-500/10 bg-amber-500/5",
@@ -710,36 +692,17 @@ function InsightCard({ label, value, icon, color, pulse, compact }) {
     emerald: "text-emerald-500 border-emerald-500/10 bg-emerald-500/5",
   };
 
-  if (compact) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 5 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={`px-4 py-3 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
-      >
-        {pulse && (
-          <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
-        )}
-        <span className="text-[9px] font-bold uppercase tracking-tighter opacity-60 mb-0.5">{label}</span>
-        <span className="text-base font-extrabold tabular-nums whitespace-nowrap">{value}</span>
-      </motion.div>
-    );
-  }
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`p-4 rounded-2xl border ${colors[color]} flex flex-col gap-2 relative overflow-hidden`}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
     >
       {pulse && (
-        <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-current animate-ping" />
+        <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
       )}
-      <div className="flex items-center gap-2 opacity-60">
-        {icon}
-        <span className="text-[9px] font-black uppercase tracking-widest">{label}</span>
-      </div>
-      <span className="text-xl font-black tabular-nums">{value}</span>
+      <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-tight opacity-60 mb-0.5">{label}</span>
+      <span className="text-xs sm:text-sm font-black tabular-nums whitespace-nowrap">{value}</span>
     </motion.div>
   );
 }

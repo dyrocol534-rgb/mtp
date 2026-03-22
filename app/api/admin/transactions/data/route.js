@@ -41,6 +41,7 @@ export async function GET(req) {
                 { itemName: { $regex: search, $options: "i" } },
                 { playerId: { $regex: search, $options: "i" } },
                 { paymentMethod: { $regex: search, $options: "i" } },
+                { email: { $regex: search, $options: "i" } },
             ];
         }
 

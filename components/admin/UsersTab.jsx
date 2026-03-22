@@ -42,7 +42,7 @@ export default function UsersTab() {
   });
 
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(40);
   const [search, setSearch] = useState("");
 
   const [filters, setFilters] = useState({
@@ -211,28 +211,22 @@ export default function UsersTab() {
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Active Users</h4>
           </div>
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            <InsightCard
-              label="24h"
-              value={activeStats.day}
-              compact
-              color="blue"
-              pulse={activeStats.day > 0}
-            />
-            <InsightCard label="7d" value={activeStats.week} compact color="blue" />
-            <InsightCard label="30d" value={activeStats.month} compact color="blue" />
+            <InsightCard label="Today" value={activeStats.day} compact color="blue" pulse={activeStats.day > 0} />
+            <InsightCard label="Week" value={activeStats.week} compact color="blue" />
+            <InsightCard label="Month" value={activeStats.month} compact color="blue" />
           </div>
         </div>
 
-        {/* New Registrations Column */}
+        {/* New Signups Column */}
         <div className="space-y-2 sm:space-y-3">
           <div className="flex items-center gap-2 px-1">
             <Users size={12} className="text-emerald-500" />
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">New Registered</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">New Signups</h4>
           </div>
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            <InsightCard label="24h" value={newStats.day} compact color="emerald" pulse={newStats.day > 0} />
-            <InsightCard label="7d" value={newStats.week} compact color="emerald" />
-            <InsightCard label="30d" value={newStats.month} compact color="emerald" />
+            <InsightCard label="Today" value={newStats.day} compact color="emerald" pulse={newStats.day > 0} />
+            <InsightCard label="Week" value={newStats.week} compact color="emerald" />
+            <InsightCard label="Month" value={newStats.month} compact color="emerald" />
           </div>
         </div>
       </div>
@@ -395,55 +389,45 @@ export default function UsersTab() {
               {users.map((u, idx) => (
                 <motion.div
                   key={u._id}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.03 }}
                   onClick={() => setSelectedUser(u)}
-                  className="p-5 rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] active:bg-[var(--foreground)]/[0.04] transition-all relative"
+                  className="p-3.5 sm:p-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] active:bg-[var(--foreground)]/[0.04] transition-all relative"
                 >
-                  <div className="flex justify-between items-start mb-4 gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Avatar user={u} />
+                  <div className="flex justify-between items-start mb-2.5 gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Avatar user={u} size="sm" />
                       <div className="min-w-0">
-                        <p className="font-bold text-[var(--foreground)] text-[13px] truncate">{u.name}</p>
-                        <p className="text-[10px] text-[var(--muted)]/40 font-mono truncate">{u.userId}</p>
+                        <p className="font-bold text-[var(--foreground)] text-xs truncate leading-tight">{u.name}</p>
+                        <p className="text-[10px] text-[var(--muted)]/40 font-mono truncate lowercase leading-tight">{u.userId}</p>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1.5 shrink-0">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest ${getRoleClass(u.userType)}`}>
-                        {getRoleIcon(u.userType)}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[8px] font-black uppercase tracking-wider ${getRoleClass(u.userType)}`}>
                         {u.userType}
                       </span>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--border)] bg-[var(--foreground)]/[0.03] text-[var(--muted)] text-[9px] font-black uppercase tracking-widest">
-                        <Activity size={10} className="text-[var(--accent)]" />
-                        {u.totalOrders || 0} Orders
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md border border-[var(--border)] bg-blue-500/5 text-blue-400 text-[8px] font-black uppercase tracking-wider">
+                        {u.totalOrders || 0}
                       </span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2.5 text-[var(--muted)]/60">
-                        <Mail size={12} className="shrink-0 text-[var(--accent)]" />
-                        <span className="text-[11px] font-medium break-all">{u.email}</span>
-                      </div>
-                      {u.phone && (
-                        <div className="flex items-center gap-2.5 text-[var(--muted)]/60">
-                          <Phone size={12} className="shrink-0 text-[var(--accent)]" />
-                          <span className="text-[11px] font-medium">{u.phone}</span>
-                        </div>
-                      )}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-[var(--muted)]/60 px-0.5">
+                      <Mail size={10} className="shrink-0 text-[var(--accent)]" />
+                      <span className="text-[10px] font-medium break-all lowercase">{u.email}</span>
                     </div>
 
-                    <div className="flex items-center justify-between gap-4 pt-3 border-t border-[var(--border)]" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-[var(--muted)]/40">
+                    <div className="flex items-center justify-between gap-4 pt-2.5 border-t border-[var(--border)]" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1 text-[var(--muted)]/30">
                           <Calendar size={10} />
-                          <span className="text-[9px] font-bold uppercase tracking-tighter">{new Date(u.createdAt).toLocaleDateString()}</span>
+                          <span className="text-[8px] font-bold uppercase tracking-tighter">{new Date(u.createdAt).toLocaleDateString()}</span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-[var(--accent)]/40">
+                        <div className="flex items-center gap-1 text-[var(--muted)]/30">
                           <Activity size={10} />
-                          <span className="text-[9px] font-bold uppercase tracking-tighter">
+                          <span className="text-[8px] font-bold uppercase tracking-tighter">
                             {u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : "Never"}
                           </span>
                         </div>
@@ -541,6 +525,23 @@ export default function UsersTab() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-8 space-y-10">
+                <DrawerSection icon={<Shield size={18} />} title="Account Management">
+                  <div className="space-y-4 pt-2">
+                    <p className="text-xs font-semibold text-[var(--muted)] px-1">Change User Role</p>
+                    <RoleDropdown
+                      value={selectedUser.userType}
+                      disabled={updatingUserId === selectedUser.userId || selectedUser.userType === "owner"}
+                      onChange={(v) => {
+                        changeUserRole(selectedUser.userId, v);
+                        setSelectedUser(null);
+                      }}
+                    />
+                    {selectedUser.userType === "owner" && (
+                      <p className="text-[11px] text-rose-500 font-medium px-1 italic">Role is restricted and cannot be modified.</p>
+                    )}
+                  </div>
+                </DrawerSection>
+
                 <DrawerSection icon={<IdCard size={18} />} title="Basic Information">
                   <DrawerDetail label="Full Name" value={selectedUser.name} />
                   <DrawerDetail label="User ID" value={selectedUser.userId} />
@@ -562,23 +563,6 @@ export default function UsersTab() {
                     }
                   />
                   <DrawerDetail label="Last Login IP" value={selectedUser.lastLoginIp || "Not recorded"} />
-                </DrawerSection>
-
-                <DrawerSection icon={<Shield size={18} />} title="Account Management">
-                  <div className="space-y-4 pt-2">
-                    <p className="text-xs font-semibold text-[var(--muted)] px-1">Change User Role</p>
-                    <RoleDropdown
-                      value={selectedUser.userType}
-                      disabled={updatingUserId === selectedUser.userId || selectedUser.userType === "owner"}
-                      onChange={(v) => {
-                        changeUserRole(selectedUser.userId, v);
-                        setSelectedUser(null);
-                      }}
-                    />
-                    {selectedUser.userType === "owner" && (
-                      <p className="text-[11px] text-rose-500 font-medium px-1 italic">Role is restricted and cannot be modified.</p>
-                    )}
-                  </div>
                 </DrawerSection>
               </div>
             </motion.div>
@@ -828,15 +812,15 @@ function InsightCard({ label, value, icon, color, pulse, compact }) {
   if (compact) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 5 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={`px-2 py-2.5 sm:px-4 sm:py-3 rounded-xl border ${colorClasses[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border ${colorClasses[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
       >
         {pulse && (
           <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
         )}
-        <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-tighter opacity-60 mb-0.5">{label}</span>
-        <span className="text-sm sm:text-base font-extrabold tabular-nums whitespace-nowrap">{value}</span>
+        <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-tight opacity-60 mb-0.5">{label}</span>
+        <span className="text-xs sm:text-sm font-black tabular-nums whitespace-nowrap">{value}</span>
       </motion.div>
     );
   }

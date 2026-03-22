@@ -237,9 +237,9 @@ export default function StatsTab() {
             {/* HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-lg sm:text-xl font-bold tracking-tight text-[var(--foreground)]">Wallet Manager</h2>
+                    <h2 className="text-lg sm:text-xl font-bold tracking-tight text-[var(--foreground)]">Wallet Management</h2>
                     <p className="hidden sm:block text-sm text-[var(--muted)] mt-1">
-                        Overview, Manual Adjustments & {activeTab === "history" ? "Transaction History" : "User Wallets"}.
+                        View stats, add or remove money manually, and check history.
                     </p>
                 </div>
 
@@ -286,17 +286,15 @@ export default function StatsTab() {
             ) : (
                 <>
                     {/* TOP LEVEL OVERVIEW */}
-                    <div className="grid grid-cols-2 lg:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
                         <InsightCard
-                            label="Wallet Liability"
+                            label="Total Customer Balance"
                             value={`₹${(data.totalBalance || 0).toLocaleString()}`}
-                            icon={<FiCreditCard size={14} />}
                             color="blue"
                         />
                         <InsightCard
-                            label="Active Wallets"
+                            label="Active Users"
                             value={data.activeWallets || 0}
-                            icon={<FiUser size={14} />}
                             color="amber"
                         />
                     </div>
@@ -307,28 +305,12 @@ export default function StatsTab() {
                         <div className="space-y-2 sm:space-y-3">
                             <div className="flex items-center gap-2 px-1">
                                 <FiArrowUp size={12} className="text-emerald-500" />
-                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Deposit Stream</h4>
+                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Money Added</h4>
                             </div>
                             <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                                <InsightCard
-                                    label="24h"
-                                    value={`₹${(data.deposits?.day || 0).toLocaleString()}`}
-                                    color="emerald"
-                                    compact
-                                    pulse={data.deposits?.day > 0}
-                                />
-                                <InsightCard
-                                    label="7d"
-                                    value={`₹${(data.deposits?.week || 0).toLocaleString()}`}
-                                    color="emerald"
-                                    compact
-                                />
-                                <InsightCard
-                                    label="30d"
-                                    value={`₹${(data.deposits?.month || 0).toLocaleString()}`}
-                                    color="emerald"
-                                    compact
-                                />
+                                <InsightCard label="Today" value={`₹${(data.deposits?.day || 0).toLocaleString()}`} color="emerald" compact pulse={data.deposits?.day > 0} />
+                                <InsightCard label="Week" value={`₹${(data.deposits?.week || 0).toLocaleString()}`} color="emerald" compact />
+                                <InsightCard label="Month" value={`₹${(data.deposits?.month || 0).toLocaleString()}`} color="emerald" compact />
                             </div>
                         </div>
 
@@ -336,28 +318,12 @@ export default function StatsTab() {
                         <div className="space-y-2 sm:space-y-3">
                             <div className="flex items-center gap-2 px-1">
                                 <FiArrowDown size={12} className="text-purple-500" />
-                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Usage Snapshot</h4>
+                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Money Spent</h4>
                             </div>
                             <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                                <InsightCard
-                                    label="24h"
-                                    value={`₹${(data.usage?.day || 0).toLocaleString()}`}
-                                    color="purple"
-                                    compact
-                                    pulse={data.usage?.day > 0}
-                                />
-                                <InsightCard
-                                    label="7d"
-                                    value={`₹${(data.usage?.week || 0).toLocaleString()}`}
-                                    color="purple"
-                                    compact
-                                />
-                                <InsightCard
-                                    label="30d"
-                                    value={`₹${(data.usage?.month || 0).toLocaleString()}`}
-                                    color="purple"
-                                    compact
-                                />
+                                <InsightCard label="Today" value={`₹${(data.usage?.day || 0).toLocaleString()}`} color="purple" compact pulse={data.usage?.day > 0} />
+                                <InsightCard label="Week" value={`₹${(data.usage?.week || 0).toLocaleString()}`} color="purple" compact />
+                                <InsightCard label="Month" value={`₹${(data.usage?.month || 0).toLocaleString()}`} color="purple" compact />
                             </div>
                         </div>
                     </div>
@@ -366,7 +332,7 @@ export default function StatsTab() {
                     <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-6 relative overflow-hidden">
                         <div className="flex items-center gap-2 mb-4 sm:mb-6">
                             <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-                            <h3 className="text-base sm:text-lg font-bold text-[var(--foreground)]">Manual Wallet Adjustment</h3>
+                            <h3 className="text-base sm:text-lg font-bold text-[var(--foreground)]">Add or Remove Money Manually</h3>
                         </div>
 
                         <div className="flex flex-col md:flex-row items-stretch md:items-end gap-3 sm:gap-4">
@@ -406,7 +372,7 @@ export default function StatsTab() {
                                     className="flex-1 md:flex-none h-10 sm:h-11 px-4 sm:px-5 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold text-[11px] flex items-center justify-center gap-2 hover:bg-emerald-500/20 active:scale-95 transition-all outline-none disabled:opacity-50"
                                 >
                                     {updating ? <Loader2 className="animate-spin" size={14} /> : <FiPlus size={14} />}
-                                    <span className="hidden xs:inline">Add Funds</span>
+                                    <span className="hidden xs:inline">Add Money</span>
                                     <span className="xs:hidden">Add</span>
                                 </button>
                                 <button
@@ -415,7 +381,7 @@ export default function StatsTab() {
                                     className="flex-1 md:flex-none h-10 sm:h-11 px-4 sm:px-5 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 font-bold text-[11px] flex items-center justify-center gap-2 hover:bg-red-500/20 active:scale-95 transition-all outline-none disabled:opacity-50"
                                 >
                                     {updating ? <Loader2 className="animate-spin" size={14} /> : <FiMinus size={14} />}
-                                    <span className="hidden xs:inline">Remove Funds</span>
+                                    <span className="hidden xs:inline">Remove Money</span>
                                     <span className="xs:hidden">Deduct</span>
                                 </button>
                             </div>
@@ -429,7 +395,7 @@ export default function StatsTab() {
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                     <h3 className="text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-                                        Transaction History
+                                        Wallet Action History
                                     </h3>
                                 </div>
 
@@ -451,9 +417,9 @@ export default function StatsTab() {
                                                 onChange={(e) => { setHistoryType(e.target.value); setHistoryPage(1); }}
                                                 className="w-full h-10 px-3 pr-8 rounded-xl bg-[var(--card)] border border-[var(--border)] text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)] appearance-none cursor-pointer"
                                             >
-                                                <option value="">All Types</option>
-                                                <option value="credit">Credit</option>
-                                                <option value="debit">Debit</option>
+                                                <option value="">All Actions</option>
+                                                <option value="credit">Money Added</option>
+                                                <option value="debit">Money Spent</option>
                                             </select>
                                             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--muted)]">
                                                 <FiFilter size={14} />
@@ -730,7 +696,7 @@ export default function StatsTab() {
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 <h3 className="text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-                                    User Wallets
+                                    Customer Wallet List
                                 </h3>
 
                                 <div className="relative w-full sm:w-64">
@@ -884,7 +850,7 @@ export default function StatsTab() {
     );
 }
 
-function InsightCard({ label, value, icon, color, pulse, compact }) {
+function InsightCard({ label, value, color, pulse, compact }) {
     const colors = {
         blue: "text-blue-500 bg-blue-500/5 border-blue-500/10",
         amber: "text-amber-500 bg-amber-500/5 border-amber-500/10",
@@ -892,28 +858,13 @@ function InsightCard({ label, value, icon, color, pulse, compact }) {
         emerald: "text-emerald-500 bg-emerald-500/5 border-emerald-500/10",
     };
 
-    if (compact) {
-        return (
-            <div className={`px-2 py-2.5 sm:px-4 sm:py-3 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden bg-[var(--card)]`}>
-                {pulse && (
-                    <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
-                )}
-                <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-tighter opacity-60 mb-0.5">{label}</span>
-                <span className="text-sm sm:text-base font-extrabold tabular-nums whitespace-nowrap">{value}</span>
-            </div>
-        );
-    }
-
     return (
-        <div className={`p-3 sm:p-4 rounded-2xl border ${colors[color]} flex flex-col gap-1.5 sm:gap-2 relative overflow-hidden bg-[var(--card)]`}>
+        <div className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden bg-[var(--card)]`}>
             {pulse && (
-                <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-current animate-ping" />
+                <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
             )}
-            <div className="flex items-center gap-1.5 sm:gap-2 opacity-60">
-                {icon}
-                <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest">{label}</span>
-            </div>
-            <span className="text-lg sm:text-xl font-black tabular-nums">{value}</span>
+            <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-tight opacity-60 mb-0.5">{label}</span>
+            <span className="text-xs sm:text-sm font-black tabular-nums whitespace-nowrap">{value}</span>
         </div>
     );
 }

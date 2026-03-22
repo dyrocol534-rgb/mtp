@@ -133,9 +133,9 @@ export default function TransactionsTab() {
       {/* ================= HEADER ================= */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">Financial Stream</h2>
+          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">Transaction History</h2>
           <p className="text-xs text-[var(--muted)] font-medium mt-1">
-            Real-time transaction monitoring and audit logs
+            Monitor and track all user payments and order logs.
           </p>
         </div>
 
@@ -143,7 +143,7 @@ export default function TransactionsTab() {
           <div className="px-3 py-1.5 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-[10px] font-bold text-[var(--muted)] uppercase">
-              {pagination.total} Live TXNS
+              {pagination.total} TOTAL TXNS
             </span>
           </div>
           <button
@@ -155,62 +155,30 @@ export default function TransactionsTab() {
         </div>
       </div>
 
-      {/* ================= STATS ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* Transaction Volume Column */}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           <div className="flex items-center gap-2 px-1">
-            <Hash size={14} className="text-blue-500" />
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Transaction Volume</h4>
+            <Hash size={12} className="text-blue-500" />
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Transaction Count</h4>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <InsightCard
-              label="24h"
-              value={stats.counts?.day}
-              color="blue"
-              compact
-              pulse={stats.counts?.day > 0}
-            />
-            <InsightCard
-              label="7d"
-              value={stats.counts?.week}
-              color="blue"
-              compact
-            />
-            <InsightCard
-              label="30d"
-              value={stats.counts?.month}
-              color="blue"
-              compact
-            />
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <InsightCard label="Today" value={stats.counts?.day} color="blue" compact pulse={stats.counts?.day > 0} />
+            <InsightCard label="Week" value={stats.counts?.week} color="blue" compact />
+            <InsightCard label="Month" value={stats.counts?.month} color="blue" compact />
           </div>
         </div>
 
         {/* Revenue Snapshot Column */}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           <div className="flex items-center gap-2 px-1">
-            <IndianRupee size={14} className="text-emerald-500" />
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Revenue Snapshot</h4>
+            <IndianRupee size={12} className="text-emerald-500" />
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Total Earnings</h4>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <InsightCard
-              label="24h"
-              value={`₹${(stats.volume?.day || 0).toLocaleString()}`}
-              color="emerald"
-              compact
-            />
-            <InsightCard
-              label="7d"
-              value={`₹${(stats.volume?.week || 0).toLocaleString()}`}
-              color="emerald"
-              compact
-            />
-            <InsightCard
-              label="30d"
-              value={`₹${(stats.volume?.month || 0).toLocaleString()}`}
-              color="emerald"
-              compact
-            />
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <InsightCard label="Today" value={`₹${(stats.volume?.day || 0).toLocaleString()}`} color="emerald" compact pulse={stats.volume?.day > 0} />
+            <InsightCard label="Week" value={`₹${(stats.volume?.week || 0).toLocaleString()}`} color="emerald" compact />
+            <InsightCard label="Month" value={`₹${(stats.volume?.month || 0).toLocaleString()}`} color="emerald" compact />
           </div>
         </div>
       </div>
@@ -225,13 +193,13 @@ export default function TransactionsTab() {
               setPage(1);
               setSearch(e.target.value);
             }}
-            placeholder="Search Order ID, Email, Player ID..."
+            placeholder="Search Order ID, Email, Payment Method..."
             className="w-full h-11 pl-11 pr-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-sm focus:border-[var(--accent)]/50 outline-none transition-all placeholder:text-[var(--muted)]/40"
           />
         </div>
         <button className="h-11 px-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] flex items-center justify-center gap-2 hover:bg-[var(--foreground)]/[0.05] transition-all sm:w-max">
           <Filter size={14} className="text-[var(--accent)]" />
-          <span className="text-xs font-bold uppercase">Filter Logic</span>
+          <span className="text-xs font-bold uppercase">Filter</span>
         </button>
       </div>
 
@@ -245,7 +213,7 @@ export default function TransactionsTab() {
             className="py-32 flex flex-col items-center justify-center space-y-4"
           >
             <Loader2 className="animate-spin text-[var(--accent)]" size={32} />
-            <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">Synchronizing Records</p>
+            <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">Loading Records...</p>
           </motion.div>
         ) : (
           <motion.div
@@ -258,12 +226,13 @@ export default function TransactionsTab() {
               <table className="w-full text-left text-sm">
                 <thead className="bg-[var(--foreground)]/[0.03] border-b border-[var(--border)]">
                   <tr className="text-[10px] uppercase font-bold tracking-widest text-[var(--muted)]">
-                    <th className="px-6 py-4">Timeline</th>
-                    <th className="px-6 py-4">Reference</th>
-                    <th className="px-6 py-4">Identity</th>
-                    <th className="px-6 py-4">Category</th>
+                    <th className="px-6 py-4">Time</th>
+                    <th className="px-6 py-4">Order ID</th>
+                    <th className="px-6 py-4">User</th>
+                    <th className="px-6 py-4">Game</th>
                     <th className="px-6 py-4">Status</th>
-                    <th className="px-6 py-4 text-right">Value</th>
+                    <th className="px-6 py-4">Method</th>
+                    <th className="px-6 py-4 text-right">Amount</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border)]">
@@ -305,6 +274,11 @@ export default function TransactionsTab() {
                             {meta.label}
                           </span>
                         </td>
+                        <td className="px-6 py-4">
+                          <span className="text-[10px] font-bold text-[var(--muted)]/60 uppercase border border-[var(--border)] px-2 py-1 rounded-md bg-[var(--foreground)]/[0.02]">
+                            {t.paymentMethod || "N/A"}
+                          </span>
+                        </td>
                         <td className="px-6 py-4 text-right">
                           <span className="text-base font-black text-emerald-500 tracking-tighter tabular-nums">
                             ₹{t.price}
@@ -324,36 +298,42 @@ export default function TransactionsTab() {
                 return (
                   <motion.div
                     key={t._id}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.03 }}
                     onClick={() => setSelectedTx(t)}
-                    className="p-4 rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] active:bg-[var(--foreground)]/[0.05] transition-all"
+                    className="p-3 sm:p-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] active:bg-[var(--foreground)]/[0.05] transition-all"
                   >
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="space-y-0.5">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[8px] font-bold uppercase tracking-widest ${meta.class}`}>
-                          {meta.icon}
-                          {meta.label}
-                        </span>
-                        <p className="text-[10px] font-mono text-[var(--muted)]/40 uppercase mt-1">{t.orderId}</p>
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex flex-col gap-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md border text-[7px] font-bold uppercase tracking-wider ${meta.class}`}>
+                            {meta.icon}
+                            {meta.label}
+                          </span>
+                          <span className="text-[8px] font-bold text-[var(--muted)]/40 uppercase tracking-tighter truncate">{t.paymentMethod}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-lg bg-[var(--foreground)]/[0.05] flex items-center justify-center shrink-0">
+                            <Gamepad2 size={12} className="text-[var(--accent)]" />
+                          </div>
+                          <div className="truncate">
+                            <p className="font-bold text-[var(--foreground)] uppercase text-[10px] leading-tight">{t.gameSlug}</p>
+                            <p className="text-[9px] text-[var(--muted)]/60 truncate leading-tight lowercase">{t.email || "no email"}</p>
+                          </div>
+                        </div>
                       </div>
-                      <span className="text-lg font-black text-emerald-500 tracking-tighter">₹{t.price}</span>
+                      <div className="flex flex-col items-end shrink-0">
+                        <span className="text-base font-black text-emerald-500 tracking-tighter tabular-nums">₹{t.price}</span>
+                        <span className="text-[8px] font-medium text-[var(--muted)]/40 leading-none">{new Date(t.createdAt).toLocaleDateString()}</span>
+                      </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px]">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <div className="w-8 h-8 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center shrink-0">
-                          <Gamepad2 size={14} className="text-[var(--accent)]" />
-                        </div>
-                        <div className="truncate">
-                          <p className="font-bold text-[var(--foreground)] uppercase">{t.gameSlug}</p>
-                          <p className="text-[var(--muted)]/60 truncate">{t.email || "No Email"}</p>
-                        </div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="font-medium text-[var(--muted)]/40">{new Date(t.createdAt).toLocaleDateString()}</p>
-                        <ChevronRight size={14} className="ml-auto text-[var(--muted)]/20 mt-1" />
+                    <div className="flex items-center justify-between gap-3 text-[9px] font-mono text-[var(--muted)]/40 border-t border-[var(--border)] pt-2 mt-2">
+                      <span className="truncate uppercase">{t.orderId}</span>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span>Details</span>
+                        <ChevronRight size={10} />
                       </div>
                     </div>
                   </motion.div>
@@ -364,7 +344,7 @@ export default function TransactionsTab() {
             {!transactions.length && (
               <div className="py-20 text-center border border-dashed border-[var(--border)] rounded-[2rem]">
                 <Hash className="mx-auto text-[var(--muted)]/20 mb-4" size={48} />
-                <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">Transaction Stream Empty</p>
+                <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">No Transactions Found</p>
               </div>
             )}
 
@@ -417,8 +397,8 @@ export default function TransactionsTab() {
               <div className="p-8 border-b border-[var(--border)] bg-gradient-to-r from-[var(--foreground)]/[0.02] to-transparent">
                 <div className="flex items-start justify-between mb-8">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-bold text-[var(--accent)] uppercase tracking-widest">Transaction Verified</p>
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Payment Report</h3>
+                    <p className="text-[10px] font-bold text-[var(--accent)] uppercase tracking-widest">Transaction Details</p>
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Order Summary</h3>
                   </div>
                   <button
                     onClick={() => setSelectedTx(null)}
@@ -446,27 +426,27 @@ export default function TransactionsTab() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-8 space-y-10">
-                <DrawerSection icon={<Gamepad2 size={16} />} title="Service Node">
-                  <DrawerDetail label="Platform Source" value={selectedTx.gameSlug} emphasize />
-                  <DrawerDetail label="Asset Profile" value={selectedTx.itemName} />
-                  <DrawerDetail label="Asset Signature" value={selectedTx.itemSlug} />
+                <DrawerSection icon={<Gamepad2 size={16} />} title="Order Details">
+                  <DrawerDetail label="Game" value={selectedTx.gameSlug} emphasize />
+                  <DrawerDetail label="Item" value={selectedTx.itemName} />
+                  <DrawerDetail label="Code" value={selectedTx.itemSlug} />
                 </DrawerSection>
 
-                <DrawerSection icon={<Smartphone size={16} />} title="Terminal Link">
-                  <DrawerDetail label="Player Protocol" value={selectedTx.playerId} emphasize />
-                  <DrawerDetail label="Sector Node" value={selectedTx.zoneId || "GLOBAL"} />
+                <DrawerSection icon={<Smartphone size={16} />} title="Player Info">
+                  <DrawerDetail label="Player ID" value={selectedTx.playerId} emphasize />
+                  <DrawerDetail label="Server/Zone" value={selectedTx.zoneId || "GLOBAL"} />
                 </DrawerSection>
 
-                <DrawerSection icon={<CreditCard size={16} />} title="Financial Protocol">
-                  <DrawerDetail label="Settlement Path" value={selectedTx.paymentMethod} />
-                  <DrawerDetail label="Gateway Status" value={selectedTx.paymentStatus} emphasize />
-                  <DrawerDetail label="Fulfillment Node" value={selectedTx.topupStatus} />
+                <DrawerSection icon={<CreditCard size={16} />} title="Payment Details">
+                  <DrawerDetail label="Method" value={selectedTx.paymentMethod} />
+                  <DrawerDetail label="Payment Status" value={selectedTx.paymentStatus} emphasize />
+                  <DrawerDetail label="Delivery Status" value={selectedTx.topupStatus} />
                 </DrawerSection>
 
-                <DrawerSection icon={<User size={16} />} title="Authorized Entity">
-                  <DrawerDetail label="Registry Email" value={selectedTx.email || "GUEST"} />
-                  <DrawerDetail label="Comms Channel" value={selectedTx.phone || "UNLINKED"} />
-                  <DrawerDetail label="Sync Timestamp" value={new Date(selectedTx.createdAt).toLocaleString()} />
+                <DrawerSection icon={<User size={16} />} title="Customer Info">
+                  <DrawerDetail label="Email" value={selectedTx.email || "GUEST"} />
+                  <DrawerDetail label="Phone" value={selectedTx.phone || "UNLINKED"} />
+                  <DrawerDetail label="Date & Time" value={new Date(selectedTx.createdAt).toLocaleString()} />
                 </DrawerSection>
 
                 <div className="pt-6 border-t border-[var(--border)] opacity-20">
@@ -507,7 +487,7 @@ function DrawerDetail({ label, value, emphasize }) {
   );
 }
 
-function InsightCard({ label, value, icon, color, pulse, compact }) {
+function InsightCard({ label, value, color, pulse, compact }) {
   const colors = {
     blue: "text-blue-500 border-blue-500/10 bg-blue-500/5",
     amber: "text-amber-500 border-amber-500/10 bg-amber-500/5",
@@ -515,36 +495,17 @@ function InsightCard({ label, value, icon, color, pulse, compact }) {
     emerald: "text-emerald-500 border-emerald-500/10 bg-emerald-500/5",
   };
 
-  if (compact) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 5 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={`px-4 py-3 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
-      >
-        {pulse && (
-          <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
-        )}
-        <span className="text-[9px] font-bold uppercase tracking-tighter opacity-60 mb-0.5">{label}</span>
-        <span className="text-base font-extrabold tabular-nums whitespace-nowrap">{value}</span>
-      </motion.div>
-    );
-  }
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`p-4 rounded-2xl border ${colors[color]} flex flex-col gap-2 relative overflow-hidden`}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
     >
       {pulse && (
-        <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-current animate-ping" />
+        <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
       )}
-      <div className="flex items-center gap-2 opacity-60">
-        {icon}
-        <span className="text-[9px] font-black uppercase tracking-widest">{label}</span>
-      </div>
-      <span className="text-xl font-black tabular-nums">{value}</span>
+      <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-tight opacity-60 mb-0.5">{label}</span>
+      <span className="text-xs sm:text-sm font-black tabular-nums whitespace-nowrap">{value}</span>
     </motion.div>
   );
 }

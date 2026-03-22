@@ -110,19 +110,10 @@ export default function RedeemCodesTab() {
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
             {/* SUMMARY CARDS */}
-            <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
-                <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col justify-center text-center sm:text-left">
-                    <p className="text-[8px] sm:text-[10px] font-black uppercase text-[var(--muted)] tracking-widest mb-0.5 sm:mb-1">Total</p>
-                    <p className="text-lg sm:text-2xl font-black italic">{summary.total}</p>
-                </div>
-                <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-green-500/5 border border-green-500/10 flex flex-col justify-center text-center sm:text-left">
-                    <p className="text-[8px] sm:text-[10px] font-black uppercase text-green-500/60 tracking-widest mb-0.5 sm:mb-1">Claimed</p>
-                    <p className="text-lg sm:text-2xl font-black italic text-green-500">{summary.totalUsed}</p>
-                </div>
-                <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-blue-500/5 border border-blue-500/10 flex flex-col justify-center text-center sm:text-left">
-                    <p className="text-[8px] sm:text-[10px] font-black uppercase text-blue-500/60 tracking-widest mb-0.5 sm:mb-1">Left</p>
-                    <p className="text-lg sm:text-2xl font-black italic text-blue-400">{summary.total - summary.totalUsed}</p>
-                </div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                <InsightCard label="Total" value={summary.total} color="blue" />
+                <InsightCard label="Claimed" value={summary.totalUsed} color="emerald" pulse={summary.totalUsed > 0} />
+                <InsightCard label="Left" value={summary.total - summary.totalUsed} color="amber" />
             </div>
 
             {/* GENERATOR CARD */}
@@ -347,5 +338,28 @@ export default function RedeemCodesTab() {
                 )}
             </div>
         </div>
+    );
+}
+
+function InsightCard({ label, value, color, pulse }) {
+    const colors = {
+        blue: "text-blue-500 bg-blue-500/5 border-blue-500/10",
+        amber: "text-amber-500 bg-amber-500/5 border-amber-500/10",
+        purple: "text-purple-500 bg-purple-500/5 border-purple-500/10",
+        emerald: "text-emerald-500 bg-emerald-500/5 border-emerald-500/10",
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden`}
+        >
+            {pulse && (
+                <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
+            )}
+            <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-tight opacity-60 mb-0.5">{label}</span>
+            <span className="text-xs sm:text-sm font-black tabular-nums whitespace-nowrap">{value}</span>
+        </motion.div>
     );
 }

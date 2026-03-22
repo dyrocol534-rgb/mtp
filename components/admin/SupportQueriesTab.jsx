@@ -170,24 +170,21 @@ export default function SupportQueriesTab() {
       </div>
 
       {/* ================= STATS GRID ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         <InsightCard
-          label="Total Queries"
+          label="Total"
           value={stats.total}
-          icon={<Inbox size={14} />}
           color="blue"
         />
         <InsightCard
-          label="Active Pending"
+          label="Pending"
           value={stats.open}
-          icon={<AlertCircle size={14} />}
           color="amber"
           pulse={stats.open > 0}
         />
         <InsightCard
-          label="Received Today"
+          label="Today"
           value={stats.today}
-          icon={<MessageSquare size={14} />}
           color="purple"
         />
       </div>
@@ -462,7 +459,7 @@ function DetailBlock({ label, value, emphasize, icon }) {
   );
 }
 
-function InsightCard({ label, value, icon, color, pulse }) {
+function InsightCard({ label, value, color, pulse }) {
   const colors = {
     blue: "text-blue-500 bg-blue-500/5 border-blue-500/10",
     amber: "text-amber-500 bg-amber-500/5 border-amber-500/10",
@@ -472,18 +469,15 @@ function InsightCard({ label, value, icon, color, pulse }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`p-4 rounded-2xl border ${colors[color]} flex flex-col gap-2 relative overflow-hidden bg-[var(--card)]`}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden bg-[var(--card)]`}
     >
       {pulse && (
-        <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-current animate-ping" />
+        <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
       )}
-      <div className="flex items-center gap-2 opacity-60">
-        {icon}
-        <span className="text-[9px] font-black uppercase tracking-widest">{label}</span>
-      </div>
-      <span className="text-xl font-black tabular-nums">{value}</span>
+      <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-tight opacity-60 mb-0.5">{label}</span>
+      <span className="text-xs sm:text-sm font-black tabular-nums whitespace-nowrap">{value}</span>
     </motion.div>
   );
 }
