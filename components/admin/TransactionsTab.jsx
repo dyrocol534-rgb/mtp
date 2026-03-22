@@ -394,29 +394,29 @@ export default function TransactionsTab() {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed right-0 top-0 h-full w-full max-w-lg bg-[var(--background)] border-l border-[var(--border)] shadow-2xl z-[1002] flex flex-col"
             >
-              <div className="p-8 border-b border-[var(--border)] bg-gradient-to-r from-[var(--foreground)]/[0.02] to-transparent">
-                <div className="flex items-start justify-between mb-8">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-bold text-[var(--accent)] uppercase tracking-widest">Transaction Details</p>
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Order Summary</h3>
+              <div className="p-6 border-b border-[var(--border)] bg-gradient-to-r from-[var(--foreground)]/[0.02] to-transparent">
+                <div className="flex items-start justify-between mb-6">
+                  <div className="space-y-0.5">
+                    <p className="text-[9px] font-mono font-black text-[var(--accent)] uppercase tracking-[0.2em] opacity-80 mb-1">#{selectedTx.orderId.toUpperCase()}</p>
+                    <h3 className="text-xl font-black uppercase tracking-tight text-[var(--foreground)]">Transaction Summary</h3>
                   </div>
                   <button
                     onClick={() => setSelectedTx(null)}
-                    className="w-10 h-10 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)]/40 hover:text-[var(--foreground)] hover:bg-red-500/20 transition-all"
+                    className="w-9 h-9 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)]/40 hover:text-[var(--foreground)] hover:bg-red-500/20 transition-all"
                   >
-                    <X size={20} />
+                    <X size={18} />
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between p-6 rounded-3xl bg-[var(--accent)]/5 border border-[var(--accent)]/10">
+                <div className="flex items-center justify-between p-4.5 rounded-2xl bg-[var(--accent)]/5 border border-[var(--accent)]/10">
                   <div>
-                    <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Settlement Amount</p>
-                    <span className="text-3xl font-black text-emerald-500 tabular-nums">₹{selectedTx.price}</span>
+                    <p className="text-[9px] font-bold text-[var(--muted)]/50 uppercase tracking-widest mb-0.5">Settlement Amount</p>
+                    <span className="text-2xl font-black text-emerald-500 tabular-nums leading-none">₹{selectedTx.price}</span>
                   </div>
                   {(() => {
                     const meta = statusMeta[selectedTx.status] || statusMeta.pending;
                     return (
-                      <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-bold uppercase tracking-widest ${meta.class}`}>
+                      <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[9px] font-bold uppercase tracking-widest ${meta.class}`}>
                         {meta.icon}
                         {meta.label}
                       </span>
@@ -449,9 +449,7 @@ export default function TransactionsTab() {
                   <DrawerDetail label="Date & Time" value={new Date(selectedTx.createdAt).toLocaleString()} />
                 </DrawerSection>
 
-                <div className="pt-6 border-t border-[var(--border)] opacity-20">
-                  <p className="text-[8px] font-mono uppercase tracking-[0.4em] text-center text-[var(--foreground)]">Reference ID: {selectedTx.orderId.toUpperCase()}</p>
-                </div>
+                <div className="pb-6" />
               </div>
             </motion.div>
           </>

@@ -110,233 +110,302 @@ export default function RedeemCodesTab() {
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
             {/* SUMMARY CARDS */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-4">
-                <InsightCard label="Total" value={summary.total} color="blue" />
-                <InsightCard label="Claimed" value={summary.totalUsed} color="emerald" pulse={summary.totalUsed > 0} />
-                <InsightCard label="Left" value={summary.total - summary.totalUsed} color="amber" />
+            <div className="flex items-center gap-3">
+                <div className="flex-1 px-4 py-3 rounded-2xl bg-[var(--card)] border border-[var(--border)] flex flex-col items-center justify-center text-center shadow-sm">
+                    <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)]/40 mb-1">Total Codes</span>
+                    <span className="text-lg font-black text-[var(--foreground)] tabular-nums">{summary.total}</span>
+                </div>
+                <div className="flex-1 px-4 py-3 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 flex flex-col items-center justify-center text-center shadow-sm">
+                    <span className="text-[8px] font-black uppercase tracking-widest text-emerald-500/40 mb-1">Claimed</span>
+                    <span className="text-lg font-black text-emerald-500 tabular-nums">{summary.totalUsed}</span>
+                </div>
+                <div className="flex-1 px-4 py-3 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex flex-col items-center justify-center text-center shadow-sm">
+                    <span className="text-[8px] font-black uppercase tracking-widest text-amber-500/40 mb-1">Available</span>
+                    <span className="text-lg font-black text-amber-500 tabular-nums">{summary.total - summary.totalUsed}</span>
+                </div>
             </div>
 
             {/* GENERATOR CARD */}
-            <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-blue-500/5 border border-blue-500/10 transition-all">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <div className="flex items-center gap-3 sm:gap-4">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.1)]">
-                            <FiGift size={20} className="sm:w-6 sm:h-6" />
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-gradient-to-br from-[var(--card)] to-[var(--foreground)]/[0.03] shadow-xl shadow-black/5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)]">
+                            <FiGift size={18} />
                         </div>
                         <div>
-                            <h3 className="text-base sm:text-xl font-black italic uppercase tracking-tight">Redeem Code Generator</h3>
-                            <p className="text-[var(--muted)] text-[8px] sm:text-[10px] font-bold uppercase tracking-widest opacity-60">Create single-use or reusable coupons</p>
+                            <h3 className="text-base font-black uppercase tracking-tight text-[var(--foreground)]">Generator</h3>
+                            <p className="text-[9px] font-bold text-[var(--muted)]/40 uppercase tracking-widest leading-none">Create vouchers</p>
                         </div>
                     </div>
 
-                    {/* TYPE TOGGLE */}
-                    <div className="flex bg-black/20 p-1 rounded-xl self-start sm:self-auto border border-white/5">
+                    <div className="flex bg-[var(--foreground)]/[0.05] p-1 rounded-lg border border-[var(--border)]">
                         <button
                             onClick={() => setIsSeries(false)}
-                            className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${!isSeries ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' : 'text-[var(--muted)]'}`}
+                            className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${!isSeries ? 'bg-[var(--accent)] text-white shadow-lg' : 'text-[var(--muted)] hover:text-[var(--foreground)]'}`}
                         >
                             Unique
                         </button>
                         <button
                             onClick={() => setIsSeries(true)}
-                            className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${isSeries ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' : 'text-[var(--muted)]'}`}
+                            className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${isSeries ? 'bg-[var(--accent)] text-white shadow-lg' : 'text-[var(--muted)] hover:text-[var(--foreground)]'}`}
                         >
                             Series
                         </button>
                     </div>
                 </div>
 
-                <form className="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4" onSubmit={handleGenerate}>
-                    <div className="space-y-1">
-                        <label className="text-[9px] sm:text-[10px] font-black uppercase text-[var(--muted)] ml-1 tracking-widest">Amount (₹)</label>
+                <form className="grid grid-cols-1 sm:grid-cols-4 gap-4" onSubmit={handleGenerate}>
+                    <div className="space-y-1.5">
+                        <label className="text-[9px] font-black uppercase text-[var(--muted)]/50 ml-1 tracking-[0.1em]">Value (₹)</label>
                         <input
                             type="number"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
-                            placeholder="e.g. 500"
-                            className="w-full h-10 sm:h-12 bg-black/20 border border-[var(--border)] rounded-xl px-4 text-sm focus:border-blue-500/40 outline-none transition-all font-bold"
+                            placeholder="500"
+                            className="w-full h-11 bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl px-4 text-sm focus:border-[var(--accent)]/40 outline-none transition-all font-bold text-[var(--foreground)]"
                             required
                         />
                     </div>
 
                     {isSeries ? (
                         <>
-                            <div className="space-y-1">
-                                <label className="text-[9px] sm:text-[10px] font-black uppercase text-[var(--muted)] ml-1 tracking-widest">Coupon Code</label>
+                            <div className="space-y-1.5">
+                                <label className="text-[9px] font-black uppercase text-[var(--muted)]/50 ml-1 tracking-[0.1em]">Code String</label>
                                 <input
                                     type="text"
                                     value={customCode}
                                     onChange={(e) => setCustomCode(e.target.value)}
-                                    placeholder="e.g. BONUS500"
-                                    className="w-full h-10 sm:h-12 bg-black/20 border border-[var(--border)] rounded-xl px-4 text-sm focus:border-blue-500/40 outline-none transition-all font-bold uppercase"
+                                    placeholder="BONUS500"
+                                    className="w-full h-11 bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl px-4 text-sm focus:border-[var(--accent)]/40 outline-none transition-all font-bold uppercase text-[var(--foreground)]"
                                     required={isSeries}
                                 />
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-[9px] sm:text-[10px] font-black uppercase text-[var(--muted)] ml-1 tracking-widest">Max Uses</label>
+                            <div className="space-y-1.5">
+                                <label className="text-[9px] font-black uppercase text-[var(--muted)]/50 ml-1 tracking-[0.1em]">Max Uses</label>
                                 <input
                                     type="number"
                                     value={maxUses}
                                     onChange={(e) => setMaxUses(e.target.value)}
-                                    placeholder="e.g. 100"
-                                    className="w-full h-10 sm:h-12 bg-black/20 border border-[var(--border)] rounded-xl px-4 text-sm focus:border-blue-500/40 outline-none transition-all font-bold"
+                                    placeholder="100"
+                                    className="w-full h-11 bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl px-4 text-sm focus:border-[var(--accent)]/40 outline-none transition-all font-bold text-[var(--foreground)]"
                                     required={isSeries}
                                 />
                             </div>
                         </>
                     ) : (
-                        <div className="space-y-1 col-span-1 sm:col-span-2">
-                            <label className="text-[9px] sm:text-[10px] font-black uppercase text-[var(--muted)] ml-1 tracking-widest">Quantity (Unique Codes)</label>
+                        <div className="space-y-1.5 col-span-1 sm:col-span-2">
+                            <label className="text-[9px] font-black uppercase text-[var(--muted)]/50 ml-1 tracking-[0.1em]">Code Count</label>
                             <input
                                 type="number"
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}
-                                placeholder="e.g. 10"
-                                className="w-full h-10 sm:h-12 bg-black/20 border border-[var(--border)] rounded-xl px-4 text-sm focus:border-blue-500/40 outline-none transition-all font-bold"
+                                placeholder="10"
+                                className="w-full h-11 bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl px-4 text-sm focus:border-[var(--accent)]/40 outline-none transition-all font-bold text-[var(--foreground)]"
                                 required={!isSeries}
                             />
                         </div>
                     )}
 
-                    <div className="flex items-end pt-1 sm:pt-0">
+                    <div className="flex items-end">
                         <button
                             type="submit"
                             disabled={isGenerating}
-                            className="w-full h-10 sm:h-12 bg-blue-500 text-white font-black italic uppercase text-[10px] sm:text-xs rounded-xl flex items-center justify-center gap-2 hover:bg-blue-600 transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95 disabled:opacity-50"
+                            className="w-full h-11 bg-[var(--accent)] text-white font-black uppercase text-[11px] rounded-xl flex items-center justify-center gap-2 hover:bg-[var(--accent-hover)] transition-all shadow-lg active:scale-95 disabled:opacity-50"
                         >
-                            {isGenerating ? "Processing..." : <><FiPlus /> {isSeries ? "Create Series" : "Generate Codes"}</>}
+                            {isGenerating ? "Processing" : <><FiPlus size={14} /> {isSeries ? "Create series" : "Generate unique"}</>}
                         </button>
                     </div>
                 </form>
             </div>
 
-            {/* RECENT CODES TABLE */}
-            <div className="space-y-4">
-                <h3 className="text-sm font-black uppercase italic tracking-widest flex items-center gap-2 text-white/40">
-                    <FiClock /> Recently Generated Codes
-                </h3>
+            {/* RECENT CODES */}
+            <div className="space-y-4 pt-2">
+                <div className="flex items-center justify-between">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)]/40 flex items-center gap-2">
+                        <FiClock size={12} /> Recently Generated
+                    </h3>
+                    <span className="text-[9px] font-bold text-[var(--muted)]/30 uppercase tabular-nums">{recentCodes.length} Records</span>
+                </div>
 
-                <div className="rounded-2xl border border-[var(--border)] bg-black/10 overflow-hidden">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs">
-                            <thead className="bg-white/5 text-[var(--muted)] font-bold uppercase tracking-wider">
-                                <tr>
-                                    <th className="px-6 py-4">Code</th>
-                                    <th className="px-6 py-4">Type</th>
-                                    <th className="px-6 py-4">Value</th>
-                                    <th className="px-6 py-4">Usage</th>
-                                    <th className="px-6 py-4">Redeemed By</th>
-                                    <th className="px-6 py-4 text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5 text-white/80">
-                                {loading ? (
-                                    <tr><td colSpan={6} className="px-6 py-8 text-center text-[var(--muted)]">Loading codes...</td></tr>
-                                ) : recentCodes.length === 0 ? (
-                                    <tr><td colSpan={6} className="px-6 py-8 text-center text-[var(--muted)]">No codes generated yet</td></tr>
-                                ) : recentCodes.map((code) => (
-                                    <tr key={code._id} className="hover:bg-white/[0.02] transition-colors">
-                                        <td className="px-6 py-4 font-mono font-bold text-blue-400 select-all">
-                                            {code.code}
-                                        </td>
-                                        <td className="px-6 py-4 uppercase">
-                                            <span className={`px-2 py-0.5 rounded text-[8px] font-black border ${code.isSeries
-                                                ? "bg-purple-500/10 text-purple-400 border-purple-500/20"
-                                                : "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                                                }`}>
-                                                {code.isSeries ? "Series" : "Unique"}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 font-black italic">
-                                            ₹{code.value}
-                                        </td>
-                                        <td className="px-6 py-4 uppercase">
-                                            {code.isSeries ? (
-                                                <div className="space-y-1">
-                                                    <div className="flex justify-between text-[9px] font-black mb-1">
-                                                        <span className={code.claimedBy?.length >= code.maxUses ? "text-red-400" : "text-green-400"}>
-                                                            {code.claimedBy?.length || 0} / {code.maxUses}
-                                                        </span>
-                                                    </div>
-                                                    <div className="w-16 h-1 bg-white/5 rounded-full overflow-hidden">
-                                                        <div
-                                                            className="h-full bg-blue-500"
-                                                            style={{ width: `${Math.min(100, ((code.claimedBy?.length || 0) / code.maxUses) * 100)}%` }}
-                                                        />
-                                                    </div>
+                {/* DESKTOP TABLE */}
+                <div className="hidden lg:block rounded-2xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-lg">
+                    <table className="w-full text-left text-[11px]">
+                        <thead className="bg-[var(--foreground)]/[0.02] border-b border-[var(--border)] text-[var(--muted)] font-black uppercase tracking-wider">
+                            <tr>
+                                <th className="px-6 py-4">Redeem Code</th>
+                                <th className="px-6 py-4">Configuration</th>
+                                <th className="px-6 py-4">Value</th>
+                                <th className="px-6 py-4">Activity</th>
+                                <th className="px-6 py-4">Owner</th>
+                                <th className="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--border)]">
+                            {loading ? (
+                                <tr><td colSpan={6} className="px-6 py-12 text-center text-[var(--muted)] font-bold uppercase tracking-widest opacity-20">Loading Codes</td></tr>
+                            ) : recentCodes.length === 0 ? (
+                                <tr><td colSpan={6} className="px-6 py-12 text-center text-[var(--muted)] font-bold uppercase tracking-widest opacity-20">No Records</td></tr>
+                            ) : recentCodes.map((code) => (
+                                <tr key={code._id} className="hover:bg-[var(--foreground)]/[0.01] transition-colors group">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-mono font-black text-[var(--accent)] tracking-tighter uppercase">{code.code}</span>
+                                            <button onClick={() => copyToClipboard(code.code)} className="opacity-0 group-hover:opacity-40 hover:!opacity-100 transition-all text-[var(--muted)]">
+                                                {copiedCode === code.code ? <FiCheck size={12} /> : <FiCopy size={12} />}
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase border tracking-widest ${code.isSeries
+                                            ? "bg-purple-500/10 text-purple-400 border-purple-500/20"
+                                            : "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                                            }`}>
+                                            {code.isSeries ? "Series" : "Unique"}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className="font-black text-[var(--foreground)] tabular-nums">₹{code.value}</span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {code.isSeries ? (
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex-1 min-w-[60px] h-1.5 bg-[var(--foreground)]/[0.05] rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-[var(--accent)] rounded-full shadow-[0_0_8px_rgba(var(--accent-rgb),0.3)] transition-all duration-1000"
+                                                        style={{ width: `${Math.min(100, ((code.claimedBy?.length || 0) / code.maxUses) * 100)}%` }}
+                                                    />
                                                 </div>
-                                            ) : (
-                                                <span className={`px-2 py-0.5 rounded text-[9px] font-black border ${code.status === "active"
-                                                    ? "bg-green-500/10 text-green-500 border-green-500/20"
-                                                    : "bg-red-500/10 text-red-500 border-red-500/20"
-                                                    }`}>
+                                                <span className="text-[9px] font-black tabular-nums text-[var(--muted)]/60">
+                                                    {code.claimedBy?.length || 0} / {code.maxUses}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-1.5">
+                                                <div className={`w-1.5 h-1.5 rounded-full ${code.status === "active" ? "bg-emerald-500 animate-pulse" : "bg-rose-500"}`} />
+                                                <span className={`text-[9px] font-black uppercase tracking-tighter ${code.status === "active" ? "text-emerald-500" : "text-rose-500"}`}>
                                                     {code.status}
                                                 </span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {code.isSeries ? (
-                                                <span className="text-[10px] font-bold text-[var(--muted)] uppercase italic">Multiple Users</span>
-                                            ) : code.status === "used" && code.usedBy ? (
-                                                <div className="space-y-0.5">
-                                                    <p className="font-bold text-white flex items-center gap-1"><FiUser className="text-blue-400" size={10} /> {code.usedBy.name}</p>
-                                                    <p className="text-[9px] opacity-40 uppercase tracking-tighter">ID: {code.usedBy.userId}</p>
-                                                    <p className="text-[9px] opacity-40">{new Date(code.usedAt).toLocaleString()}</p>
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {code.isSeries ? (
+                                            <span className="text-[9px] font-bold text-[var(--muted)]/40 uppercase tracking-tighter italic">Multi-User</span>
+                                        ) : code.status === "used" && code.usedBy ? (
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-6 h-6 rounded-lg bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)]">
+                                                    <FiUser size={12} />
                                                 </div>
-                                            ) : (
-                                                <span className="opacity-20">—</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
-                                            <button
-                                                onClick={() => copyToClipboard(code.code)}
-                                                className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all"
-                                                title="Copy Code"
-                                            >
-                                                {copiedCode === code.code ? <FiCheck /> : <FiCopy />}
-                                            </button>
+                                                <div className="flex flex-col min-w-0">
+                                                    <span className="text-[10px] font-bold text-[var(--foreground)] truncate uppercase leading-none mb-0.5">{code.usedBy.name}</span>
+                                                    <span className="text-[8px] text-[var(--muted)]/40 truncate tracking-tighter">{new Date(code.usedAt).toLocaleDateString()}</span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <span className="text-[9px] font-bold text-[var(--muted)]/20 uppercase tracking-[0.2em]">—</span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex items-center justify-end gap-1.5">
                                             {(code.status === "active" || code.isSeries) && (
                                                 <button
                                                     onClick={() => handleExpire(code._id)}
-                                                    className="p-2 rounded-lg bg-red-500/5 hover:bg-red-500/10 text-red-500/40 hover:text-red-500 transition-all"
-                                                    title="Expire/Delete Code"
+                                                    className="w-8 h-8 rounded-lg bg-rose-500/5 hover:bg-rose-500/10 text-rose-500/30 hover:text-rose-500 transition-all flex items-center justify-center group/btn"
                                                 >
-                                                    <FiTrash2 />
+                                                    <FiTrash2 size={13} className="group-hover/btn:scale-110" />
                                                 </button>
                                             )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
 
-                {/* PAGINATION */}
-                {pagination.pages > 1 && (
-                    <div className="flex items-center justify-between px-2 pt-2">
-                        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest">
-                            Page {pagination.currentPage} of {pagination.pages}
-                        </p>
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setPage(prev => Math.max(1, prev - 1))}
-                                disabled={page === 1 || loading}
-                                className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                            >
-                                Previous
-                            </button>
-                            <button
-                                onClick={() => setPage(prev => Math.min(pagination.pages, prev + 1))}
-                                disabled={page === pagination.pages || loading}
-                                className="px-4 py-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest hover:bg-blue-500/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                            >
-                                Next
-                            </button>
+                {/* MOBILE LIST */}
+                <div className="lg:hidden space-y-3">
+                    {recentCodes.map((code) => (
+                        <div key={code._id} className="p-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] space-y-4">
+                            <div className="flex justify-between items-start">
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)]/40">Redeem Code</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm font-black text-[var(--accent)] uppercase tracking-tighter">{code.code}</span>
+                                        <button onClick={() => copyToClipboard(code.code)} className="text-[var(--muted)]">
+                                            {copiedCode === code.code ? <FiCheck size={14} /> : <FiCopy size={14} />}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-[8px] font-black uppercase tracking-widest text-[var(--muted)]/40">Value</span>
+                                    <p className="text-base font-black text-[var(--foreground)] italic tracking-tighter">₹{code.value}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-between py-2.5 border-y border-[var(--border)]/50 border-dashed">
+                                <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase border tracking-widest ${code.isSeries ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>
+                                    {code.isSeries ? 'Series' : 'Unique'}
+                                </span>
+                                
+                                <div className="flex items-center gap-3">
+                                    {code.isSeries ? (
+                                        <span className="text-[10px] font-black text-[var(--muted)] uppercase tracking-tighter">
+                                            {code.claimedBy?.length || 0} / {code.maxUses} Uses
+                                        </span>
+                                    ) : (
+                                        <span className={`text-[9px] font-black uppercase ${code.status === 'active' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                            {code.status}
+                                        </span>
+                                    )}
+                                    {(code.status === 'active' || code.isSeries) && (
+                                        <button onClick={() => handleExpire(code._id)} className="text-rose-500/40 hover:text-rose-500 transition-colors">
+                                            <FiTrash2 size={14} />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {!code.isSeries && code.status === "used" && code.usedBy && (
+                                <div className="flex items-center gap-2 pt-1">
+                                    <div className="w-8 h-8 rounded-lg bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)]">
+                                        <FiUser size={14} />
+                                    </div>
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="text-[11px] font-black text-[var(--foreground)] uppercase truncate">{code.usedBy.name}</span>
+                                        <span className="text-[9px] text-[var(--muted)]/40 tracking-tighter">{new Date(code.usedAt).toLocaleString()}</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    </div>
-                )}
+                    ))}
+                </div>
             </div>
+
+            {/* PAGINATION */}
+            {pagination.pages > 1 && (
+                <div className="flex items-center justify-between px-2 pt-2">
+                    <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest">
+                        Page {pagination.currentPage} of {pagination.pages}
+                    </p>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setPage(prev => Math.max(1, prev - 1))}
+                            disabled={page === 1 || loading}
+                            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        >
+                            Previous
+                        </button>
+                        <button
+                            onClick={() => setPage(prev => Math.min(pagination.pages, prev + 1))}
+                            disabled={page === pagination.pages || loading}
+                            className="px-4 py-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest hover:bg-blue-500/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -495,36 +495,34 @@ export default function UsersTab() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 h-full w-full max-w-lg bg-[var(--background)] border-l border-[var(--border)] shadow-2xl z-[1110] flex flex-col"
+              className="fixed right-0 top-0 h-full w-full max-w-md bg-[var(--background)] border-l border-[var(--border)] shadow-2xl z-[1110] flex flex-col"
             >
-              <div className="p-8 border-b border-[var(--border)]">
-                <div className="flex items-start justify-between mb-8">
-                  <h3 className="text-xl font-bold text-[var(--foreground)]">User Details</h3>
+              <div className="p-6 border-b border-[var(--border)]">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-bold text-[var(--foreground)]">User Details</h3>
                   <button
                     onClick={() => setSelectedUser(null)}
-                    className="w-10 h-10 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-red-500/10 transition-all outline-none"
+                    className="w-8 h-8 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-red-500/10 transition-all outline-none"
                   >
-                    <X size={20} />
+                    <X size={18} />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-5">
-                  <div className="relative">
-                    <Avatar user={selectedUser} size="lg" />
-                  </div>
+                <div className="flex items-center gap-4">
+                  <Avatar user={selectedUser} size="lg" />
                   <div className="min-w-0">
-                    <h4 className="text-lg font-bold text-[var(--foreground)] truncate">{selectedUser.name}</h4>
+                    <h4 className="text-base font-bold text-[var(--foreground)] truncate">{selectedUser.name}</h4>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className={`px-2 py-0.5 rounded-md border text-[10px] font-semibold capitalize ${getRoleClass(selectedUser.userType)}`}>
+                      <span className={`px-2 py-0.5 rounded-md border text-[9px] font-bold capitalize ${getRoleClass(selectedUser.userType)}`}>
                         {selectedUser.userType}
                       </span>
-                      <span className="text-[11px] text-[var(--muted)] font-mono">{selectedUser.userId}</span>
+                      <span className="text-[10px] text-[var(--muted)]/60 font-mono tracking-tighter">{selectedUser.userId}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-8 space-y-10">
+              <div className="flex-1 overflow-y-auto p-6 space-y-8">
                 <DrawerSection icon={<Shield size={18} />} title="Account Management">
                   <div className="space-y-4 pt-2">
                     <p className="text-xs font-semibold text-[var(--muted)] px-1">Change User Role</p>
@@ -753,7 +751,7 @@ function Avatar({ user, size = "md" }) {
   const sizeClasses = {
     sm: "h-8 w-8",
     md: "h-10 w-10",
-    lg: "h-20 w-20",
+    lg: "h-14 w-14",
   };
 
   const initials = user.userId
@@ -773,7 +771,7 @@ function Avatar({ user, size = "md" }) {
 
   return (
     <div className={`${sizeClasses[size]} rounded-2xl flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-[var(--accent)] via-indigo-500 to-purple-600 shadow-lg shadow-[var(--accent)]/10`}>
-      {size === 'lg' ? <User size={32} /> : initials}
+      {size === 'lg' ? <User size={24} /> : initials}
     </div>
   );
 }

@@ -17,9 +17,13 @@ import {
     FiArrowDown,
     FiFilter,
     FiCheckCircle,
-    FiXCircle
+    FiXCircle,
+    FiTrendingUp,
+    FiActivity,
+    FiMoreVertical
 } from "react-icons/fi";
-import { Loader2 } from "lucide-react";
+import { Loader2, Zap, ArrowUpRight, ArrowDownRight, User, Wallet } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function StatsTab() {
     const [loading, setLoading] = useState(true);
@@ -53,7 +57,11 @@ export default function StatsTab() {
     const [historyTotalPages, setHistoryTotalPages] = useState(1);
 
     // Tab State
-    const [activeTab, setActiveTab] = useState("history"); // history | wallets
+    const [activeTab, setActiveTab] = useState("wallets"); // history | wallets
+
+    // Modal State
+    const [selectedUserForWallet, setSelectedUserForWallet] = useState(null);
+    const [quickAmount, setQuickAmount] = useState("");
 
     /* ================= FETCH STATS ================= */
     const fetchStats = async () => {
@@ -138,8 +146,11 @@ export default function StatsTab() {
     };
 
     /* ================= MANAGE WALLET ================= */
-    const handleManageWallet = async (action) => {
-        if (!manageEmail || !manageAmount || Number(manageAmount) <= 0) {
+    const handleManageWallet = async (action, overrideEmail = null, overrideAmount = null) => {
+        const finalEmail = overrideEmail || manageEmail;
+        const finalAmount = overrideAmount || manageAmount;
+
+        if (!finalEmail || !finalAmount || Number(finalAmount) <= 0) {
             alert("Please enter a valid email and amount");
             return;
         }
@@ -155,8 +166,8 @@ export default function StatsTab() {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    email: manageEmail,
-                    amount: Number(manageAmount),
+                    email: finalEmail,
+                    amount: Number(finalAmount),
                     action,
                 }),
             });
@@ -166,12 +177,15 @@ export default function StatsTab() {
             if (!res.ok) {
                 alert(json.message || "Failed to update wallet");
             } else {
-                alert(json.message);
+                // If it's a quick action, we might not want alerts, but for now keep it simple
+                // alert(json.message); 
                 setManageEmail("");
                 setManageAmount("");
-                fetchStats(); // Refresh stats
-                fetchWallets(); // Refresh wallet list
-                fetchHistory(); // Refresh history
+                setQuickAmount("");
+                setSelectedUserForWallet(null);
+                fetchStats();
+                fetchWallets();
+                fetchHistory();
             }
         } catch (err) {
             console.error("Wallet update error", err);
@@ -286,17 +300,30 @@ export default function StatsTab() {
             ) : (
                 <>
                     {/* TOP LEVEL OVERVIEW */}
-                    <div className="grid grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
-                        <InsightCard
-                            label="Total Customer Balance"
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                        <PremiumInsightCard
+                            label="Customer Pool"
                             value={`₹${(data.totalBalance || 0).toLocaleString()}`}
                             color="blue"
+                            icon={<Wallet size={20} />}
+                            description="Total combined balance of all users"
                         />
-                        <InsightCard
-                            label="Active Users"
+                        <PremiumInsightCard
+                            label="Active Wallets"
                             value={data.activeWallets || 0}
                             color="amber"
+                            icon={<Zap size={20} />}
+                            description="Number of accounts with active balances"
                         />
+                        <div className="hidden lg:block">
+                            <PremiumInsightCard
+                                label="Total Transactions"
+                                value={data.pagination?.total || 0}
+                                color="purple"
+                                icon={<FiActivity size={20} />}
+                                description="Total recorded wallet operations"
+                            />
+                        </div>
                     </div>
 
                     {/* SNAPSHOT GRID */}
@@ -710,43 +737,71 @@ export default function StatsTab() {
                                 </div>
                             </div>
 
-                            {/* MOBILE CARD VIEW FOR WALLETS */}
-                            <div className="md:hidden space-y-3">
+                            <div className="lg:hidden space-y-4">
                                 {walletLoading ? (
-                                    <div className="py-12 text-center text-[var(--muted)]">
-                                        <Loader2 className="animate-spin mx-auto mb-2" />
-                                        Loading wallets...
+                                    <div className="py-20 text-center text-[var(--muted)]">
+                                        <Loader2 className="animate-spin mx-auto mb-3 text-[var(--accent)]" size={32} />
+                                        <p className="font-medium">Curating your user list...</p>
                                     </div>
                                 ) : (!data.wallets || !data.wallets.length) ? (
-                                    <div className="py-12 text-center text-[var(--muted)] text-sm">
-                                        No wallet data available.
+                                    <div className="py-20 text-center text-[var(--muted)]/40 flex flex-col items-center">
+                                        <FiUser size={48} className="mb-4 opacity-10" />
+                                        <p className="text-sm font-medium">No users found.</p>
                                     </div>
                                 ) : (
-                                    data.wallets.map((user) => (
-                                        <div key={user._id} className="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] flex justify-between items-center">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--accent)]/10 text-[var(--accent)] font-bold text-sm">
-                                                    {user.name?.[0]?.toUpperCase() || <FiUser />}
-                                                </div>
-                                                <div>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="font-bold text-[var(--foreground)] text-sm">{user.name || "Unknown"}</span>
+                                    data.wallets.map((user, idx) => (
+                                        <motion.div
+                                            key={user._id}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: idx * 0.05 }}
+                                            className="group relative bg-gradient-to-br from-[var(--card)] to-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-2xl p-4 overflow-hidden transition-all hover:border-[var(--accent)]/30"
+                                        >
+                                            <div className="relative z-10 flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="relative">
+                                                        <Avatar name={user.name} type={user.userType} size="md" />
                                                         {user.userType === 'owner' && (
-                                                            <span className="px-1 py-0.5 rounded text-[8px] bg-red-500/10 text-red-500 border border-red-500/20 font-bold uppercase">
-                                                                OWNER
-                                                            </span>
+                                                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-[var(--card)] shadow-lg shadow-red-500/40" />
                                                         )}
                                                     </div>
-                                                    <div className="text-[10px] text-[var(--muted)] font-mono">{user.email}</div>
+                                                    <div className="min-w-0">
+                                                        <div className="flex items-center gap-2 mb-0.5">
+                                                            <h4 className="font-black text-[var(--foreground)] text-sm truncate tracking-tight">{user.name || "Unknown"}</h4>
+                                                            {user.userType === 'owner' && (
+                                                                <span className="px-1.5 py-0.5 rounded text-[7px] bg-red-500/10 text-red-500 border border-red-500/20 font-black uppercase tracking-widest">
+                                                                    OWNER
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-[10px] text-[var(--muted)] font-medium opacity-60 truncate max-w-[140px] lowercase">{user.email}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-4">
+                                                    <div className="text-right">
+                                                        <p className="text-[8px] font-black text-[var(--muted)] uppercase tracking-[0.2em] mb-1 opacity-40">Wallet</p>
+                                                        <p className="text-xl font-black text-[var(--foreground)] tabular-nums tracking-tighter shadow-sm">
+                                                            <span className="text-[10px] mr-0.5 text-[var(--accent)] font-bold">₹</span>
+                                                            {user.wallet.toLocaleString()}
+                                                        </p>
+                                                    </div>
+                                                    
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedUserForWallet(user);
+                                                            setQuickAmount("");
+                                                        }}
+                                                        className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white transition-all flex items-center justify-center shadow-lg shadow-transparent hover:shadow-[var(--accent)]/20 active:scale-95 border border-[var(--accent)]/10"
+                                                    >
+                                                        <FiDollarSign size={18} />
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <div className="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-0.5">Balance</div>
-                                                <div className="font-bold text-[var(--foreground)] text-sm tabular-nums">
-                                                    {user.wallet.toLocaleString()}
-                                                </div>
-                                            </div>
-                                        </div>
+
+                                            {/* Glow effect on hover */}
+                                            <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                                        </motion.div>
                                     ))
                                 )}
                             </div>
@@ -808,9 +863,23 @@ export default function StatsTab() {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
-                                                            <span className="font-bold text-[var(--foreground)] tabular-nums">
-                                                                {user.wallet.toLocaleString()}
-                                                            </span>
+                                                            <div className="flex items-center justify-end gap-3">
+                                                                <div className="flex flex-col items-end">
+                                                                    <span className="text-xs font-black text-[var(--foreground)] tabular-nums">
+                                                                        ₹{user.wallet.toLocaleString()}
+                                                                    </span>
+                                                                    <span className="text-[9px] text-[var(--muted)] uppercase font-bold tracking-tighter opacity-50">Current Balance</span>
+                                                                </div>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setSelectedUserForWallet(user);
+                                                                        setQuickAmount("");
+                                                                    }}
+                                                                    className="w-8 h-8 rounded-lg bg-[var(--accent)]/5 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white transition-all flex items-center justify-center shadow-lg shadow-transparent hover:shadow-[var(--accent)]/20 active:scale-95"
+                                                                >
+                                                                    <FiDollarSign size={14} />
+                                                                </button>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 ))
@@ -821,32 +890,195 @@ export default function StatsTab() {
                             </div>
 
                             {/* Pagination Wallets */}
-                            <div className="flex items-center justify-between px-2 sm:px-0 pt-2 border-t border-[var(--border)]">
-                                <span className="text-xs text-[var(--muted)]">
-                                    Page {data.pagination?.page || 1} of {data.pagination?.totalPages || 1}
+                            <div className="flex items-center justify-between px-2 sm:px-0 pt-6 border-t border-[var(--border)]">
+                                <span className="text-xs font-semibold text-[var(--muted)]">
+                                    Displaying <span className="text-[var(--foreground)]">{data.wallets.length}</span> results
                                 </span>
-                                <div className="flex gap-2">
-                                    <button
-                                        disabled={!data.pagination || data.pagination.page === 1}
-                                        onClick={() => setWalletPage(p => Math.max(1, p - 1))}
-                                        className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                                    >
-                                        <FiChevronLeft size={14} />
-                                    </button>
-                                    <button
-                                        disabled={!data.pagination || data.pagination.page === data.pagination.totalPages}
-                                        onClick={() => setWalletPage(p => Math.min(data.pagination?.totalPages || 1, p + 1))}
-                                        className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                                    >
-                                        <FiChevronRight size={14} />
-                                    </button>
+                                <div className="flex items-center gap-4">
+                                    <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest hidden sm:block">
+                                        Page {data.pagination?.page || 1} / {data.pagination?.totalPages || 1}
+                                    </span>
+                                    <div className="flex gap-2">
+                                        <button
+                                            disabled={!data.pagination || data.pagination.page === 1}
+                                            onClick={() => setWalletPage(p => Math.max(1, p - 1))}
+                                            className="h-9 px-4 rounded-xl border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--foreground)]/[0.03] disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-2 text-xs font-bold"
+                                        >
+                                            <FiChevronLeft size={16} />
+                                            Prev
+                                        </button>
+                                        <button
+                                            disabled={!data.pagination || data.pagination.page === data.pagination.totalPages}
+                                            onClick={() => setWalletPage(p => Math.min(data.pagination?.totalPages || 1, p + 1))}
+                                            className="h-9 px-4 rounded-xl border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--foreground)]/[0.03] disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-2 text-xs font-bold"
+                                        >
+                                            Next
+                                            <FiChevronRight size={16} />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     )}
                 </>
             )}
+
+            {/* QUICK MANAGE MODAL */}
+            <AnimatePresence>
+                {selectedUserForWallet && (
+                    <div className="fixed inset-0 z-[1500] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedUserForWallet(null)}
+                            className="fixed inset-0 bg-black/80 backdrop-blur-md"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative w-full max-w-sm bg-[var(--background)] border border-[var(--border)] rounded-[2.5rem] shadow-2xl overflow-hidden"
+                        >
+                            <div className="p-8 pb-4">
+                                <div className="flex justify-between items-center mb-8">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-2xl bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+                                            <Wallet size={20} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-[var(--foreground)]">Quick Adjust</h3>
+                                            <p className="text-xs text-[var(--muted)]">Manage user balance</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setSelectedUserForWallet(null)}
+                                        className="w-10 h-10 rounded-full bg-[var(--foreground)]/[0.05] text-[var(--muted)] flex items-center justify-center hover:text-[var(--foreground)] transition-all"
+                                    >
+                                        <FiXCircle size={20} />
+                                    </button>
+                                </div>
+
+                                <div className="bg-[var(--foreground)]/[0.02] border border-[var(--border)] rounded-2xl p-4 mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <Avatar name={selectedUserForWallet.name} type={selectedUserForWallet.userType} />
+                                        <div className="min-w-0">
+                                            <p className="font-bold text-[var(--foreground)] text-sm truncate">{selectedUserForWallet.name}</p>
+                                            <p className="text-[10px] text-[var(--muted)] font-mono">{selectedUserForWallet.email}</p>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 pt-4 border-t border-[var(--border)] flex justify-between items-center">
+                                        <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Current Wallet</span>
+                                        <span className="font-black text-[var(--foreground)]">₹{selectedUserForWallet.wallet.toLocaleString()}</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-[var(--muted)] uppercase tracking-widest ml-1">Adjustment Amount</label>
+                                        <div className="relative group">
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--accent)] font-bold">₹</span>
+                                            <input
+                                                autoFocus
+                                                type="number"
+                                                value={quickAmount}
+                                                onChange={(e) => setQuickAmount(e.target.value)}
+                                                placeholder="Enter amount..."
+                                                className="w-full h-14 pl-8 pr-4 rounded-2xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] text-[var(--foreground)] font-bold text-lg outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent)]/5 transition-all text-center"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 pt-4">
+                                        <button
+                                            onClick={() => handleManageWallet("remove", selectedUserForWallet.email, quickAmount)}
+                                            disabled={updating || !quickAmount}
+                                            className="h-12 rounded-2xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white border border-rose-500/20 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-30 shadow-lg shadow-transparent hover:shadow-rose-500/20"
+                                        >
+                                            {updating ? <Loader2 className="animate-spin" size={16} /> : <FiMinus size={16} />}
+                                            Deduct
+                                        </button>
+                                        <button
+                                            onClick={() => handleManageWallet("add", selectedUserForWallet.email, quickAmount)}
+                                            disabled={updating || !quickAmount}
+                                            className="h-12 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white border border-emerald-500/20 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-30 shadow-lg shadow-transparent hover:shadow-emerald-500/20"
+                                        >
+                                            {updating ? <Loader2 className="animate-spin" size={16} /> : <FiPlus size={16} />}
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-6 pt-0 mt-4">
+                                <p className="text-[9px] text-center text-[var(--muted)] leading-relaxed px-4 opacity-50">
+                                    Changes will be recorded in transaction history and adjusted immediately.
+                                </p>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
+    );
+}
+
+function Avatar({ name, type, size = "md" }) {
+    const initials = name?.[0]?.toUpperCase() || "U";
+    const isOwner = type === "owner";
+    
+    return (
+        <div className={`
+            ${size === "lg" ? "w-14 h-14 text-xl" : "w-11 h-11 text-base"} 
+            rounded-2xl flex items-center justify-center font-black relative
+            ${isOwner 
+                ? "bg-gradient-to-br from-rose-500 via-pink-600 to-amber-500 text-white shadow-[0_8px_20px_-4px_rgba(244,63,94,0.4)]" 
+                : "bg-gradient-to-br from-[var(--foreground)]/[0.05] to-[var(--foreground)]/[0.1] text-[var(--foreground)] border border-[var(--border)] shadow-inner"}
+        `}>
+            <span className="relative z-10">{initials}</span>
+            {isOwner && (
+                <div className="absolute inset-0 rounded-2xl bg-white/20 blur-[1px]" />
+            )}
+        </div>
+    );
+}
+
+function PremiumInsightCard({ label, value, color, icon, description }) {
+    const colors = {
+        blue: "from-blue-500/20 to-indigo-500/5 text-blue-500 border-blue-500/20",
+        amber: "from-amber-500/20 to-orange-500/5 text-amber-500 border-amber-500/20",
+        purple: "from-purple-500/20 to-pink-500/5 text-purple-500 border-purple-500/20",
+        emerald: "from-emerald-500/20 to-teal-500/5 text-emerald-500 border-emerald-500/20",
+    };
+
+    return (
+        <motion.div 
+            whileHover={{ y: -2 }}
+            className={`relative p-3.5 sm:p-4.5 rounded-[1.5rem] border bg-gradient-to-b ${colors[color]} bg-[var(--card)]/40 backdrop-blur-xl overflow-hidden group transition-all`}
+        >
+            <div className="relative z-10 flex items-center justify-between">
+                <div className="flex items-center gap-3.5">
+                    <div className={`p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 text-white shadow-lg`}>
+                        {icon}
+                    </div>
+                    <div>
+                        <p className="text-[9px] font-black uppercase tracking-[0.15em] opacity-40 mb-0.5">{label}</p>
+                        <p className="text-xl sm:text-2xl font-black tabular-nums tracking-tighter text-[var(--foreground)] leading-none">{value}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/5 text-[7px] font-black uppercase tracking-[0.1em] opacity-50 shrink-0">
+                    <FiTrendingUp className="text-emerald-500" /> Live
+                </div>
+            </div>
+            
+            {description && (
+                <div className="relative z-10 mt-3 pt-2 text-[9px] font-medium opacity-30 border-t border-white/5 truncate">
+                    {description}
+                </div>
+            )}
+            
+            {/* Glossy overlay */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+        </motion.div>
     );
 }
 
@@ -859,12 +1091,15 @@ function InsightCard({ label, value, color, pulse, compact }) {
     };
 
     return (
-        <div className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden bg-[var(--card)]`}>
+        <motion.div 
+            whileHover={{ scale: 1.02 }}
+            className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border ${colors[color]} flex flex-col items-center justify-center text-center relative overflow-hidden bg-[var(--card)]`}
+        >
             {pulse && (
                 <span className="absolute top-1 right-1 w-1 h-1 rounded-full bg-current animate-ping" />
             )}
             <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-tight opacity-60 mb-0.5">{label}</span>
             <span className="text-xs sm:text-sm font-black tabular-nums whitespace-nowrap">{value}</span>
-        </div>
+        </motion.div>
     );
 }
