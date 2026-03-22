@@ -278,10 +278,12 @@ export async function POST(req: Request) {
 
     for (let i = 0; i < multiplier; i++) {
       try {
-        console.log(`[fulfillment] Attempt ${i + 1}/${multiplier} | Order: ${orderId} | ID: ${finalOrder.gameSlug}_${baseItemSlug}`);
+        console.log(`[fulfillment] START | Order: ${orderId} | Game: ${finalOrder.gameSlug} | Item: ${baseItemSlug} | Player: ${finalOrder.playerId} | Zone: ${finalOrder.zoneId}`);
+        console.log(`[fulfillment] Attempt ${i + 1}/${multiplier}`);
 
         let gameData: any;
         let isSuccess = false;
+
 
         // Check if we should use Smile One for Weekly Pass
         const isWeeklyPass = finalOrder.gameSlug === "mobile-legends988" && (baseItemSlug.toLowerCase().includes("weekly") || baseItemSlug.includes("pass"));
@@ -298,22 +300,50 @@ export async function POST(req: Request) {
           gameData = smileResp.data;
           isSuccess = smileResp.success;
         } else if (finalOrder.gameSlug === "bgmi-manual") {
-          console.log(`[fulfillment] Using MEWJI API for BGMI`);
-          const gameResp = await fetch(`${process.env.MEWJI_API_BASE}/order/create`, {
+          const mewjiUrl = `${process.env.MEWJI_API_BASE}/order/create`;
+          const mewjiKey = process.env.MEWJI_API_KEY!;
+          const mewjiBody = {
+            gameSlug: "bgmi-manual",
+            itemSlug: baseItemSlug,
+            playerId: String(finalOrder.playerId),
+          };
+
+          const mewjiHeaders = {
+            "Content-Type": "application/json",
+            "X-API-KEY": mewjiKey,
+          };
+
+          console.log(`[fulfillment] === BGMI MEWJI REQUEST START ===`);
+          console.log(`[fulfillment] Order ID: ${orderId}`);
+          console.log(`[fulfillment] Method: POST | URL: ${mewjiUrl}`);
+          console.log(`[fulfillment] Headers:`, JSON.stringify({ ...mewjiHeaders, "X-API-KEY": mewjiKey ? '***' + mewjiKey.slice(-4) : 'MISSING' }, null, 2));
+          console.log(`[fulfillment] Body Payload:`, JSON.stringify(mewjiBody, null, 2));
+          console.log(`[fulfillment] ===============================`);
+
+          const gameResp = await fetch(mewjiUrl, {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-API-KEY": process.env.MEWJI_API_KEY!,
-            },
-            body: JSON.stringify({
-              gameSlug: "bgmi-manual",
-              itemSlug: baseItemSlug,
-              playerId: String(finalOrder.playerId),
-            }),
+            headers: mewjiHeaders,
+            body: JSON.stringify(mewjiBody),
           });
 
-          gameData = await gameResp.json();
+          console.log(`[fulfillment] MEWJI RESPONSE STATUS: ${gameResp.status} ${gameResp.statusText}`);
+
+          const responseText = await gameResp.text();
+          console.log(`[fulfillment] MEWJI RAW RESPONSE:`, responseText);
+
+          try {
+            gameData = JSON.parse(responseText);
+            console.log(`[fulfillment] MEWJI PARSED JSON:`, JSON.stringify(gameData, null, 2));
+          } catch (e) {
+            console.error(`[fulfillment] Mewji JSON Parse Error:`, e);
+            gameData = { success: false, message: "Invalid JSON from Mewji" };
+          }
+
           isSuccess = gameResp.ok && (gameData?.success === true || gameData?.status === "success" || gameData?.order?.status === "success");
+          console.log(`[fulfillment] BGMI SUCCESS CHECK -> isSuccess: ${isSuccess}`);
+          console.log(`[fulfillment] === BGMI MEWJI REQUEST END ===`);
+
+
         } else {
           // Default provider (1game)
           const gameResp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api-service/order`, {
