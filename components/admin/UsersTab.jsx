@@ -232,7 +232,7 @@ export default function UsersTab() {
       </div>
 
       {/* ================= SEARCH & FILTERS ================= */}
-      <div className="flex flex-col md:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)]/40" size={16} />
           <input
@@ -246,36 +246,20 @@ export default function UsersTab() {
           />
         </div>
         <div className="flex gap-2">
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setPage(1);
-            }}
-            className="h-11 px-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-sm font-semibold focus:border-[var(--accent)]/50 outline-none transition-all cursor-pointer"
-          >
-            <option value="lastLogin">Last Active</option>
-            <option value="totalOrders">Order Count</option>
-            <option value="joinDate">Join Date</option>
-            <option value="name">Name</option>
-          </select>
           <button
-            onClick={() => {
-              setOrder(order === "asc" ? "desc" : "asc");
-              setPage(1);
-            }}
-            className="h-11 px-3 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] flex items-center justify-center hover:bg-[var(--foreground)]/[0.05] transition-all"
+            onClick={() => setShowFilters(true)}
+            className="h-11 px-5 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] flex items-center justify-center gap-2.5 hover:bg-[var(--foreground)]/[0.05] transition-all outline-none"
           >
-            <Activity size={16} className={`text-[var(--accent)] transition-transform ${order === "asc" ? "rotate-180" : ""}`} />
+            <Filter size={14} className="text-[var(--accent)]" />
+            <span className="text-sm font-semibold">Filters</span>
           </button>
+          <div className="hidden sm:flex px-4 h-11 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] items-center gap-2.5">
+            <Users size={14} className="text-[var(--accent)]" />
+            <span className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider">
+              {pagination.total} Records
+            </span>
+          </div>
         </div>
-        <button
-          onClick={() => setShowFilters(true)}
-          className="h-11 px-5 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] flex items-center justify-center gap-2.5 hover:bg-[var(--foreground)]/[0.05] transition-all outline-none"
-        >
-          <Filter size={14} className="text-[var(--accent)]" />
-          <span className="text-sm font-semibold">Filters</span>
-        </button>
       </div>
 
       {/* ================= CONTENT ================= */}
@@ -355,8 +339,15 @@ export default function UsersTab() {
                           {u.userType}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-xs font-medium text-[var(--muted)]">
-                        {new Date(u.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="text-xs font-medium text-[var(--foreground)]">
+                            {new Date(u.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                          </span>
+                          <span className="text-[10px] text-[var(--muted)]/60">
+                            {new Date(u.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
@@ -421,15 +412,23 @@ export default function UsersTab() {
 
                     <div className="flex items-center justify-between gap-4 pt-2.5 border-t border-[var(--border)]" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 text-[var(--muted)]/30">
-                          <Calendar size={10} />
-                          <span className="text-[8px] font-bold uppercase tracking-tighter">{new Date(u.createdAt).toLocaleDateString()}</span>
+                        <div className="flex items-center gap-1 text-[var(--muted)]/40">
+                          <Calendar size={10} className="text-[var(--accent)]/50" />
+                          <div className="flex flex-col">
+                            <span className="text-[8px] font-bold uppercase tracking-tight">{new Date(u.createdAt).toLocaleDateString()}</span>
+                            <span className="text-[7px] font-medium opacity-60 leading-none">{new Date(u.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1 text-[var(--muted)]/30">
-                          <Activity size={10} />
-                          <span className="text-[8px] font-bold uppercase tracking-tighter">
-                            {u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : "Never"}
-                          </span>
+                        <div className="flex items-center gap-1 text-[var(--muted)]/40">
+                          <Activity size={10} className="text-emerald-500/50" />
+                          <div className="flex flex-col">
+                            <span className="text-[8px] font-bold uppercase tracking-tight">
+                              {u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : "Never"}
+                            </span>
+                            {u.lastLogin && (
+                              <span className="text-[7px] font-medium opacity-60 leading-none">{new Date(u.lastLogin).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <RoleDropdown
@@ -597,19 +596,50 @@ export default function UsersTab() {
                 </button>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-6 pt-2">
+                {/* SORTING */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] ml-1">Sort Preference</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={sortBy}
+                      onChange={(e) => {
+                        setSortBy(e.target.value);
+                        setPage(1);
+                      }}
+                      className="flex-1 h-12 px-4 rounded-2xl border border-[var(--border)] bg-[var(--foreground)]/[0.04] text-[var(--foreground)] text-sm font-bold focus:border-[var(--accent)]/50 outline-none transition-all cursor-pointer appearance-none"
+                    >
+                      <option value="lastLogin">Last Active</option>
+                      <option value="totalOrders">Order Count</option>
+                      <option value="joinDate">Join Date</option>
+                      <option value="name">Name</option>
+                    </select>
+                    <button
+                      onClick={() => {
+                        setOrder(order === "asc" ? "desc" : "asc");
+                        setPage(1);
+                      }}
+                      className="w-12 h-12 rounded-2xl border border-[var(--border)] bg-[var(--foreground)]/[0.04] text-[var(--accent)] flex items-center justify-center hover:bg-[var(--foreground)]/[0.1] transition-all"
+                    >
+                      <Activity size={18} className={`transition-transform duration-500 ${order === "asc" ? "rotate-180" : ""}`} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="h-px bg-[var(--border)]/50 my-2" />
+
                 <div className="space-y-3">
-                  <label className="text-xs font-semibold text-[var(--muted)] ml-1">Role Type</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] ml-1">Role Type</label>
                   <div className="grid grid-cols-2 gap-2">
                     {["user", "member", "admin", "owner"].map((type) => (
                       <button
                         key={type}
                         onClick={() => setFilters({ ...filters, userType: filters.userType === type ? "" : type })}
                         className={`
-                           px-4 py-2 rounded-xl border text-xs font-semibold capitalize transition-all outline-none
+                           px-4 py-2.5 rounded-xl border text-[10px] font-black uppercase transition-all outline-none
                            ${filters.userType === type
                             ? "bg-[var(--accent)] border-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20"
-                            : "border-[var(--border)] bg-[var(--foreground)]/[0.03] text-[var(--muted)] hover:text-[var(--foreground)]"}
+                            : "border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--muted)] hover:text-[var(--foreground)]"}
                          `}
                       >
                         {type}
@@ -618,24 +648,26 @@ export default function UsersTab() {
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-xs font-semibold text-[var(--muted)] ml-1">Joined From</label>
-                  <input
-                    type="date"
-                    value={filters.from}
-                    onChange={(e) => setFilters({ ...filters, from: e.target.value })}
-                    className="w-full h-11 px-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.03] text-[var(--foreground)] text-sm focus:border-[var(--accent)]/50 outline-none transition-all placeholder:text-[var(--muted)]/40 [color-scheme:dark]"
-                  />
-                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.1em] text-[var(--muted)] ml-1">Joined From</label>
+                    <input
+                      type="date"
+                      value={filters.from}
+                      onChange={(e) => setFilters({ ...filters, from: e.target.value })}
+                      className="w-full h-11 px-3 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.03] text-[var(--foreground)] text-[10px] font-bold focus:border-[var(--accent)]/50 outline-none transition-all [color-scheme:dark]"
+                    />
+                  </div>
 
-                <div className="space-y-3">
-                  <label className="text-xs font-semibold text-[var(--muted)] ml-1">Joined To</label>
-                  <input
-                    type="date"
-                    value={filters.to}
-                    onChange={(e) => setFilters({ ...filters, to: e.target.value })}
-                    className="w-full h-11 px-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.03] text-[var(--foreground)] text-sm focus:border-[var(--accent)]/50 outline-none transition-all placeholder:text-[var(--muted)]/40 [color-scheme:dark]"
-                  />
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.1em] text-[var(--muted)] ml-1">Joined To</label>
+                    <input
+                      type="date"
+                      value={filters.to}
+                      onChange={(e) => setFilters({ ...filters, to: e.target.value })}
+                      className="w-full h-11 px-3 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.03] text-[var(--foreground)] text-[10px] font-bold focus:border-[var(--accent)]/50 outline-none transition-all [color-scheme:dark]"
+                    />
+                  </div>
                 </div>
               </div>
 

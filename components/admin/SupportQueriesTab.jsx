@@ -203,10 +203,6 @@ export default function SupportQueriesTab() {
             className="w-full h-11 pl-11 pr-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-sm focus:border-[var(--accent)]/50 outline-none placeholder:text-[var(--muted)]/40"
           />
         </div>
-        <button className="h-11 px-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] flex items-center justify-center gap-2 hover:bg-[var(--foreground)]/[0.05] transition-all sm:w-max group">
-          <Filter size={14} className="text-[var(--accent)]" />
-          <span className="text-xs font-bold uppercase text-[var(--muted)] group-hover:text-[var(--foreground)]">Filter</span>
-        </button>
       </div>
 
       {/* ================= CONTENT ================= */}

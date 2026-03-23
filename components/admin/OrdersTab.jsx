@@ -58,6 +58,7 @@ export default function OrdersTab() {
     page: 1,
     totalPages: 1,
   });
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchOrdersStats();
@@ -227,8 +228,7 @@ export default function OrdersTab() {
         </div>
       </div>
 
-      {/* ================= FILTERS & SEARCH ================= */}
-      <div className="space-y-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)]/50" size={16} />
           <input
@@ -237,70 +237,30 @@ export default function OrdersTab() {
               setPage(1);
               setSearch(e.target.value);
             }}
-            placeholder="Search by Order ID, Email, Payment Method, or Game..."
+            placeholder="Search by Order ID, Email, Method..."
             className="w-full h-11 pl-11 pr-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-sm focus:border-[var(--accent)]/50 outline-none transition-all placeholder:text-[var(--muted)]/40"
           />
         </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]/50" size={12} />
-            <select
-              value={filters.status}
-              onChange={(e) => {
-                setPage(1);
-                setFilters({ ...filters, status: e.target.value });
-              }}
-              className="w-full h-10 pl-9 pr-3 rounded-lg border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-xs font-bold uppercase focus:border-[var(--accent)]/50 outline-none appearance-none cursor-pointer"
-            >
-              <option value="" className="bg-[var(--card)]">All States</option>
-              <option value="pending" className="bg-[var(--card)]">Pending</option>
-              <option value="success" className="bg-[var(--card)]">Success</option>
-              <option value="failed" className="bg-[var(--card)]">Failed</option>
-              <option value="refund" className="bg-[var(--card)]">Refunded</option>
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)]/50 pointer-events-none" size={12} />
-          </div>
-
-          <input
-            placeholder="Game Slug"
-            value={filters.gameSlug}
-            onChange={(e) => {
-              setPage(1);
-              setFilters({ ...filters, gameSlug: e.target.value });
-            }}
-            className="h-10 px-3 rounded-lg border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-xs font-bold uppercase focus:border-[var(--accent)]/50 outline-none placeholder:text-[var(--muted)]/40"
-          />
-
-          <input
-            type="date"
-            value={filters.from}
-            onChange={(e) => {
-              setPage(1);
-              setFilters({ ...filters, from: e.target.value });
-            }}
-            className="h-10 px-3 rounded-lg border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-xs font-bold uppercase focus:border-[var(--accent)]/50 outline-none"
-          />
-
-          <input
-            type="date"
-            value={filters.to}
-            onChange={(e) => {
-              setPage(1);
-              setFilters({ ...filters, to: e.target.value });
-            }}
-            className="h-10 px-3 rounded-lg border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-xs font-bold uppercase focus:border-[var(--accent)]/50 outline-none"
-          />
-
+        <div className="flex gap-2">
           <button
-            onClick={() => {
-              setPage(1);
-              setFilters({ status: "", gameSlug: "", from: "", to: "" });
-            }}
-            className="h-10 rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] text-[10px] font-bold uppercase tracking-widest border border-[var(--border)] hover:bg-[var(--foreground)]/[0.05] transition-all"
+            onClick={() => setShowFilters(true)}
+            className="h-11 px-5 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] flex items-center justify-center gap-2.5 hover:bg-[var(--foreground)]/[0.05] transition-all outline-none"
           >
-            Clear Filters
+            <Filter size={14} className="text-[var(--accent)]" />
+            <span className="text-sm font-semibold">Filters</span>
           </button>
+          
+          {(search || filters.status || filters.gameSlug || filters.from || filters.to) && (
+            <button
+              onClick={() => {
+                setSearch("");
+                setFilters({ status: "", gameSlug: "", from: "", to: "" });
+              }}
+              className="px-3 h-11 rounded-xl text-rose-500 hover:bg-rose-500/10 text-[10px] font-black uppercase tracking-widest transition-all"
+            >
+              Clear
+            </button>
+          )}
         </div>
       </div>
 
@@ -492,7 +452,6 @@ export default function OrdersTab() {
         )}
       </AnimatePresence>
 
-      {/* ================= DRAWER ================= */}
       <AnimatePresence>
         {selectedOrder && (
           <>
@@ -571,6 +530,120 @@ export default function OrdersTab() {
                 </DrawerSection>
 
                 <div className="pb-6" />
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ================= FILTER MODAL ================= */}
+      <AnimatePresence>
+        {showFilters && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowFilters(false)}
+              className="fixed inset-0 z-[1100] bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed right-0 top-0 h-full w-full max-w-md bg-[var(--background)] border-l border-[var(--border)] shadow-2xl z-[1110] flex flex-col"
+            >
+              <div className="p-6 border-b border-[var(--border)] flex justify-between items-center">
+                <h3 className="text-xl font-black uppercase tracking-tight text-[var(--foreground)]">Find Orders</h3>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="w-10 h-10 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] transition-all"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-8 space-y-8">
+                {/* GAME SLUG */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] ml-1">Game Filter</label>
+                  <div className="relative">
+                    <Gamepad2 className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)]/40" size={18} />
+                    <input
+                      placeholder="e.g. mlbb, bgmi..."
+                      value={filters.gameSlug}
+                      onChange={(e) => {
+                        setPage(1);
+                        setFilters({ ...filters, gameSlug: e.target.value });
+                      }}
+                      className="w-full h-14 pl-12 pr-4 rounded-2xl border border-[var(--border)] bg-[var(--foreground)]/[0.04] text-[var(--foreground)] text-sm font-bold focus:border-[var(--accent)]/50 outline-none uppercase transition-all placeholder:text-[var(--muted)]/40"
+                    />
+                  </div>
+                </div>
+
+                {/* STATUS FILTER */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] ml-1">Process Status</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {["pending", "success", "failed", "refund"].map((st) => (
+                      <button
+                        key={st}
+                        onClick={() => {
+                          setPage(1);
+                          setFilters({ ...filters, status: filters.status === st ? "" : st });
+                        }}
+                        className={`
+                          py-3.5 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all
+                          ${filters.status === st
+                            ? "bg-[var(--accent)] border-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20"
+                            : "border-[var(--border)] bg-[var(--foreground)]/[0.04] text-[var(--muted)] hover:text-[var(--foreground)]"}
+                        `}
+                      >
+                        {st}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="h-px bg-[var(--border)]/50" />
+
+                {/* DATE RANGE */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] ml-1">From</label>
+                    <input
+                      type="date"
+                      value={filters.from}
+                      onChange={(e) => {
+                        setPage(1);
+                        setFilters({ ...filters, from: e.target.value });
+                      }}
+                      className="w-full h-12 px-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.04] text-[var(--foreground)] text-[10px] font-black focus:border-[var(--accent)]/50 outline-none transition-all [color-scheme:dark]"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] ml-1">To</label>
+                    <input
+                      type="date"
+                      value={filters.to}
+                      onChange={(e) => {
+                        setPage(1);
+                        setFilters({ ...filters, to: e.target.value });
+                      }}
+                      className="w-full h-12 px-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.04] text-[var(--foreground)] text-[10px] font-black focus:border-[var(--accent)]/50 outline-none transition-all [color-scheme:dark]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 bg-[var(--foreground)]/[0.02] border-t border-[var(--border)]">
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="w-full py-4 rounded-2xl bg-[var(--foreground)] text-[var(--background)] font-black uppercase tracking-[0.2em] text-xs hover:scale-[0.98] transition-all"
+                >
+                  Apply Filters
+                </button>
               </div>
             </motion.div>
           </>
