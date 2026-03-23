@@ -27,13 +27,13 @@
 
 /* 🌙 Dark Mode */
 html[data-theme="dark"] {
-  --background: #050505;
+  --background: #000000;
   --foreground: #f1f5f9;
   --accent: #7dd3fc;
   --accent-hover: #38bdf8;
   --muted: #94a3b8;
-  --border: #1e293b;
-  --card: #0f172a;
+  --border: #111111;
+  --card: #000000;
 }
 
 /* 💠 Cyber */
@@ -260,13 +260,24 @@ html[data-theme="plasma"] {
 
 /* 💎 Blue Buff Elite (Signature) */
 html[data-theme="elite"] {
-  --background: #02040a;
+  --background: #000000;
   --foreground: #f1f5f9;
   --accent: #2dd4bf;
   --accent-hover: #0d9488;
   --muted: #94a3b8;
-  --border: #134e4a;
-  --card: #0a0f1a;
+  --border: #111111;
+  --card: #000000;
+}
+
+/* 🖤 Obsidian (Pitch Black) */
+html[data-theme="obsidian"] {
+  --background: #000000;
+  --foreground: #ffffff;
+  --accent: #ffffff;
+  --accent-hover: #e0e0e0;
+  --muted: #888888;
+  --border: #111111;
+  --card: #000000;
 }
 
 
@@ -301,8 +312,8 @@ html[data-theme="midnightblack"] {
   --accent: #3f3f46;
   --accent-hover: #27272a;
   --muted: #71717a;
-  --border: #18181b;
-  --card: #09090b;
+  --border: #111111;
+  --card: #000000;
 }
 
 /* 👑 Royal Blue */

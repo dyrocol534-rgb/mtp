@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiFilter, FiX, FiSearch, FiGrid, FiList, FiTrendingUp, FiZap, FiPackage } from "react-icons/fi";
+import { FiFilter, FiX, FiSearch, FiGrid, FiList, FiTrendingUp, FiZap, FiPackage, FiTv } from "react-icons/fi";
 
 import GameGrid from "@/components/Games/GameGrid";
 import GameList from "@/components/Games/GameList";
@@ -25,6 +25,7 @@ export default function GamesPage() {
   const [hideOOS, setHideOOS] = useState(false);
   const [viewMode, setViewMode] = useState("list");
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
 
   /* ================= CONFIG ================= */
   const WEEKLY_PASS_SLUG = "mobile-legends988";
@@ -129,49 +130,65 @@ export default function GamesPage() {
     setSearchQuery("");
   };
 
+  const isMlbbGame = (game) => {
+    const slug = game.gameSlug?.toLowerCase() || "";
+    const name = game.gameName?.toLowerCase() || "";
+    return slug.includes("mlbb") || name.includes("mlbb") || slug.includes("legends988") || slug.includes("weeklymonthly-bundle");
+  };
+
   /* ================= RENDER COMPONENTS ================= */
   const SectionHeader = ({ title, icon: Icon, count, gradient }) => (
-    <div className="flex items-center gap-4 mb-8">
-      <div className={`p-2.5 rounded-2xl bg-gradient-to-br ${gradient} text-white shadow-lg`}>
+    <div className="flex items-center gap-3 mb-6">
+      <div className={`w-11 h-11 rounded-[0.9rem] bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-xl shrink-0`}>
         <Icon size={20} />
       </div>
       <div>
-        <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tighter italic">
+        <h2 className="text-lg sm:text-xl font-black uppercase tracking-tighter italic text-white leading-none mb-1.5">
           {title}
         </h2>
-        <div className="flex items-center gap-2">
-          <div className="h-1 w-12 bg-[var(--accent)] rounded-full" />
-          <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-[0.2em]">
+        <div className="flex items-center gap-2.5">
+          <div className="h-1 w-8 bg-[var(--accent)] rounded-full shadow-[0_0_10px_rgba(var(--accent-rgb),0.5)]" />
+          <span className="text-[9px] font-black text-[var(--muted)] uppercase tracking-[0.15em]">
             {count} Items Found
           </span>
         </div>
       </div>
-      <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
+      <div className="flex-1 h-px bg-gradient-to-r from-white/5 to-transparent ml-2" />
     </div>
   );
 
+  const TabButton = ({ id, label, icon: Icon }) => (
+    <button
+      onClick={() => setActiveTab(id)}
+      className={`flex-1 flex items-center justify-center gap-1.5 px-1.5 py-2 rounded-lg font-black uppercase tracking-tight text-[8px] sm:text-[9px] italic transition-all duration-300 border
+        ${activeTab === id
+          ? "bg-[var(--accent)]/10 text-[var(--accent)] border-[var(--accent)]/40 shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)]"
+          : "bg-black/20 text-[var(--muted)] border-white/5 hover:border-white/10 hover:bg-black/40"
+        }`}
+    >
+      <Icon size={12} className={`shrink-0 ${activeTab === id ? "fill-current" : ""}`} />
+      <span className="truncate">{label}</span>
+    </button>
+  );
+
   return (
-    <main className="min-h-screen bg-[var(--background)] px-4 py-8 relative overflow-hidden">
+    <main className="min-h-screen bg-[var(--background)] px-4 py-4 sm:py-6 relative overflow-hidden">
       {/* Background Decorative Glows */}
       <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-[var(--accent)]/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[10%] left-[-10%] w-[400px] h-[400px] bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ================= COMPACT SEARCH & CONTROLS ================= */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="sticky top-4 z-50 mb-10 group"
-        >
-          <div className="bg-[var(--card)]/60 backdrop-blur-2xl border border-white/5 rounded-[1.5rem] p-2 sm:p-3 shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex flex-col md:flex-row gap-2 transition-all group-hover:border-[var(--accent)]/20">
+        <div className="space-y-4 mb-16">
+          <div className="bg-[var(--card)]/90 backdrop-blur-3xl border border-[var(--border)] rounded-[1.8rem] p-1.5 sm:p-2 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-2 transition-all">
             {/* SEARCH */}
             <div className="relative flex-1 group/search">
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within/search:text-[var(--accent)] transition-colors" />
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within/search:text-[var(--accent)] transition-colors" size={15} />
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search Armory..."
-                className="w-full pl-11 pr-10 py-3 rounded-2xl bg-[var(--background)]/40 border border-transparent focus:bg-[var(--background)]/80 focus:border-[var(--accent)]/30 outline-none text-xs font-bold tracking-wide transition-all placeholder:text-[var(--muted)]/40"
+                placeholder="Search..."
+                className="w-full pl-11 pr-10 py-3 rounded-[1.2rem] bg-[var(--background)] border border-[var(--border)] focus:bg-[var(--card)] focus:border-[var(--accent)]/30 outline-none text-[10px] sm:text-xs font-black tracking-widest transition-all placeholder:text-[var(--muted)]/30 uppercase italic text-[var(--foreground)]"
               />
               <AnimatePresence>
                 {searchQuery && (
@@ -180,7 +197,7 @@ export default function GamesPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-white/5 text-red-500/60 hover:text-red-500 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-red-500/10 text-red-500/60 hover:text-red-500 transition-colors"
                   >
                     <FiX size={14} />
                   </motion.button>
@@ -188,10 +205,10 @@ export default function GamesPage() {
               </AnimatePresence>
             </div>
 
-            {/* ACTION GRID */}
+            {/* ACTION GRID - COMPACT */}
             <div className="flex items-center gap-2">
               {/* VIEW TOGGLE */}
-              <div className="flex p-1 rounded-xl bg-[var(--background)]/40 border border-white/5">
+              <div className="flex p-1 rounded-xl bg-[var(--border)]/30 border border-[var(--border)]">
                 {[
                   { id: "grid", icon: FiGrid },
                   { id: "list", icon: FiList },
@@ -199,7 +216,7 @@ export default function GamesPage() {
                   <button
                     key={mode.id}
                     onClick={() => setViewMode(mode.id)}
-                    className={`p-2 rounded-lg transition-all ${viewMode === mode.id
+                    className={`p-2 rounded-lg transition-all duration-300 ${viewMode === mode.id
                       ? "bg-[var(--accent)] text-black shadow-lg"
                       : "text-[var(--muted)] hover:text-[var(--foreground)]"
                       }`}
@@ -212,22 +229,30 @@ export default function GamesPage() {
               {/* FILTER BUTTON */}
               <button
                 onClick={() => setShowFilter(true)}
-                className={`relative flex items-center gap-2 px-4 py-3 rounded-xl font-black uppercase tracking-widest text-[9px] italic border transition-all ${activeFilterCount > 0
-                  ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] shadow-[0_0_15px_rgba(var(--accent-rgb),0.2)]"
-                  : "border-white/5 bg-[var(--background)]/40 text-[var(--muted)] hover:border-[var(--accent)]/30 hover:text-[var(--foreground)]"
+                className={`relative flex items-center gap-2 px-3 py-3 rounded-xl font-black uppercase tracking-tight text-[9px] italic border transition-all duration-300 ${activeFilterCount > 0
+                  ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]"
+                  : "border-[var(--border)] bg-[var(--card)] text-[var(--muted)] hover:border-[var(--accent)]/30 hover:text-[var(--accent)]"
                   }`}
               >
-                <FiFilter size={12} className={activeFilterCount > 0 ? "animate-pulse" : ""} />
-                <span className="hidden sm:inline">Advanced</span> Filter
+                <FiFilter size={13} className={activeFilterCount > 0 ? "animate-pulse" : ""} />
                 {activeFilterCount > 0 && (
-                  <span className="flex h-4 w-4 items-center justify-center bg-[var(--accent)] text-black rounded-full text-[8px] font-bold">
+                  <span className="flex h-4 w-4 items-center justify-center bg-[var(--accent)] text-black rounded-md text-[8px] font-black">
                     {activeFilterCount}
                   </span>
                 )}
               </button>
             </div>
           </div>
-        </motion.div>
+
+          {/* CATEGORY TABS - ULTRA COMPACT SINGLE ROW */}
+          <div className="flex items-center gap-1.5 w-full">
+            <TabButton id="all" label="All" icon={FiGrid} />
+            <TabButton id="mlbb" label="MLBB" icon={FiZap} />
+            <TabButton id="others" label="Others" icon={FiPackage} />
+            <TabButton id="streaming" label="Streaming" icon={FiTv} />
+            <TabButton id="memberships" label="Membership" icon={FiTrendingUp} />
+          </div>
+        </div>
 
         {/* ================= GAME CONTENT ================= */}
         <div className="space-y-20">
@@ -253,25 +278,25 @@ export default function GamesPage() {
                 </button>
               </motion.div>
             ) : (
-              <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <div>
                 {/* 1. FEATURED */}
-                {processedFeaturedGames.length > 0 && (
+                {(activeTab === "all" || activeTab === "others") && (processedFeaturedGames.filter(g => activeTab !== "others" || !isMlbbGame(g)).length > 0) && (
                   <div className="mb-20">
                     <SectionHeader
                       title="Elite Picks"
                       icon={FiTrendingUp}
-                      count={processedFeaturedGames.length}
-                      gradient="from-yellow-400 to-orange-600"
+                      count={processedFeaturedGames.filter(g => activeTab !== "others" || !isMlbbGame(g)).length}
+                      gradient="from-orange-500 to-amber-600"
                     />
                     {viewMode === "grid"
-                      ? <GameGrid games={processedFeaturedGames} isOutOfStock={isOutOfStock} />
-                      : <GameList games={processedFeaturedGames} isOutOfStock={isOutOfStock} />
+                      ? <GameGrid games={processedFeaturedGames.filter(g => activeTab !== "others" || !isMlbbGame(g))} isOutOfStock={isOutOfStock} />
+                      : <GameList games={processedFeaturedGames.filter(g => activeTab !== "others" || !isMlbbGame(g))} isOutOfStock={isOutOfStock} />
                     }
                   </div>
                 )}
 
                 {/* 2. MLBB VARIANT */}
-                {processedMlbbGames.length > 0 && (
+                {(activeTab === "all" || activeTab === "mlbb") && processedMlbbGames.length > 0 && (
                   <div className="mb-20">
                     <SectionHeader
                       title="MLBB Special"
@@ -287,26 +312,32 @@ export default function GamesPage() {
                 )}
 
                 {/* 3. ALL GAMES */}
-                {processedGames.length > 0 && (
+                {(activeTab === "all" || activeTab === "others") && (processedGames.filter(g => activeTab !== "others" || !isMlbbGame(g)).length > 0) && (
                   <div className="mb-20">
                     <SectionHeader
                       title="Full Armory"
                       icon={FiPackage}
-                      count={processedGames.length}
-                      gradient="from-[var(--accent)] to-purple-600"
+                      count={processedGames.filter(g => activeTab !== "others" || !isMlbbGame(g)).length}
+                      gradient="from-[var(--accent)] to-cyan-600"
                     />
                     {viewMode === "grid"
-                      ? <GameGrid games={processedGames} isOutOfStock={isOutOfStock} />
-                      : <GameList games={processedGames} isOutOfStock={isOutOfStock} />
+                      ? <GameGrid games={processedGames.filter(g => activeTab !== "others" || !isMlbbGame(g))} isOutOfStock={isOutOfStock} />
+                      : <GameList games={processedGames.filter(g => activeTab !== "others" || !isMlbbGame(g))} isOutOfStock={isOutOfStock} />
                     }
                   </div>
                 )}
 
                 {/* 4. OTT SECTION */}
-                {otts?.items?.length > 0 && !searchQuery && (
-                  <div className="mb-10 border-t border-[var(--border)] pt-10">
+                {(activeTab === "all" || activeTab === "streaming") && otts?.items?.length > 0 && !searchQuery && (
+                  <div className="mb-10 border-t border-white/5 pt-10">
+                    <SectionHeader
+                      title="Streaming Assets"
+                      icon={FiTv}
+                      count={otts.items.length}
+                      gradient="from-purple-500 to-indigo-600"
+                    />
                     <ServiceGridSection
-                      title={otts.title}
+                      title={null}
                       total={otts.total}
                       items={otts.items}
                       hrefPrefix="/games/ott"
@@ -315,10 +346,16 @@ export default function GamesPage() {
                 )}
 
                 {/* 5. MEMBERSHIP SECTION */}
-                {memberships?.items?.length > 0 && !searchQuery && (
-                  <div className="mb-10 border-t border-[var(--border)] pt-10">
+                {(activeTab === "all" || activeTab === "memberships") && memberships?.items?.length > 0 && !searchQuery && (
+                  <div className="mb-10 border-t border-white/5 pt-10">
+                    <SectionHeader
+                      title="Elite Memberships"
+                      icon={FiPackage}
+                      count={memberships.items.length}
+                      gradient="from-amber-500 to-yellow-600"
+                    />
                     <ServiceGridSection
-                      title={memberships.title}
+                      title={null}
                       total={memberships.total}
                       items={memberships.items}
                       hrefPrefix="/games/membership"
@@ -327,7 +364,7 @@ export default function GamesPage() {
                     />
                   </div>
                 )}
-              </motion.div>
+              </div>
             )}
           </AnimatePresence>
         </div>

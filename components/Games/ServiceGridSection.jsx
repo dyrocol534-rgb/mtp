@@ -16,7 +16,7 @@ export default function ServiceGridSection({
   if (!items?.length) return null;
 
   // Determine icon and gradient based on title
-  const isOtt = title.toLowerCase().includes("ott");
+  const isOtt = title?.toLowerCase().includes("ott");
   const config = isOtt
     ? { icon: FiTv, gradient: "from-purple-500 to-indigo-600" }
     : { icon: FiShield, gradient: "from-amber-400 to-orange-500" };
@@ -26,28 +26,30 @@ export default function ServiceGridSection({
   return (
     <section className="relative mb-16 px-1">
       {/* HEADER SYSTEM */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        className="flex items-center gap-4 mb-8"
-      >
-        <div className={`p-2.5 rounded-2xl bg-gradient-to-br ${config.gradient} text-white shadow-lg`}>
-          <Icon size={20} />
-        </div>
-        <div>
-          <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tighter italic">
-            {title}
-          </h2>
-          <div className="flex items-center gap-2">
-            <div className="h-1 w-12 bg-[var(--accent)] rounded-full" />
-            <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-[0.2em]">
-              {total} Elite Items
-            </span>
+      {title && (
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="flex items-center gap-4 mb-8"
+        >
+          <div className={`p-2.5 rounded-2xl bg-gradient-to-br ${config.gradient} text-white shadow-lg`}>
+            <Icon size={20} />
           </div>
-        </div>
-        <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
-      </motion.div>
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tighter italic">
+              {title}
+            </h2>
+            <div className="flex items-center gap-2">
+              <div className="h-1 w-12 bg-[var(--accent)] rounded-full" />
+              <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-[0.2em]">
+                {total} Elite Items
+              </span>
+            </div>
+          </div>
+          <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
+        </motion.div>
+      )}
 
       {/* GRID SYSTEM (Match GameCardGrid 3 in a Row) */}
       <div className="grid grid-cols-3 gap-3 md:gap-5">

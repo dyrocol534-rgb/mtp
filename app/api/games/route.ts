@@ -254,7 +254,8 @@ export async function GET() {
       (g: any) =>
         g.gameSlug.includes("mlbb") ||
         g.gameName.toLowerCase().includes("mlbb") ||
-        g.gameSlug.toLowerCase().includes("legends988")
+        g.gameSlug.toLowerCase().includes("legends988") ||
+        g.gameSlug.toLowerCase().includes("weeklymonthly-bundle")
 
 
     );
