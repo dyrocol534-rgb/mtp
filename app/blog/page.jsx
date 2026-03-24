@@ -113,17 +113,20 @@ export default function BlogPage() {
 
       <div className="max-w-4xl mx-auto pt-16 md:pt-24 relative z-10">
 
-        {/* 🏆 HEADER SECTION - SIMPLIFIED */}
         <motion.div
           className="mb-12"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-4xl md:text-6xl font-[900] italic tracking-tighter uppercase leading-none mb-2">
-            MLBB <span className="text-[var(--accent)]">INSIGHTS</span>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-[1px] bg-[var(--accent)]" />
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)] italic">Insights & Intel</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-[1000] italic tracking-tighter uppercase leading-none mb-4">
+            MLBB <span className="text-[var(--accent)]">INSIGHTS & GUIDES</span>
           </h1>
-          <p className="text-[var(--muted)] text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic font-sans">
-            Safety Tips & Pricing Guides
+          <p className="text-sm text-[var(--muted)] leading-relaxed italic max-w-xl opacity-70">
+            Your definitive collection of <strong className="text-[var(--foreground)]">MLBB top up india guides</strong>, pricing analysis, and safety protocols. Stay updated with the latest <strong className="text-[var(--foreground)]">mobile legends recharge india fast</strong> tips and diamond bundle value comparisons.
           </p>
         </motion.div>
 

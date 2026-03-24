@@ -26,7 +26,7 @@ export default function SEOContent() {
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)] italic">Market Leader</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter leading-[0.9] text-[var(--foreground)]">
-              Cheapest <br />
+              Blue Buff – Cheapest <br />
               <span className="text-[var(--accent)] text-shadow-glow">MLBB Recharge</span> <br />
               in India
             </h1>
@@ -59,7 +59,7 @@ export default function SEOContent() {
               <div className="w-10 h-10 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-center text-[var(--accent)] mb-6 group-hover:scale-110 transition-transform">
                 <FiInfo size={18} />
               </div>
-              <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--accent)] mb-4 italic">Our Advantage</h3>
+              <h2 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--accent)] mb-4 italic">Our Strategic MLBB Advantage</h2>
               <ul className="space-y-4">
                 {[
                   { label: "MLBB Recharge with UPI", desc: "Native integration with all major Indian UPI apps." },
@@ -78,7 +78,7 @@ export default function SEOContent() {
               <div className="w-10 h-10 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-center text-[var(--accent)] mb-6 group-hover:scale-110 transition-transform">
                 <FiCheckCircle size={18} />
               </div>
-              <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--accent)] mb-4 italic">Reliability</h3>
+              <h2 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--accent)] mb-4 italic">Unmatched Trust & Reliability</h2>
               <p className="text-[11px] text-[var(--muted)] leading-relaxed italic mb-4">
                 As a <strong className="text-[var(--foreground)]">mlbb recharge trusted site india</strong>, we prioritize your account safety above all else.
               </p>

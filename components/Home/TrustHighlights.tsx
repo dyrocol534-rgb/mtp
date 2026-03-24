@@ -59,6 +59,10 @@ export default function TrustHighlights() {
   return (
     <section className="py-12 bg-[var(--background)] px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto">
+        <div className="mb-8">
+            <h2 className="text-xl font-black uppercase text-[var(--foreground)] italic tracking-tighter">WHY PLAYERS <span className="text-[var(--accent)]">CHOOSE US</span></h2>
+            <div className="w-12 h-[1px] bg-[var(--accent)]/40 mt-1" />
+        </div>
         <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {HIGHLIGHTS.map((item, i) => (
             <motion.div

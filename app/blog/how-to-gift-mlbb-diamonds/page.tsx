@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import BlogPostLayout from "@/components/Blog/BlogPostLayout";
 
 export const metadata: Metadata = {
-    title: "How to Gift MLBB Diamonds to Friends (2025 Guide)",
-    description: "Learn how to easily gift Mobile Legends diamonds to your friends using their Player ID. Safe, fast, and secure gifting guide.",
+    title: "How to Gift MLBB Diamonds to Friends – Easy 2026 Guide",
+    description: "Step-by-step guide on gifting MLBB diamonds safely using Player ID. Surprising your friends with skins and passes has never been easier in 2026.",
     alternates: { canonical: "https://mlbbtopup.in/blog/how-to-gift-mlbb-diamonds" },
 };
 
 export default function BlogPage() {
     return (
         <BlogPostLayout
-            title="HOW TO GIFT MLBB DIAMONDS TO FRIENDS (2025)"
+            title="HOW TO GIFT MLBB DIAMONDS TO FRIENDS (2026)"
             category="Guide"
             readTime="3 min read"
             date="Feb 07, 2025"

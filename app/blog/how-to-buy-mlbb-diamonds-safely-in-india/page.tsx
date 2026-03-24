@@ -3,15 +3,15 @@ import BlogPostLayout from "@/components/Blog/BlogPostLayout";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "How to Buy MLBB Diamonds Safely in India (2025 Guide)",
-  description: "Learn how to buy MLBB diamonds safely in India. Avoid scams, use trusted platforms, and recharge safely.",
+  title: "How to Buy MLBB Diamonds Safely in India – 2026 Guide",
+  description: "Learn the safest way to recharge MLBB diamonds in India. Protect your account from scams and identify trusted top-up websites like Blue Buff.",
   alternates: { canonical: "https://mlbbtopup.in/blog/how-to-buy-mlbb-diamonds-safely-in-india" },
 };
 
 export default function BlogPage() {
   return (
     <BlogPostLayout
-      title="HOW TO BUY MLBB DIAMONDS SAFELY IN INDIA"
+      title="HOW TO BUY MLBB DIAMONDS SAFELY IN INDIA (2026)"
       category="Safety Guide"
       readTime="5 min read"
       date="Jan 12, 2025"

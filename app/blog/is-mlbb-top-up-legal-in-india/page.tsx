@@ -3,15 +3,15 @@ import BlogPostLayout from "@/components/Blog/BlogPostLayout";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Is MLBB Top-Up Legal in India? (Complete 2025 Guide)",
-  description: "Is MLBB top-up legal in India? Learn the legality of Mobile Legends diamond recharge, safety rules, and secure methods.",
+  title: "Is MLBB Top Up Legal in India? – Everything You Need to Know (2026)",
+  description: "Answering the common question: Is Mobile Legends recharge legal in India? Understand the regulations, official partners, and safe practices for 2026.",
   alternates: { canonical: "https://mlbbtopup.in/blog/is-mlbb-top-up-legal-in-india" },
 };
 
 export default function BlogPage() {
   return (
     <BlogPostLayout
-      title="IS MLBB TOP-UP LEGAL IN INDIA?"
+      title="IS MLBB TOP-UP LEGAL IN INDIA? (2026 GUIDELINES)"
       category="Info Guide"
       readTime="3 min read"
       date="Jan 5, 2025"

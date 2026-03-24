@@ -3,8 +3,8 @@ import BlogPostLayout from "@/components/Blog/BlogPostLayout";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "MLBB Weekly Pass Price in India (Updated 2025)",
-  description: "Check the latest MLBB weekly pass price in India (2025). Learn benefits, rewards, validity, and safe buying guide.",
+  title: "MLBB Weekly Pass Price in India 2026 – Is it Worth Buying?",
+  description: "Discover the current MLBB Weekly Diamond Pass price in India for 2026. Compare rewards, benefits, and find the cheapest way to buy diamonds instantly.",
   alternates: { canonical: "https://mlbbtopup.in/blog/mlbb-weekly-pass-price-in-india" },
 };
 
